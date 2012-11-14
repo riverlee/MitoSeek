@@ -1,0 +1,3 @@
+#perl   mitoSeek.pl -i Examples/brca_tumor.bam -sb 0 -r rCRS -j Examples/brca_normal.bam 
+perl   mitoSeek.pl  -sb 0 -r rCRS -i Examples/brca_normal.bam 
+
