@@ -7,7 +7,6 @@
 #############################################
 use strict;
 use warnings;
-
 #========Begin loading necessary packages===========
 use GD::Text::Wrap;
 use GD::Graph::boxplot;
@@ -19,29 +18,36 @@ use File::Path;
 use Cwd 'abs_path';
 use FindBin;
 use List::Util qw(sum min max);
-
 #=======End loading necessary packages===============
 
 #========Begin defining global variables==============
-our $starttime;    #Assign this value in the BEGIN
-our %mitogenome = (
+my $starttime;    #Assign this value in the BEGIN section
+my $commandline="perl $0 ".join (" ",@ARGV);
+my %mitogenome = (
 	"hg19" => $FindBin::Bin . "/Resources/genome/hg19.fasta",
 	"rCRS" => $FindBin::Bin . "/Resources/genome/rCRS.fasta"
 );                 #Will be used in the pileup
-our %acceptedgenomelength = ( "hg19" => 16571, "rCRS" => 16569 )
-  ;                #The total mitochondrial genome length of hg19 and rCRS
 
-our $samtools = "samtools";
+my %exonbed = ("withchr"=>$FindBin::Bin."/Resources/genome/refGeneExon_withChr.bed",
+				"withoutchr"=>$FindBin::Bin."/Resources/genome/refGeneExon_withoutChr.bed");
+my %genomebed = ("withchr"=>$FindBin::Bin."/Resources/genome/genome_withChr.bed",
+				"withoutchr"=>$FindBin::Bin."/Resources/genome/genome_withoutChr.bed");
+my $totalgenomebases=3095677412;
+my $totalexonbases=70757781;
+my %acceptedgenomelength = ( "hg19" => 16571, "rCRS" => 16569 );   #The total mitochondrial genome length of hg19 and rCRS
+my $samtools = "samtools";
+
+
 
 #sam/bam flag (will be used in the function _mito_qc_stat)
-our $flag_paired                   = 0x0001;
-our $flag_properly_paired          = 0x0002;
-our $flag_read_unmapped            = 0x0004;
-our $flag_next_read_unmapped       = 0x0008;
-our $flag_reverse_strand           = 0x0010;
-our $flag_next_read_reverse_strand = 0x0020;
-our $flag_first_fragment           = 0x0040;
-our $flag_second_fragment          = 0x080;
+my $flag_paired                   = 0x0001;
+my $flag_properly_paired          = 0x0002;
+my $flag_read_unmapped            = 0x0004;
+my $flag_next_read_unmapped       = 0x0008;
+my $flag_reverse_strand           = 0x0010;
+my $flag_next_read_reverse_strand = 0x0020;
+my $flag_first_fragment           = 0x0040;
+my $flag_second_fragment          = 0x080;
 
 my $debug = 1;
 
@@ -52,15 +58,15 @@ my $debug = 1;
 #Step 1), Assign values to variables
 #Variables Assigned by input
 my $inbam1 = undef;    #-i
-my $inbam2 =
-  undef;    #-j ,if this is provided, will conduct somatic mutation mining
-my $type              = 1;
+my $inbam2 = undef;    #-j ,if this is provided, will conduct somatic mutation mining, and this will be assumed as normal sample
+my $type              = 1;  #1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only
 my $savebam           = 1;  #-b
 my $saveallelecount   = 1;  #-a
 my $producecircusplot = 0;  #-ch, produce circus plot for heteroplasmic mutation
 my $hp                = 5
   ; #-hp, heteroplasmy threshold using [int] percent alternatie allele observed, default=5;
 my $ha = 0; #-ha, heteroplasmy threshold using [int] allele observed, default=0;
+my $depth=50; #The minimum recommended depth requirement for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling
 my $isall = 0
   ; #If - A is used, the total read count is the total allele count of all allele observed. Otherwise, the total read count is the sum of major and minor allele counts. Default = off
 my $mmq = 20;    #minimum map quality, default=20
@@ -85,7 +91,7 @@ my $qc     = 1;         #Produce QC result
 my $str    = 2;         #structure variants cutoff
 
 my $isbam = 1;    #Default is 1, will auto determined from the $inbam1 file
-
+my $ischr=0;      #Default is 0, means the chromosomes are named without prefix chr, will auto determined from the $inbam1's header
 #========End this part=============================
 
 #========Begin assiging values to variables==============
@@ -110,7 +116,10 @@ unless (
 		"r=s"   => \$inref,
 		"R=s"   => \$outref,
 		"QC!"   => \$qc,
-		"t=i"   => \$type
+		"t=i"   => \$type,
+		"str=i" => \$str,
+		"t=i"=>\$type,
+		"d=i"=>\$depth
 	)
   )
 {
@@ -124,16 +133,13 @@ unless (
 #1) inbam1 necessary
 if ( !defined($inbam1) ) {
 	_error("input bam file (-i) has not been defined yet\n");
-	_usage();
-	exit(1);
+	_usage(1);
 }
 else {
 	if ( !-e $inbam1 ) {
 		_error("input bam file (-i) '$inbam1' does not exists\n");
-		_usage();
-		exit(1);
+		_usage(1);
 	}
-
 	#Conver to abs_path
 	$inbam1 = abs_path($inbam1) or die $!;
 	$isbam = _is_file_binary($inbam1);
@@ -143,8 +149,7 @@ else {
 if ( defined($inbam2) ) {
 	if ( !-e $inbam2 ) {
 		_error("input bam file2 (-j) '$inbam2' does not exists\n");
-		_usage();
-		exit(1);
+		_usage(1);
 	}
 	$inbam2 = abs_path($inbam2) or die $!;
 }
@@ -153,8 +158,7 @@ if ( defined($inbam2) ) {
 if ( defined($regionbed) ) {
 	if ( !-e $regionbed ) {
 		_error("bed file (-L) does not exists\n");
-		_usage();
-		exit(1);
+		_usage(1);
 	}
 	$regionbed = abs_path($regionbed);
 }
@@ -165,22 +169,30 @@ if ( $inref ne 'hg19' && $inref ne 'rCRS' ) {
 	_error(
 "The reference used in the bam file (-r) should be either hg19 or rCRS, yours is '$inref'\n"
 	);
-	_usage();
-	exit(1);
+	_usage(1);
 }
 if ( $outref ne 'hg19' && $outref ne 'rCRS' ) {
 	_error(
 "The reference used in the output file (-R) should be either hg19 or rCRS, yours is '$outref'\n"
 	);
-	_usage();
-	exit(1);
+	_usage(1);
+}
+
+if ($cn && $type==4){
+    _error("Your input bam is mitochondria only (-t), could not conduct the relative cony number estimation (-cn)\n");
+    _usage(1);
+}
+
+if($type !=1 && $type!=2 && $type !=3 && $type!=4){
+    _error("Input bam file type (-t) should be 1,2,3 or 4\n");
+    _usage(1);
 }
 
 #=======================End Check========================
 
 #===================Begin variables will be used==================
 my $folder = undef
-  ; #determine from the inbam1 file, and will creat this folder, all the report files will be put in this folder
+  ; #determine from the inbam1 file, and will create this folder, all the report files will be put in this folder
 my $mitobam1  = "mito1.bam";    #Reads aligned to mitochondria from inbam1
 my $mitobam2  = "mito2.bam";    #Reads aligned to mitochondria from inbam2
 my $reference = "mito.fasta"
@@ -189,48 +201,67 @@ my $reference = "mito.fasta"
 my $mitostart = 1;       #Mitochondrial region start for the analysis
 my $mitoend   = undef;
 
-our $perbasequality_figure1             = "per_base_quality1.png";             #
-our $perbasequality_table1              = "perl_base_quality_table1.txt";      #
-our $mappingquality_figure1             = "mapping_quality1.png";              #
-our $mappingquality_table1              = "mapping_quality_table1.txt";        #
-our $depthdistribution_figure1          = "depth_distribution1.png";           #
-our $depthdistribution_table1           = "depth_distribution_table1.png";     #
-our $templatelengthdistribution_figure1 = "template_length_distribution1.png";
-our $templatelengthdistribution_table1 =
+my $perbasequality_figure1             = "per_base_quality1.png";             #
+my $perbasequality_table1              = "perl_base_quality_table1.txt";      #
+my $mappingquality_figure1             = "mapping_quality1.png";              #
+my $mappingquality_table1              = "mapping_quality_table1.txt";        #
+my $depthdistribution_figure1          = "depth_distribution1.png";           #
+my $depthdistribution_table1           = "depth_distribution_table1.png";     #
+my $templatelengthdistribution_figure1 = "template_length_distribution1.png";
+my $templatelengthdistribution_table1 =
   "template_length_distribution_table1.txt";
-our $perbasequality_figure2             = "per_base_quality2.png";             #
-our $perbasequality_table2              = "perl_base_quality_table2.txt";      #
-our $mappingquality_figure2             = "mapping_quality2.png";              #
-our $mappingquality_table2              = "mapping_quality_table2.txt";        #
-our $depthdistribution_figure2          = "depth_distribution2.png";           #
-our $depthdistribution_table2           = "depth_distribution_table2.png";     #
-our $templatelengthdistribution_figure2 = "template_length_distribution2.png";
-our $templatelengthdistribution_table2 =
+my $perbasequality_figure2             = "per_base_quality2.png";             #
+my $perbasequality_table2              = "perl_base_quality_table2.txt";      #
+my $mappingquality_figure2             = "mapping_quality2.png";              #
+my $mappingquality_table2              = "mapping_quality_table2.txt";        #
+my $depthdistribution_figure2          = "depth_distribution2.png";           #
+my $depthdistribution_table2           = "depth_distribution_table2.png";     #
+my $templatelengthdistribution_figure2 = "template_length_distribution2.png";
+my $templatelengthdistribution_table2 =
   "template_length_distribution_table2.txt";
 
-our $mitopileup1   = "mito1.pileup";
-our $mitopileup2   = "mito2.pileup";
-our $mitobasecall1 = "mito1_basecall.txt";
-our $mitobasecall2 = "mito2_basecall.txt";
+my $mitopileup1   = "mito1.pileup";
+my $mitopileup2   = "mito2.pileup";
+my $mitobasecall1 = "mito1_basecall.txt";
+my $mitobasecall2 = "mito2_basecall.txt";
 
-our $mitoheteroplasmy1 = "mito1_heteroplasmy.txt";
-our $mitoheteroplasmy2 = "mito2_heteroplasmy.txt";
+my $mitoheteroplasmy1 = "mito1_heteroplasmy.txt";
+my $mitoheteroplasmy2 = "mito2_heteroplasmy.txt";
 
-our $mitosomatic    = "mito_somatic_mutation.txt";
-our $mitostructure1 = "mito1_structure.txt";
-our $mitostructure2 = "mito2_structure.txt";
+my $mitosomatic    = "mito_somatic_mutation.txt";
+my $mitostructure1 = "mito1_structure.txt";
+my $mitostructure2 = "mito2_structure.txt";
 
-our $mitoreport = "mitoSeek.html";
+my $mitoreport = "mitoSeek.html";
 
-our $mitooffset1 = 33;
-our $mitooffset2 = 33;
+my $mitooffset1 = 33;                  #Not used currently
+my $mitooffset2 = 33;
 
-( $folder, undef, undef ) = fileparse( $inbam1, qr/\.[^.]*/ );
+($folder, undef, undef) = fileparse( $inbam1, qr/\.[^.]*/ );
+
+my $mitocnv1 = "mito1_cnv.txt";       #Result of cnv of mito1
+my $mitocnv2 = "mito2_cnv.txt";
+
+my $mitodepth1 = "mito1_depth.txt";   #Store depth of mito1
+my $mitodepth2 = "mito2_depth.txt";
+
+my $sampledepthi = "sample_i_depth.txt"; #store depth of imput sample1 
+my $sampledephtj = "sample_j_depth.txt";
+
+
+#There three variables will be assign during the main
+my $mitobases=16571;    #Read from the regionbed file,default is the total bases of hg19
+my $totalbases=70757781;      #This the genome length, the exon length is 70757781
+my $totalbed=$exonbed{'withchr'};
+
+#_wrap_mito_cnv($mitobam1,$inbam1,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth1,$sample_i_depth,$mitocnv1);
+
 
 #print $reference,"\n";
 #=================End this part================
-
 #===========Begin Main Part==========================
+
+
 if ($folder) {
 	if ( -d $folder ) {
 		_warn("folder $folder already exists,will delete it first");
@@ -240,187 +271,12 @@ if ($folder) {
 	chdir $folder;
 }
 
-my $step = 1;
-
-#No mether its mitochondrial sequences or not, we will to extract reads mapping to mithochondrial first
 if ( !$regionbed ) {
 	$regionbed = "m.bed";
-	_info( $step++
-		  . "), Generating mithochondrial bed file from bam file's header (Output: $regionbed)"
-	);
-	_get_mitochondrial_bed( $inbam1, $regionbed );
 }
 
-if ($inbam2) {
-	_info( $step
-		  . ".1), Extracting reads in mitochondria from $inbam1(tumor) (Output:$mitobam1)"
-	);
-	_get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
-	_info( $step++
-		  . ".2), Extracting reads in mitochondria from $inbam2 (normal) (Output:$mitobam2)"
-	);
-	_get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
-}
-else {
-	_info( $step++
-		  . "), Extracting reads in mitochondria from $inbam1 (Output: $mitobam1) "
-	);
-	_get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
-}
-
-# If not reads in the bam, exits
-if ($inbam2) {
-	_info( $step . ".1), Checking Reads number in $mitobam1(tumor)...", 1 );
-	my $num1 = _number_of_reads_in_bam($mitobam1);
-	if ( $num1 != 0 ) {
-		print $num1, "\n";
-	}
-	else {
-		print "\n";
-		_error("No reads in $mitobam1 (tumor)\n");
-		exit(1);
-	}
-	_info( $step++ . ".2), Checking Reads number in $mitobam2(normal)...", 1 );
-	my $num2 = _number_of_reads_in_bam($mitobam2);
-	if ( $num2 != 0 ) {
-		print $num2, "\n";
-	}
-	else {
-		print "\n";
-		_error("No reads in $mitobam2 (normal)\n");
-		exit(1);
-	}
-}
-else {
-	_info( $step++ . "), Checking Reads number in $mitobam1...", 1 );
-	my $num1 = _number_of_reads_in_bam($mitobam1);
-	if ( $num1 != 0 ) {
-		print $num1, "\n";
-	}
-	else {
-		print "\n";
-		_error("No reads in $mitobam1 \n");
-		exit(1);
-	}
-}
-
-# Prepare mitochondrial reference, change header in fasta when necessary
-_info(  $step++
-	  . "), Moving mitochondrial genome '"
-	  . $mitogenome{$inref}
-	  . "' into $folder (Output:$reference)" );
-_move_mitogenome( $mitogenome{$inref}, $regionbed, $reference );
-
-# Pileup on bam files
-if ($inbam2) {
-	_info( $step . ".1), Pileup on $mitobam1 (tumor)(Output:$mitopileup1)" );
-	_pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
-	_info( $step++ . ".2), Pileup on $mitobam2 (normal)(Output:$mitopileup2)" );
-	_pileup( $mitobam2, $isbam, $mbq, $regionbed, $reference, $mitopileup2 );
-}
-else {
-	_info( $step++ . "), Pileup on $mitobam1 (Output:$mitopileup1)" );
-	_pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
-}
-
-# Running QC on mitobam
-if ($qc) {
-	if ($inbam2) {
-		_info( $step . ".1), Getting quality metrics on $mitobam1 (tumor) " );
-		$mitooffset1 = _mito_qc_stat(
-			$mitobam1,                  $isbam,
-			$mitopileup1,               $regionbed,
-			$perbasequality_figure1,    $mappingquality_figure1,
-			$depthdistribution_figure1, $templatelengthdistribution_figure1
-		);
-		_info(
-			$step++ . ".2), Getting quality metrics on $mitobam2 (normal) " );
-		$mitooffset2 = _mito_qc_stat(
-			$mitobam2,                  $isbam,
-			$mitopileup2,               $regionbed,
-			$perbasequality_figure2,    $mappingquality_figure2,
-			$depthdistribution_figure2, $templatelengthdistribution_figure2
-		);
-
-	}
-	else {
-		_info( $step++ . "), Getting quality metrics on $mitobam1  " );
-		$mitooffset1 = _mito_qc_stat(
-			$mitobam1,                  $isbam,
-			$mitopileup1,               $regionbed,
-			$perbasequality_figure1,    $mappingquality_figure1,
-			$depthdistribution_figure1, $templatelengthdistribution_figure1
-		);
-	}
-}
-
-# Parse pileup file
-if ($inbam2) {
-	_info( $step
-		  . ".1), Parsing pileup file of $mitopileup1 (tumor) (Output: $mitobasecall1)"
-	);
-	_parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
-	_info( $step++
-		  . ".2), Parsing pileup file of $mitopileup2 (normal) (Output: $mitobasecall2)"
-	);
-	_parse_pileup( $mitopileup2, $mbq, $mitooffset2, $mitobasecall2 );
-}
-else {
-	_info( $step++
-		  . "), Parsing pileup file of $mitopileup1 (Output: $mitobasecall1)" );
-	_parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
-}
-
-# heteroplasmy detection
-if ($inbam2) {
-	_info( $step
-		  . ".1), Heteroplasmy detection from $inbam1 (tumor) (Output: $mitoheteroplasmy1)"
-	);
-	_determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
-		$mitoheteroplasmy1 );
-	_info( $step++
-		  . ".2), Heteroplasmy detection from $inbam2 (normal) (Output: $mitoheteroplasmy2)"
-	);
-	_determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,
-		$mitoheteroplasmy2 );
-}
-else {
-	_info( $step++
-		  . "), Heteroplasmy detection from $inbam1 (Output: $mitoheteroplasmy1)"
-	);
-	my %hash = _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
-		$mitoheteroplasmy1 );
-}
-
-# somatic mutation
-if ($inbam2) {
-	_info( $step++ . ") Somatic mutation detection (Output: $mitosomatic)" );
-	_determine_somatic( $mitobasecall1, $mitobasecall2, $sp, $sa, $isall,
-		$mitosomatic );
-}
-
-# Structure variation
-if ($inbam2) {
-	_info( $step
-		  . ".1) Structure variation detection from $mitobam1 (Output: $mitostructure1)"
-	);
-	_structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
-		$mitostructure1 );
-	_info( $step++
-		  . ".2) Structure variation detection from $mitobam2 (Output: $mitostructure2)"
-	);
-	_structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,
-		$mitostructure2 );
-}
-else {
-	_info( $step++
-		  . ") Structure variation detection from $mitobam1 (Output: $mitostructure1)"
-	);
-	_structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
-		$mitostructure1 );
-}
-
-_info( $step++ . ") Generating report (Output: $mitoreport)" );
+_print_analysis_steps();
+_main();
 _make_report();
 
 #============End main part=============================
@@ -428,23 +284,277 @@ _make_report();
 #===========Start BEGIN and END section===================
 BEGIN {
 	$starttime = time();
+	
+	#print $commandline;
 }
 
 END {
-	my $interval = time() - $starttime;
-
-	#my $interval=192232;
-	my $hours = int( $interval / 3600 );  # calculate precise, and then floor it
-	my $minutes = int( ( $interval - $hours * 3600 ) / 60 );
-	my $seconds = $interval % 60;
-	my $time    = sprintf( "%dh:%02dm:%02ds", $hours, $minutes, $seconds );
-	print "Total Running Time: $time\n";
+    if($!){
+        print "Program exist with Error $!\n";
+    }else{
+	    my $interval = time() - $starttime;
+	    #my $interval=192232;
+	    my $hours = int( $interval / 3600 );  # calculate precise, and then floor it
+	    my $minutes = int( ( $interval - $hours * 3600 ) / 60 );
+	    my $seconds = $interval % 60;
+	    my $time    = sprintf( "%dh:%02dm:%02ds", $hours, $minutes, $seconds );
+	    print "Total Running Time: $time\n";
+	}
 }
-
 #===========End begin and end section======================
 
 #============Begin defining functions=====================
 
+#To determine wether the chromosome is named with prefix chr or not
+#Will use the top 100 of mapped reads to determine
+sub _determine_chr_from_bam{
+    my ($inbam,$isbam) = @_;
+    my $flag=0; #default is not with chr
+    my $count=0;
+    my $max_read=100;
+    if ($isbam) {
+		open( IN, "$samtools view $inbam |" )
+		  or die $!;
+	}
+	else {
+		open( IN, "$samtools view -S $inbam |" )
+		  or die $!;
+	}
+	
+	while(<IN>){
+	    my @a = split "\t";
+	    if($a[2]=~/chr/){
+	        $flag=1;
+	        last;
+	    }
+	    $count++;
+	    last if ($count>$max_read);
+	}
+	close IN;
+	return $flag;
+}
+
+#Start running the program
+sub _print_read{
+    my($mitobam)=@_;
+    my $num1 = _number_of_reads_in_bam($mitobam);
+	if ( $num1 != 0 ) {
+		print " n=", $num1, "\n";
+	}
+	else {
+		print "\n";
+		_error("No reads in $mitobam \n",1);
+	}
+}
+
+sub _main{
+    print "=" x 50, "\n";
+    print "Start analyzing:\n";
+    my $index=1;
+    _get_mitochondrial_bed( $inbam1, $regionbed );
+    
+    $ischr=_determine_chr_from_bam($inbam1,$isbam);
+    #Assign values to 
+    if($type==1 || $type==3){
+        $totalbases=$totalexonbases;
+        if($ischr){
+            $totalbed=$exonbed{'withchr'};
+        }else{
+            $totalbed=$exonbed{'withoutchr'};
+        }
+    }else{
+        $totalbases=$totalgenomebases;
+        if($ischr){
+            $totalbed=$genomebed{'withchr'};
+        }else{
+            $totalbed=$genomebed{'withoutchr'};
+        }
+    }
+    
+    
+    
+    if($inbam2){
+        _info($index.".1,Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)");
+        _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        _info($index++.".2,Extracting reads in mitochondria from '$inbam2' (Output: $mitobam2)");
+        _get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
+        
+        
+        _info($index.".1,Checking Reads number in '$mitobam1'",1);
+        _print_read($mitobam1);
+         _info($index++.".2,Checking Reads number in '$mitobam2'",1);
+         _print_read($mitobam2);
+        
+        _info($index++.",Moving mitochondrial genome '".$mitogenome{$inref}. "' into $folder (Output:$reference)");
+        _move_mitogenome( $mitogenome{$inref}, $regionbed, $reference );
+        
+        _info($index.".1,Pileuping '$mitobam1' (Output:$mitopileup1)");
+        _pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
+        _info($index++.".2,Pileuping '$mitobam2' (Output:$mitopileup2)");
+        _pileup( $mitobam2, $isbam, $mbq, $regionbed, $reference, $mitopileup2 );       
+        
+        _info($index.".1,Parsing pileup file of '$mitopileup1' (Output: $mitobasecall1)");
+        _parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
+        _info($index++.".2,Parsing pileup file of '$mitopileup2' (Output: $mitobasecall2)");
+        _parse_pileup( $mitopileup2, $mbq, $mitooffset2, $mitobasecall2 );
+        
+        if($qc){
+            _info($index.".1,Getting quality metrics on '$mitobam1' ");
+            $mitooffset1 = _mito_qc_stat(
+			$mitobam1,                  $isbam,
+			$mitopileup1,               $regionbed,
+			$perbasequality_figure1,    $mappingquality_figure1,
+			$depthdistribution_figure1, $templatelengthdistribution_figure1
+		    );
+            _info($index++.".2,Getting quality metrics on '$mitobam2' ");
+            $mitooffset2 = _mito_qc_stat(
+			$mitobam2,                  $isbam,
+			$mitopileup2,               $regionbed,
+			$perbasequality_figure2,    $mappingquality_figure2,
+			$depthdistribution_figure2, $templatelengthdistribution_figure2
+    		);
+        }
+        
+        _info($index.".1,Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)");
+        _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,$mitoheteroplasmy1 );
+        _info($index++.".2,Detecting heteroplasmy from '$mitobam2' (Output: $mitoheteroplasmy2)");
+        _determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,$mitoheteroplasmy2 );
+        
+        
+        _info($index.".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1)");
+        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$mitostructure1 );
+        _info($index++.".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2)");
+        _structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,$mitostructure2 );
+        
+        _info($index++.",Detecting somatic mutations (Output: $mitosomatic)");
+         _determine_somatic( $mitobasecall1, $mitobasecall2, $sp, $sa, $isall,$mitosomatic );
+         
+          if($cn && $type!=4){
+            _info($index++.",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)");
+            _wrap_mito_cnv($mitobam1,$inbam1,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth1,$sampledepthi,$mitocnv1);
+            _info($index++.",Estimating relative copy number of '$mitobam2' (Output: $mitocnv2)");
+            _wrap_mito_cnv($mitobam2,$inbam2,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth2,$sampledephtj,$mitocnv2);
+            
+     
+         }
+        
+
+    }else{
+        _info($index++.",Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)");
+         _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        
+        _info($index++.",Checking Reads number in '$mitobam1'",1);
+        _print_read($mitobam1);
+        
+        _info($index++.",Moving mitochondrial genome '".$mitogenome{$inref}. "' into $folder (Output:$reference)");
+        _move_mitogenome( $mitogenome{$inref}, $regionbed, $reference );
+        
+        _info($index++.",Pileuping '$mitobam1' (Output:$mitopileup1)");
+        _pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
+        
+        _info($index++.",Parsing pileup file of '$mitopileup1' (Output: $mitobasecall1)");
+        _parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
+        if($qc){
+            _info($index++.",Getting quality metrics on '$mitobam1' ");
+            $mitooffset1 = _mito_qc_stat(
+			$mitobam1,                  $isbam,
+			$mitopileup1,               $regionbed,
+			$perbasequality_figure1,    $mappingquality_figure1,
+			$depthdistribution_figure1, $templatelengthdistribution_figure1
+		    );
+        }
+        _info($index++.",Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)");
+        _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,$mitoheteroplasmy1 );
+        
+        _info($index++.",Detecting structure variants from '$mitobam1' (Output: $mitostructure1)");
+        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$mitostructure1 ); 
+        
+         if($cn && $type!=4){
+            _info($index++.",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)");
+            
+            _wrap_mito_cnv($mitobam1,$inbam1,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth1,$sampledepthi,$mitocnv1);
+            
+         }
+    }
+    _info($index++.",Generating report (Output: $mitoreport)");
+    print "=" x 50, "\n";
+	
+}
+
+
+#Print out steps will be analyzed.
+sub _print_analysis_steps{
+    print "=" x 50, "\n";
+    print "Steps will be run:\n";
+    my $index=1;
+    
+    if($inbam2){
+        print "    ",$index,".1,Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)\n";
+        print "    ",$index++,".2,Extracting reads in mitochondria from '$inbam2' (Output: $mitobam2)\n";
+        
+        print "    ",$index,".1,Checking Reads number in '$mitobam1'\n";
+        print "    ",$index++,".2,Checking Reads number in '$mitobam2'\n";
+        
+        print "    ",$index++,",Moving mitochondrial genome '".$mitogenome{$inref}. "' into $folder (Output:$reference)\n";
+        
+        print "    ",$index,".1,Pileuping '$mitobam1' (Output:$mitopileup1)\n";
+        print "    ",$index++,".2,Pileuping '$mitobam2' (Output:$mitopileup2)\n";
+        
+        print "    ",$index,".1,Parsing pileup file of '$mitopileup1' (Output: $mitobasecall1)\n";
+        print "    ",$index++,".2,Parsing pileup file of '$mitopileup2' (Output: $mitobasecall2)\n";
+        
+        if($qc){
+            print "    ",$index,".1,Getting quality metrics on '$mitobam1' \n";
+            print "    ",$index++,".2,Getting quality metrics on '$mitobam2' \n";
+        }
+        
+        print "    ",$index,".1,Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)\n";
+        print "    ",$index++,".2,Detecting heteroplasmy from '$mitobam2' (Output: $mitoheteroplasmy2)\n";
+        
+        print "    ",$index,".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1)\n";
+        print "    ",$index++,".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2)\n";
+        
+        print "    ",$index++,",Detecting somatic mutations (Output: $mitosomatic)\n";
+        
+         if($cn && $type !=4){
+            print "    ",$index,".1,Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)\n";
+            print "    ",$index++,".2,Estimating relative copy number of '$mitobam2' (Output: $mitocnv2)\n";
+        }
+        
+    }else{
+        print "    ",$index++,",Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)\n";
+        print "    ",$index++,",Checking Reads number in '$mitobam1'\n";
+        print "    ",$index++,",Moving mitochondrial genome '".$mitogenome{$inref}. "' into $folder (Output:$reference)\n";
+        print "    ",$index++,",Pileuping '$mitobam1' (Output:$mitopileup1)\n";
+        print "    ",$index++,",Parsing pileup file of '$mitopileup1' (Output: $mitobasecall1)\n";
+        if($qc){
+            print "    ",$index++,",Getting quality metrics on '$mitobam1' \n";
+        }
+        print "    ",$index++,",Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)\n";
+        print "    ",$index++,",Detecting structure variants from '$mitobam1' (Output: $mitostructure1)\n";
+        
+        if($cn && $type!=4){
+            print "    ",$index++,",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)\n";
+        }
+     }
+     
+    print "    ",$index++,",Generating report (Output: $mitoreport)\n";
+    print "=" x 50, "\n";
+	
+}
+
+
+
+
+
+#Accoring to the input mitochondrial bam file, detect structure variants from this bam file. 
+#Parameters:
+#$inmitobam: alignment result in mitochrondrial
+#$isbam: whether the input is in bam, otherwise it's sam 
+#$mmq: minimal mapping quality
+#$regionbed: a bed file containing analyzed regions
+#$str: structure cutoff, means at least 'str' spanning reads supporting this variants
+#$outfile: Store the structure variants in the output file
 sub _structure_variants {
 	my ( $inmitobam, $isbam, $mmq, $regionbed, $str, $outfile ) = @_;
 	my %temphash;
@@ -506,6 +616,121 @@ sub _mymean {
 	}
 
 }
+
+#Use samtools flagstat to get the total reads, mapped reads, and other inofrmation
+#Parameter: $inbam
+=example output
+46123 + 0 in total (QC-passed reads + QC-failed reads)
+12181 + 0 duplicates
+46110 + 0 mapped (99.97%:nan%)
+46123 + 0 paired in sequencing
+23191 + 0 read1
+22932 + 0 read2
+41608 + 0 properly paired (90.21%:nan%)
+45508 + 0 with itself and mate mapped
+602 + 0 singletons (1.31%:nan%)
+2923 + 0 with mate mapped to a different chr
+2923 + 0 with mate mapped to a different chr (mapQ>=5)
+=cut
+sub _samtools_flagstat{
+	my ($inbam) = @_;
+	my ($total,$mapped)=(0,0);
+	open(IN,"$samtools flagstat $inbam |") or die $!;
+	my @array=<IN>;close IN;
+	@array=map {/(^\d+)/;$1} @array;
+	$total=$array[0];
+	$mapped=$array[2];
+	return ($total,$mapped);
+}
+
+sub _samtools_flagstat_use_pipe{
+    my($inbam,$isbam,$mmq)=@_;
+    my ($total,$mapped)=(0,0);
+    if($isbam){
+	    open(IN,"$samtools view -u -q $mmq $inbam|$samtools  flagstat - |") or die $!;
+	}else{
+	    open(IN,"$samtools view -Su -q $mmq $inbam|$samtools  flagstat - |") or die $!;
+	}
+	my @array=<IN>;close IN;
+	@array=map {/(^\d+)/;$1} @array;
+	$total=$array[0];
+	$mapped=$array[2];
+	return ($total,$mapped);
+}
+
+
+
+
+#Call cnv and write out by wrap by read and by depth
+sub _wrap_mito_cnv{
+       my ($mitobam,$totalbam,$mitobases,$totalbases,$isbam,$mbq,$mmq,$bed,$mitodepthoutput,$totaldepthoutput,$mitocnv) = @_;
+       my ($mitomapped,$totalmapped,$byreadcnv)=_mito_cnv_by_reads($mitobam,$totalbam,$isbam,$mmq);
+       my ($mitoaveragedepth,$totalaveragedepth,$bydepthcnv)=_mito_cnv_by_depth($mitobam,$totalbam,$mitobases,$totalbases,$isbam,$mbq,$mmq,$bed,$mitodepthoutput,$totaldepthoutput);
+       open(OUT,">$mitocnv") or die $!;
+       print OUT "Method\tmito.reads/mito.ave.depth\ttotal.reads/total.ave.depth\tCNV\n";
+       print OUT join "\t",("ByRead",$mitomapped,$totalmapped,$byreadcnv);
+       print OUT "\n";
+       print OUT join "\t",("ByDepth",$mitoaveragedepth,$totalaveragedepth,$bydepthcnv);
+       print OUT "\n";
+       close OUT;
+}
+
+#Relative Copy Number Estimate
+#Parameter:
+#$mitobam: alignment mapped to mitochondria
+#$totalbam: alignment mapped to whole genome
+#$isbam: bam or sam
+#$mmq: mimimal mapping quality
+
+sub _mito_cnv_by_reads{
+    my ($mitobam,$totalbam,$isbam,$mmq) = @_;
+    my ($mitototal,$mitomapped) = _samtools_flagstat_use_pipe($mitobam,$isbam,$mmq);
+    my ($totaltotal,$totalmapped) = _samtools_flagstat_use_pipe($totalbam,$isbam,$mmq);
+    #Remove the mapped reads in the mito
+    $totalmapped=$totalmapped-$mitomapped;
+    return ($mitomapped,$totalmapped,_divide($mitomapped,$totalmapped));
+}
+
+
+#For exom sequence bed is the region of exon while for whole genome, the bed is the region of all chromosome
+sub _mito_cnv_by_depth{
+    my ($mitobam,$totalbam,$mitobases,$totalbases,$isbam,$mbq,$mmq,$bed,$mitodepthoutput,$totaldepthoutput) = @_;
+    my $com = "$samtools depth -q $mbq -Q mmq $mitobam > $mitodepthoutput";
+    _run($com);
+    $com = "$samtools depth -q $mbq -Q mmq -b $bed $totalbam >$totaldepthoutput";
+    _run($com);
+    
+    #Read the 
+    my $mitodepth = _read_and_sum_depth($mitodepthoutput);
+    my $totaldepth = _read_and_sum_depth($totaldepthoutput);
+    
+    my $mitoaveragedepth = $mitodepth/$mitobases;
+    my $totalaveragedepth = $totaldepth/$totalbases;
+    return ($mitoaveragedepth,$totalaveragedepth,_divide($mitoaveragedepth,$totalaveragedepth));
+}
+
+
+sub _read_and_sum_depth{
+    my ($in) = @_;
+    my $total=0.0;
+    open(IN,$in) or die $!;
+    while(<IN>){
+        s/\r|\n//g;
+        my (undef,undef,$a) = split /\t/;
+        $total+=$a;
+    }
+    return $total;
+}
+
+sub _divide{
+    my ($a,$b) = @_;
+    if($b == 0){
+        return 'NA';
+    }else{
+        return $a/$b;
+    }
+}
+
 
 #Move the mitochondrial genome into the result folder, change the header (>) when necessary.
 sub _move_mitogenome {
@@ -577,15 +802,13 @@ Usage: perl mitoSeek.pl -i inbam.pl
 -mbq [int]              Minimum base quality, default =20
 -sb [int]               Remove all sites with strand bias score in the top [int] %, default = 10 
 -cn                     Estimate relative copy number of input bam(s), does not work with mitochondria targeted sequencing bam files.
--s [bam1] [bam2]        Compute somatic mutation between bam1 and bam2
--sp [int1][int2]        Somatic mutation detection threshold, int1 = percent of alternative allele observed in normal, 
-                         int2 = percent of alternative allele observed in tumor, default int1=0, int2=5
--sa [int1][int2]        Somatic mutation detection threshold, int1 = number of alternative allele observed in normal,
-                         int2 = number of alternative allele observed in tumor, default int1=0, int2=3
+-sp [int]       		Somatic mutation detection threshold,int = percent of alternative allele observed in tumor, default int=5
+-sa [int]		       	Somatic mutation detection threshold,int = number of alternative allele observed in tumor, default int=3
 -cs                     Produce circus plot input files and circus plot figure for somatic mutation, default = off
 -L [bed]                A bed file that contains the regions MitoSeek will perform analysis on
 -r [ref]                The reference used in the bam file, the possible choices are HG19 and rCRS, default=HG19
 -R [ref]                The reference used in the output files, the possible choices are HG19 and rCRS, default=HG19
+-str [int]				Structure variants cutoff, int = number of spanning reads supporting this structure variants, default = 2
 -QC                     Produce QC result,default=on
    
 USAGE
@@ -614,7 +837,7 @@ sub _mito_qc_stat {
 		$depthdistribution_table,  $templatelengthdistribution_table
 	) = @_;
 	my $maxreads = 1000000
-	  ; #In case some alignment on mitochondrial is extremly large that will take too much memory and then crash your server.
+	  ; #In case some alignment on mitochondrial is extremly large that will take too much memory and then crash ymy server.
 	$maxreads = 1000 if ($debug);
 
 	if ($isbam) {
@@ -1031,7 +1254,7 @@ sub _determine_heteroplasmy {
 		my @atcg         = sort { $atcg{$b} <=> $atcg{$a} } keys %atcg;
 		my $major_allele = $atcg[0];
 		my $minor_allele = $atcg[1];
-
+        my $totaldepth= $atcg{A} + $atcg{C} + $atcg{T} + $atcg{G} ;
 		#Calculate heteroplasmy ratio
 		my $heteroplasmy = 0;
 		if ($isall) {
@@ -1067,7 +1290,8 @@ sub _determine_heteroplasmy {
 		if ( $heteroplasmy > 0 ) {
 
 #determine 1 or 2 at this stage (for value 3, need to first calculate strand bias across all the site, and then modify those with stat=2, only if when $sb is not equal to 0)
-			if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha ) {
+			#if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha ) {
+			if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha && $totaldepth >= $depth) {  #use $depth which is not passed by function
 				$stat = 2;
 			}
 			else {
@@ -1592,7 +1816,7 @@ sub _sb {
 	}
 }
 
-#Check whether samtools exist in your $PATH, If not, the program will exit
+#Check whether samtools exist in ymy $PATH, If not, the program will exit
 sub _check_samtools {
 	my $r = `which samtools`;
 	if ($r) {
@@ -1634,6 +1858,7 @@ sub _run {
 
 ##Generate the report
 sub _make_report {
+    my $createdtime=localtime;
 	open( OUT, ">$mitoreport" ) or die $!;
 	print OUT <<HTML;
 <html>
@@ -1738,9 +1963,10 @@ sub _make_report {
   display:inline-block;
   float:right;
   clear:right;
-  font-size: 25%;
+  font-size: 12px;
   margin-right:2em;
   text-align: right;
+  margin-top:3em;
   }
 
   div.header h3 {
@@ -1892,17 +2118,25 @@ table td {
   color: #000;
   padding: 0.4em;
 }
+pre {
+	padding: 1em;
+	border: 1px dashed #2f6fab;
+	color: black;
+	background-color: #f9f9f9;
+	line-height: 1.1em;
+}
 </style>
 </head>
 <body>
 <div class="header">
 	<div id="header_title">MitoSeek Report</div>
-	<!--div id="header_filename"></div-->
+	<div id="header_filename">Created Time: $createdtime</div>
 </div>
 
 <div class="summary">
 	<h2>Table of Contents</h2>
 		<ul>
+		    <li><a href="#M00">Command</a></li>
 			<li> <a href="#M0">QC</a></li>
 				<ol>
 					<li> <a href="#M00">Per base quality</a></li>
@@ -1911,17 +2145,34 @@ table td {
 					<li> <a href="#M03">Template length distribution</a></li>
 				</ol>
 			<li> <a href="#M1">Heteroplasmy</a></li>
+			<li> <a href="#M4">Structural Changes</a></li>
 			<li> <a href="#M2">Somatic Mutation</a></li>
 			<li> <a href="#M3">Relative Copy Number Estimation</a></li>
-			<li> <a href="#M4">Structural Changes</a></li>
 			<li> <a href="#M5">File List</a></li>
 		</ul>
 </div>
 <div class="main">
+    <div class="module"><h2 id="M00">Command</h2>
+		<p>Your command for generating this report, keep it in order to reproduce the result.</p>
+		<pre>$commandline</pre>
+	</div>
 	<div class="module"><h2 id="M0">QC</h2>
-		<p>QC description here</p>
+		<p>
+		Quality control (QC) is applied to the mapped reads on mitochondria. If -L [bed] is provided, the QC report following is constrained to your provided region. The QC report contains the following 4 parts.
+		</p>
 		<h3 id="M00">Per base quality</h3>
-		<p>Per base quality description here</p>
+		<p>
+		The y-axis on the graph shows the quality scores and the x-axis on the graph shows the positions in the fastq file. For each position a BoxWhisker type plot is drawn. The elements of the plot are as follows:
+
+       <ul>
+        <li>The central blue line is the median value</li>
+        <li>The red box represents the inter-quartile range (25-75%)</li>
+        <li>The upper and lower whiskers represent the 10% and 90% points</li>
+        <li>The blue '+' mark represents the mean quality</li>
+        <li>The blue '*' mark outside the upper and lower whiskers represents the outlier points</li>
+        <ul>
+
+		</p>
 HTML
 
 if($inbam2){
@@ -1941,7 +2192,9 @@ HTML
 
 print OUT <<HTML;
 		<h3 id="M01">Mapping quality</h3>
-		<p>Mapping quality here</p>
+		<p>
+		The y-axis on the graph shows the density and the x-axis on the graph shows the mapping quality scores. The mapping quality score is stored in the 5th column of a SAM/BAM file. It equals to <b>-10log10Pr{mapping position is wrong}</b>, rounded to the nearest integer. A summary of the mapping score is also included in the middle of the plot.
+		</p>
 HTML
 if($inbam2){
 	print OUT <<HTML;
@@ -1960,7 +2213,9 @@ HTML
 
 print OUT <<HTML;
 		<h3 id="M02">Depth distribution</h3>
-		<p>Depth distribution here</p>
+		<p>
+		The y-axis on the graph shows the density and the x-axis on the graph shows the depth. A summary of the depth is also included in the middle of the plot. 
+		</p>
 HTML
 if($inbam2){
 	print OUT <<HTML;
@@ -1978,7 +2233,10 @@ HTML
 }
 print OUT <<HTML;
 		<h3 id="M03">Template length distribution</h3>
-		<p>Template length distribution here</p>
+		<p>
+		The y-axis on the graph shows the density and the x-axis on the graph shows the template length. The template length is stored in the 9th column of a SAM/BAM file. It is set as 0 for single-segment template or when the information is unavailable.
+		A summary of the template depth is also included in the middle of the plot. 
+		</p>
 HTML
 if($inbam2){
 	print OUT <<HTML;
@@ -1998,7 +2256,7 @@ HTML
 print OUT <<HTML;
 	</div>
 	<div class="module"><h2 id="M1">Heteroplasmy</h2>
-		<p>Heteroplasmy description</p>
+		<p>Heteroplasmy detection threshold is defined on two scales: read count (-ha) and read percentage (-hp). Read count denotes the number of reads we must observe to support heteroplasmy while read percentage denotes the percentage of reads we must observe to support heteroplasmy. Both scales can be used together or individually. The minimum recommended depth requirement (-d) for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling.</p>
 HTML
 
 	if ($inbam2) {
@@ -2006,13 +2264,31 @@ HTML
 		print OUT "<h3>Normal</h3>", _generate_html_table($mitoheteroplasmy2);
 	}
 	else {
-		print OUT "<h3>AAA</h3>", _generate_html_table($mitoheteroplasmy1);
+		print OUT _generate_html_table($mitoheteroplasmy1);
+	}
+
+
+	print OUT <<HTML;
+	</div>
+	<div class="module"><h2 id="M4">Structural Changes</h2>
+	<p>
+	MitoSeek reports mitochondria structural changes when pair-end sequencing data is given as input. During alignment, a portion of the read-pairs will be discordantly mapped, meaning one read of the pair is aligned to mitochondria and the mate pair is aligned elsewhere. Such reads are like to be the results of alignment errors from homologous regions between mitochondria genome and other genomes. However, they could also indicate mitochondria integration into other genomes which has been reported to be possible by multiple studies. Only those structural changes with >=n (-str) spanning reads support will be outputed.
+	</p>
+HTML
+	if ($inbam2) {
+		print OUT "<h3>Tumor</h3>",  _generate_html_table($mitostructure1);
+		print OUT "<h3>Normal</h3>", _generate_html_table($mitostructure2);
+	}
+	else {
+		print OUT  _generate_html_table($mitostructure1);
 	}
 
 print OUT <<HTML;
 	</div>
 	<div class="module"><h2 id="M2">Somatic Mutation</h2>
-	<p>Somatic mutation description</p>
+	<p>
+	MitoSeek takes the input bam provided by <b>-i</b> as tumor while the other input bam by <b>-j</b> as its control normal. We propose to compare the empirical allele counts between tumor and normal control directly instead of using a genotype caller. MitoSeek can extract empirical allele count for every mitochondria position then compare the allele counts between tumor and normal to determine somatic mutation status. Two parameters (-sp and -sa) control the somatic mutation detection.
+	</p>
 HTML
 	if ($inbam2) {
 		print OUT _generate_html_table($mitosomatic);
@@ -2024,21 +2300,27 @@ HTML
 	print OUT <<HTML;
 	</div>
 	<div class="module"><h2 id="M3">Relative Copy Number Estimation</h2>
-	<p>Relative copy number estimation description</p>
-	<b>Not implemented yet</b>
-	</div>
+	<p>
+	Two methods are implemented in MitoSeek to estimate the relative copy number of mithochondria, namely '<b>byRead</b>' and '<b>byDepth</b>'.<br/>
+	<h4>byRead</h4>
+	<b>CN=Rm/Rt</b>,  where <b>Rm</b> is the reads aligned to mitochondria and passed quality filter and <b>Rt</b> is the total reads passed quality filter. 
+	<h4>byDepth</h4>
+	<b>CN=Dm/Dt</b>, where <b>Dm</b> is the average depth of mitochondria, and <b>Dt</b> is the average of exome or whole genome, depending on your input data.
+	</p>
 HTML
 
-	print OUT <<HTML;
-	<div class="module"><h2 id="M4">Structural Changes</h2>
-	<p>Structural changes description</p>
-HTML
-	if ($inbam2) {
-		print OUT "<h3>Tumor</h3>",  _generate_html_table($mitostructure1);
-		print OUT "<h3>Normal</h3>", _generate_html_table($mitostructure2);
+if ($inbam2) {
+        if($cn && $type !=4){
+		    print OUT "<h3>Tumor</h3>",  _generate_html_table($mitocnv1);
+		    print OUT "<h3>Normal</h3>", _generate_html_table($mitocnv2);
+		}
 	}
 	else {
-		print OUT "<h2>AAA</h2>", _generate_html_table($mitostructure1);
+	    if($cn && $type !=4){
+		    print OUT  _generate_html_table($mitocnv1);
+		}else{
+		    print OUT "NA\n";
+		}
 	}
 
 
@@ -2105,7 +2387,9 @@ table td {
 <img src="$depthdistribution_figure1" />
 
 <h1>Heteroplasmy</h1>
-<p>description later</p>
+<p>
+fd
+</p>
 HTML
 	if ($inbam2) {
 		print OUT "<h2>Tumor</h2>",  _generate_html_table($mitoheteroplasmy1);
@@ -2157,7 +2441,9 @@ HTML
 sub _generate_html_table {
 	my ($infile, $seperator ) = @_;
 	$seperator = "\t" unless ( defined($seperator) );
-	my $html = "<table border='1'>\n<tr>";
+	my $html ="<div align='right'><a href='$infile'>Download</a>&nbsp;&nbsp;<br/></div>\n";
+	
+	$html.= "<table border='1'>\n<tr>";
 	open( IN, $infile ) or die $!;
 	my $line = <IN>;
 	$line =~ s/\r|\n//g;
@@ -2179,4 +2465,191 @@ sub _generate_html_table {
 	$html .= "</table>";
 	return $html;
 }
+
+=head
+my $step = 1;
+
+#No mether its mitochondrial sequences or not, we will to extract reads mapping to mithochondrial first
+if ( !$regionbed ) {
+	$regionbed = "m.bed";
+	_info( $step++
+		  . "), Generating mithochondrial bed file from bam file's header (Output: $regionbed)"
+	);
+	_get_mitochondrial_bed( $inbam1, $regionbed );
+}
+
+if ($inbam2) {
+	_info( $step
+		  . ".1), Extracting reads in mitochondria from $inbam1(tumor) (Output:$mitobam1)"
+	);
+	_get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+	_info( $step++
+		  . ".2), Extracting reads in mitochondria from $inbam2 (normal) (Output:$mitobam2)"
+	);
+	_get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
+}
+else {
+	_info( $step++
+		  . "), Extracting reads in mitochondria from $inbam1 (Output: $mitobam1) "
+	);
+	_get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+}
+
+# If not reads in the bam, exits
+if ($inbam2) {
+	_info( $step . ".1), Checking Reads number in $mitobam1(tumor)...", 1 );
+	my $num1 = _number_of_reads_in_bam($mitobam1);
+	if ( $num1 != 0 ) {
+		print $num1, "\n";
+	}
+	else {
+		print "\n";
+		_error("No reads in $mitobam1 (tumor)\n");
+		exit(1);
+	}
+	_info( $step++ . ".2), Checking Reads number in $mitobam2(normal)...", 1 );
+	my $num2 = _number_of_reads_in_bam($mitobam2);
+	if ( $num2 != 0 ) {
+		print $num2, "\n";
+	}
+	else {
+		print "\n";
+		_error("No reads in $mitobam2 (normal)\n");
+		exit(1);
+	}
+}
+else {
+	_info( $step++ . "), Checking Reads number in $mitobam1...", 1 );
+	my $num1 = _number_of_reads_in_bam($mitobam1);
+	if ( $num1 != 0 ) {
+		print $num1, "\n";
+	}
+	else {
+		print "\n";
+		_error("No reads in $mitobam1 \n");
+		exit(1);
+	}
+}
+
+# Prepare mitochondrial reference, change header in fasta when necessary
+_info(  $step++
+	  . "), Moving mitochondrial genome '"
+	  . $mitogenome{$inref}
+	  . "' into $folder (Output:$reference)" );
+_move_mitogenome( $mitogenome{$inref}, $regionbed, $reference );
+
+# Pileup on bam files
+if ($inbam2) {
+	_info( $step . ".1), Pileup on $mitobam1 (tumor)(Output:$mitopileup1)" );
+	_pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
+	_info( $step++ . ".2), Pileup on $mitobam2 (normal)(Output:$mitopileup2)" );
+	_pileup( $mitobam2, $isbam, $mbq, $regionbed, $reference, $mitopileup2 );
+}
+else {
+	_info( $step++ . "), Pileup on $mitobam1 (Output:$mitopileup1)" );
+	_pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
+}
+
+# Running QC on mitobam
+if ($qc) {
+	if ($inbam2) {
+		_info( $step . ".1), Getting quality metrics on $mitobam1 (tumor) " );
+		$mitooffset1 = _mito_qc_stat(
+			$mitobam1,                  $isbam,
+			$mitopileup1,               $regionbed,
+			$perbasequality_figure1,    $mappingquality_figure1,
+			$depthdistribution_figure1, $templatelengthdistribution_figure1
+		);
+		_info(
+			$step++ . ".2), Getting quality metrics on $mitobam2 (normal) " );
+		$mitooffset2 = _mito_qc_stat(
+			$mitobam2,                  $isbam,
+			$mitopileup2,               $regionbed,
+			$perbasequality_figure2,    $mappingquality_figure2,
+			$depthdistribution_figure2, $templatelengthdistribution_figure2
+		);
+
+	}
+	else {
+		_info( $step++ . "), Getting quality metrics on $mitobam1  " );
+		$mitooffset1 = _mito_qc_stat(
+			$mitobam1,                  $isbam,
+			$mitopileup1,               $regionbed,
+			$perbasequality_figure1,    $mappingquality_figure1,
+			$depthdistribution_figure1, $templatelengthdistribution_figure1
+		);
+	}
+}
+
+# Parse pileup file
+if ($inbam2) {
+	_info( $step
+		  . ".1), Parsing pileup file of $mitopileup1 (tumor) (Output: $mitobasecall1)"
+	);
+	_parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
+	_info( $step++
+		  . ".2), Parsing pileup file of $mitopileup2 (normal) (Output: $mitobasecall2)"
+	);
+	_parse_pileup( $mitopileup2, $mbq, $mitooffset2, $mitobasecall2 );
+}
+else {
+	_info( $step++
+		  . "), Parsing pileup file of $mitopileup1 (Output: $mitobasecall1)" );
+	_parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
+}
+
+# heteroplasmy detection
+if ($inbam2) {
+	_info( $step
+		  . ".1), Heteroplasmy detection from $inbam1 (tumor) (Output: $mitoheteroplasmy1)"
+	);
+	_determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
+		$mitoheteroplasmy1 );
+	_info( $step++
+		  . ".2), Heteroplasmy detection from $inbam2 (normal) (Output: $mitoheteroplasmy2)"
+	);
+	_determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,
+		$mitoheteroplasmy2 );
+}
+else {
+	_info( $step++
+		  . "), Heteroplasmy detection from $inbam1 (Output: $mitoheteroplasmy1)"
+	);
+	my %hash = _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
+		$mitoheteroplasmy1 );
+}
+
+# somatic mutation
+if ($inbam2) {
+	_info( $step++ . ") Somatic mutation detection (Output: $mitosomatic)" );
+	_determine_somatic( $mitobasecall1, $mitobasecall2, $sp, $sa, $isall,
+		$mitosomatic );
+}
+
+# Structure variation
+if ($inbam2) {
+	_info( $step
+		  . ".1) Structure variation detection from $mitobam1 (Output: $mitostructure1)"
+	);
+	_structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
+		$mitostructure1 );
+	_info( $step++
+		  . ".2) Structure variation detection from $mitobam2 (Output: $mitostructure2)"
+	);
+	_structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,
+		$mitostructure2 );
+}
+else {
+	_info( $step++
+		  . ") Structure variation detection from $mitobam1 (Output: $mitostructure1)"
+	);
+	_structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
+		$mitostructure1 );
+}
+
+_info( $step++ . ") Generating report (Output: $mitoreport)" );
+_make_report();
+
+=cut
+
 

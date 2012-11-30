@@ -7,8 +7,8 @@
 #############################################
 #use strict;
 #use warnings;
-use GD::Graph::histogram;
-use GD::Graph::boxplot;
+#use GD::Graph::histogram;
+#use GD::Graph::boxplot;
 
 
 use Getopt::Long;
@@ -19,8 +19,25 @@ GetOptions("b!"=>\$savebam);
 
 print "savebam=$savebam\n\n";
 
+_samtools_flagstat("Examples/brca_tumor.bam");
+sub _samtools_flagstat{
+	my ($inbam) = @_;
+	my ($total,$mapped)=(0,0);
+	open(IN,"samtools flagstat $inbam |") or die $!;
+	my @array=<IN>;close IN;
+	print join "\n",@array;
+	print "\n\n=======\n\n";
+	@array=map {/(^\d+)/;$1} @array;
+	print join "\n",@array;
+	$total=$array[0];
+	$mapped=$array[2];
+	return ($total,$mapped);
+}
 
 
+my $a=10000000000000000000000000000;
+my $b=1234;
+print $a,"/",$b,"=",$a/$b,"\n\n";
 
 =head a
 #Test function seek

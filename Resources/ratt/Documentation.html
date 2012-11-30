@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><title>RATT - rapid annotation transfer tool</title>
+
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<table align=center width="98%"><TR><TD>
+<a href="www.sanger.ac.uk"><img style="border: 0px solid ; width: 150px; height: 45px;" alt="sanger logo" src="sanger_w100.png" /></a>
+</TD>
+<TD>
+<div style="text-align: center;"><big><span style="font-weight: bold;"><br />
+<br />
+<B>RATT</B> Documentation</span></big></div>
+</TD>
+<TD align="right">
+
+&nbsp; &nbsp;<a href="http://www.biomalpar.org/"><img style="border: 0px solid ; width: 71px; height: 56px;" alt="biomalpar" src="biomalpar.jpg" /></a>
+</TD>
+</TR>
+</TABLE>
+<TABLE  align=center width="98%">
+<TR>
+<TD>
+			<h1>Documentation</h1>
+</p>
+<p><a href="http://ratt.sourceforge.net">main page</a></p>
+
+<table id="toc" class="toc" summary="Contents"><tbody><tr><td><div id="toctitle"><h2>Contents</h2> <span class="toctoggle"></span></div>
+<ul>
+<li class="toclevel-1"><a href="#Overview"><span class="tocnumber">1</span> <span class="toctext">Overview</span></a></li>
+<li class="toclevel-1"><a href="#Installation_at_Sanger"><span class="tocnumber">2</span> <span class="toctext">Installation at Sanger</span></a></li>
+<li class="toclevel-1"><a href="#Installation"><span class="tocnumber">3</span> <span class="toctext">Installation</span></a></li>
+
+<li class="toclevel-1"><a href="#How_to_call_the_program"><span class="tocnumber">4</span> <span class="toctext">How to call the program</span></a></li>
+<li class="toclevel-1"><a href="#Example_Files"><span class="tocnumber">5</span> <span class="toctext">Example Files</span></a></li>
+<li class="toclevel-1"><a href="#Output_files"><span class="tocnumber">6</span> <span class="toctext">Output files</span></a></li>
+<li class="toclevel-1"><a href="#Post_visualization"><span class="tocnumber">7</span> <span class="toctext">Post visualization</span></a></li>
+<li class="toclevel-1"><a href="#For_the_biological_interpretation"><span class="tocnumber">8</span> <span class="toctext">For the biological interpretation</span></a></li>
+
+<li class="toclevel-1"><a href="#Functionality_of_main.ratt.pl"><span class="tocnumber">9</span> <span class="toctext">Functionality of main.ratt.pl</span></a></li>
+</ul>
+</td></tr></tbody></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="Overview"></a><h2><span class="editsection"></span> <span class="mw-headline">Overview</span></h2>
+<p>RATT is software to transfer annotation from a reference (annotated) genome to an unannotated query genome.
+</p><p>It was first developed to transfer annotations between different genome assembly versions. However, can also transfer annotations between strains and even different species, like <i>Plasmodium chabaudi</i> onto <i>P. berghei</i> or <i>Salmonella enterica</i> onto <i>Salmonella virchow</i>. RATT is able to transfer any entries present on a reference sequence, such as the systematic id or an annotator's notes; such information would be lost in a de novo annotation. Furthermore, RATT checks whether gene models have changed between the two sequences and can correct changed start and stop codons, or frameshifts.
+
+</p><p>Please visit the <a href="http://ratt.sourceforge.net" class="external free" title="http://ratt.sourceforge.net" rel="nofollow">http://ratt.sourceforge.net</a> page for examples.
+</p>
+<a name="Installation_at_Sanger"></a><h2><span class="editsection"></span> <span class="mw-headline">Installation at Sanger</span></h2>
+<p>At Sanger, the program is installed so far in ~tdo/Bin/ratt. Just be sure that the set the variable RATT_HOME:
+</p>
+<pre>   RATT_HOME=/nfs/users/nfs_t/tdo/Bin/ratt; export RATT_HOME  (for bash)
+</pre>
+<p><br>
+
+RATT needs <a href="http://mummer.sourceforge.net/" class="external free" title="http://mummer.sourceforge.net/" rel="nofollow">http://mummer.sourceforge.net/</a> - Mummer tool to generate the sequence comparison. So in the PATH the following files of MuMMer should be contained: nucmer, delta-filter, show-snps and show-coords. The program will not run without those files in the path. (These programs should be in the standard path at Sanger.)
+</p>
+<a name="Installation"></a><h2><span class="editsection"></span> <span class="mw-headline">Installation</span></h2>
+<p>RATT was tested on Linux/Unix. It should run on OS X 10, but again, third party tools must be installed. All the installation help is uniquely written for Linux/Unix.
+</p><p><br>
+1. Install the <a href="http://mummer.sourceforge.net/" class="external free" title="http://mummer.sourceforge.net/" rel="nofollow">MUMmer package</a>. Make sure the programs are in your path e.g. <i>PATH=$PATH:/path/to/Mummer/; export PATH</i>. For the visualization it is useful to have NCBI-BLAST installed (to compare genomes in ACT) - <a href="http://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&amp;PAGE_TYPE=BlastDocs&amp;DOC_TYPE=Download" class="external free" title="http://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Web&amp;PAGE_TYPE=BlastDocs&amp;DOC_TYPE=Download" rel="nofollow">download ncbi BLAST</a>  (but this is not mandatory for RATT).
+
+</p><p>2. Please download the RATT tar ball to a specific directory. Unzip it with <i>tar xvzf ratt.v0.95.tgz</i>.
+</p><p>3. Set the variable RATT_HOME to the directory where you unpacked the program. That is, if you downloaded RATT to ~/programs/. RATT will be unpacked into ~/programs/ratt/. Set the variable to (for bash): 
+</p>
+<pre>    RATT_HOME=~/programs/ratt/; export RATT_HOME. 
+</pre>
+<p>These lines should be written into the ~/.bashrc (or equivalent system file).
+</p><p>4. As start codons and splice sites might vary between organism, it will be necessary to adapt the $RATT_HOME/RATT.config file to your specific needs. There are example configuration files for bacteria or eukaryotes called RATT.config_bac and RATT.config_euk in the $RATT_HOME directory. If you need to generate your own please do not change the ### tags. Example of config file:
+</p>
+<pre>  #START
+  ATG 
+  #STOP
+  TGA
+  TAA
+  TAG
+  #SPLICE
+  GT..AG
+  #CORRECTSPLICE
+  1
+</pre>
+<p>5. You are ready to go.
+</p>
+<a name="How_to_call_the_program"></a><h2><span class="editsection"></span> <span class="mw-headline">How to call the program</span></h2>
+
+<p>RATT should be easy to call. The most difficult settings to get right are the nucmer parameters for the determining synteny. To aid the user we have predefined several parameter sets which should be suitable for most transfers. However, advanced users can alter the the nucmer parameters if they wish. 
+</p><p>You will need embl files of the reference (parent) sequence, and these should be copied to a subdirectory within your working directory e.g. <i>embl</i>. For the query you will need a (multi-) fasta file of each contig/chromosome to be annotated. 
+</p><p>Once you have the above files you can use RATT to transfer  your annotations. For example, if you wished to transfer annotations between two strains of the same species, you would use: <br>
+</p><p><i>$RATT_HOME/start.ratt.sh embl query.fasta Transfer1 Strain</i> <br>
+</p><p>More specifically, you can start RATT using our example dataset with:
+</p><p><i>start.ratt.sh ./embl Tb_F11.fasta F11 Strain</i> <br>
+</p><p>Here is the explanation of the paramters: <br>
+</p>
+<pre>  $RATT_HOME/start.ratt.sh &lt;Directory with embl-files&gt; &lt;Query-fasta sequence&gt; &lt;Resultname&gt; &lt;Transfer type&gt; &lt;optional: reference (multi) Fasta&gt;<br>
+
+  
+  Directory name with 
+  embl-annotation files  - This directory contains all the embl files that should be transfered to the query.
+  Query.fasta            - A multifasta file to, which the annotation will be mapped.
+  ResultName             - The prefix you wish to give to each result file.
+  Transfer type          - Following parameters can be used (see below for the different used sets)
+       (i)   <b>Assembly</b>:             Transfer between different assemblies. 
+       (ii)  <b>Assembly.Repetitive</b>:  As before, but the genome is extremely repetitive. 
+                   This should be run, only if the parameter <i>Assembly</i> doesn't return good results (misses too many annotation tags).  
+       (iii) <b>Strain</b>:              Transfer between strains. Similarity is between 95-99%.
+       (iv)  <b>Strain.Repetitive</b>:   As before, but the genome is extremely repetitive. 
+                   This should be run, only if the parameter <i>Strain</i> doesn't return good results (misses too many annotation tags).
+       (v)   <b>Species</b>:              Transfer between species. Similarity is between 50-94%.
+       (vi)  <b>Species.Repetitive</b>:   As before, but the genome is extremely repetitive. 
+                   This should be run, only if the parameter <i>Species</i> doesn't return good results (misses too many annotation tags).
+       (vii) <b>Multiple</b>:             When many annotated strains are used as a reference, and you assume the newly sequenced genome has many insertions
+                   compared to the strains in the query (reference?). This parameter will use the best regions of each reference strain to transfer tags.    
+       (viii)<b>Free</b>:                 The user sets all parameter individually.<br>
+
+  reference fasta        - Name of multi-fasta. <i><b>VERY I M P O R T A N T</b></i> The name of each sequence in the fasta description, 
+                   MUST be the same name as its corresponding embl file. So if your embl file is call Tuberculosis.embl, in your reference.fasta file, 
+                   the description has to be 
+                           &gt;Tuberculsosis
+                           ATTGCGTACG
+                           ...
+</pre>
+<p><br>
+Here is the explanation of the parameter used for the synteny with MUMer:
+</p>
+<table align="center" border="1" cellpadding="5" cellspacing="0">
+<caption><b>Parameter set for RATT</b>
+</caption>
+<tbody><tr style="background: lightgray none repeat scroll 0% 0%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous;">
+<th> parameter name
+
+</th><th> word size
+</th><th> identity cutoff
+</th><th> cluster size
+</th><th> max extend cluster
+</th><th> anchor choice
+</th><th> rearrange
+</th><th> example use
+</th></tr>
+<tr>
+<td>Assembly </td><td> 25 </td><td> 99 </td><td> 400 </td><td> 1000 </td><td>  </td><td> -r </td><td> <i>Plasmodium falciparum</i> onto itself
+
+</td></tr>
+
+
+<tr>
+<td>Assembly.Repetitive </td><td> 25 </td><td> 99 </td><td> 400 </td><td> 1000 </td><td> --maxmatch </td><td> -r </td><td> <i>Plasmodium berghei</i> onto itself
+
+</td></tr>
+
+
+<tr>
+<td>Strain </td><td> 25 </td><td> 85 </td><td> 300 </td><td> 500 </td><td>  </td><td> -r </td><td> <i>Mycobacterium tuberculosis</i> H37Rv onto <i>M.tuberculosis</i> F11
+
+</td></tr>
+
+
+<tr>
+<td>Strain.Repetitive </td><td> 25 </td><td> 85 </td><td> 300 </td><td> 5000 </td><td> --maxmatch </td><td> -r </td><td>
+
+</td></tr>
+
+
+<tr>
+<td>Species </td><td> 10 </td><td> 40 </td><td> 400 </td><td> 500 </td><td>  </td><td> -r </td><td> <i>Salmonella thypirium</i> onto <i>S. virkow</i>
+
+</td></tr>
+
+
+<tr>
+<td>Species.Repetitive </td><td> 10 </td><td> 40 </td><td> 400 </td><td> 500 </td><td> --maxmatch </td><td> -r </td><td> <i> Plasmodium chabaudi</i> onto <i>P. berghei</i>
+
+</td></tr>
+
+
+<tr>
+<td>Multiple </td><td> 25 </td><td> 98 </td><td> 400 </td><td> 1000 </td><td> --maxmatch </td><td> -q </td><td> Different Salmonella onto <i>S. virkow</i>
+
+</td></tr>
+
+
+
+<tr>
+<td> Free* </td><td> RATT_l </td><td> RATT_ind </td><td> RATT_c </td><td> RATT_g </td><td> RATT_anchor </td><td> RATT_rearrange  </td><td>
+
+</td></tr>
+
+
+</tbody></table>
+<p>(*) - must be set as bash variables. Alternatively the user might just update the <i>start.ratt.sh</i> file.
+</p>
+<a name="Example_Files"></a><h2><span class="editsection"></span> <span class="mw-headline">Example Files</span></h2>
+<p>We included an example, see <a href="http://ratt.sourceforge.net/example.html" class="external free" title="http://ratt.sourceforge.net/example.html" rel="nofollow">http://ratt.sourceforge.net/example.html</a>. It describes the transfer <i>Mycobacterium tuberculosis</i> H37Rv onto <i>M.tuberculosis</i> F11.
+
+</p>
+<a name="Output_files"></a><h2><span class="editsection"></span> <span class="mw-headline">Output files</span></h2>
+<p>There are several types of output file: Statistics that report differences, files that refer to the query and files that refer to the reference. The files start with the <i>resultName</i> prefix specified by the user when starting RATT. Report files end with <i>.csv</i> and can be imported into spreadsheet programs. These files ends with gff or embl, and can be loaded into Artemis or ACT, see below. All files that have the name of a replicon of the reference, are relative to the reference. Those files that contain the name of the query replicons, are relative to the query sequence.
+</p><p>Reports:<br>
+The first report is given when the program is running. It tells the user how many regions of the reference are syntenic with the query and vice versa. It also reports, how many tags are transferred and how many are not. Tags include features like ncRNA, UTR, gap-tags, repetitive regions or CDS.<br>
+
+</p>
+<ol><li><i> The file ResultName-prefix</i>.<b>replicon</b>.report.csv - Reports how many gene model were wrong after the transfer, and how they could be corrected. 
+</li></ol>
+<p><br>
+Files for the reference:<br>
+</p>
+<ol><li><i>ResultName-prefix</i>.<b>replicon</b>.NOTTransfered.embl - These are annotations that couldn't be transfered. This can include whole genes, or just exons. <br>
+</li><li>Reference/<i>ResultName-prefix</i>.<b>replicon</b>.Mutations.gff - This files contains all the difference of the query compared to the reference. Also it shows the regions that are not syntenic between both genomes. This can be due to insertions/deletions, low similarity, or 100% similar repeats. <b>Important</b> the annotation of those regions cannot be transferred!<br>
+
+</li></ol>
+<p>Files for the query:<br>
+</p>
+<ol><li><i>ResultName-prefix</i>.<b>replicon</b>.embl - These are the <b>uncorrected</b> transfered annotations from the reference onto the query. <br>
+</li><li><i>ResultName-prefix</i>.<b>replicon</b>.Final.embl - These are the <b>corrected</b> annotations for the query. <br>
+
+</li><li><i>ResultName-prefix</i>.<b>replicon</b>.report.gff - An important file, as it shows, where RATT has corrected CDS models, or where errors remain. This includes corrections/errors in start/stop codon, splice sites, frameshifts and joined exons.<br>
+</li><li>Query/<i>ResultName-prefix</i>.<b>replicon</b>.Mutations.gff - This files contains all the differences  between the reference and query. In addition, it shows regions that are not syntenic between both genomes. This can be due to insertions/deletions, low similarity, or 100% similar repeats. <b>Important</b> the annotation of these regions will not be transferred! <b>These regions in the query the annotation must be determined by other tools.</b><br>
+</li></ol>
+<a name="Post_visualization"></a><h2><span class="editsection"></span> <span class="mw-headline">Post visualization</span></h2>
+
+<p>The best way to visualize RATT results is to use <a href="http://www.sanger.ac.uk/Software/Artemis/" class="external free" title="http://www.sanger.ac.uk/Software/Artemis/" rel="nofollow">Artemis</a>  and <a href="http://www.sanger.ac.uk/Software/Artemis/" class="external free" title="http://www.sanger.ac.uk/Software/Artemis/" rel="nofollow">ACT</a>. <a href="http://ratt.sourceforge.net/example.html" class="external free" title="http://ratt.sourceforge.net/example.html" rel="nofollow">http://ratt.sourceforge.net/example.html</a> - gives examples using these tools but we include a brief tutorial here as well.
+
+</p><p>First, if your target genome has more than one replicon, the Query.fasta must be split into single contigs:
+</p>
+<pre>   mkdir Seq;
+   cd Seq;
+   $RATT_HOME/main.ratt.pl Split F11.fasta
+   cd ..
+</pre>
+<p><br>
+Assuming your ResultName was <i>F11</i> and the query is called <i>F11.fasta</i>. 
+</p><p>To view the annotation:
+</p>
+<pre>   art Seq/F11.fasta + F11.embl + F11.final.embl + Query/F11.Mutations.gff + F11.Report.gff 
+</pre>
+
+<p><br>
+To see a comparative view with the transferred and untransferred gene models, you must first generate a comparison file (-m8) using BLAST. To perform this with the example set, make sure <a href="http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/unix_setup.html" class="external free" title="http://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/unix_setup.html" rel="nofollow">blastall</a> is installed.
+</p>
+<pre>  formatdb -p F -i embl/Tb_H37Rv.fasta
+  blastall -p blastn -m 8 -e 1e-10 -d embl/Tb_H37Rv -i Seq/F11.fasta -o comp.tb.blast
+</pre>
+<p><br>
+Now it can be opened in act:
+</p>
+<pre>   act embl/Tb_H37Rv.embl comp.Tb.blast F11.fasta
+
+</pre>
+<p>Then open the annotation files, by clicking on File -&gt; F11.fasta -&gt; open entries and select the files F11.final.embl and F11.report.gff.
+</p><p>One can see that the first gene models have transfered perfectly.
+</p><p>To see regions where the annotation couldn't be transferred, load the file F11.H37Rv.NOTtransfer.embl onto the Tb_H37Rv.embl file (Menu: File -&gt; Tb_H37Rv.embl -&gt; New Entry). For comparative purposes load the entries F11.orignal.embl and F11.embl onto the F11.fasta file (Menu: File -&gt; Tb_H37Rv.embl -&gt; New Entry). Next right mouse click over the F11 genome sequence, a pop-up will show: Select "one line per entry". Please repeat this for the H37Rv genome.
+</p>
+
+<a name="For_the_biological_interpretation"></a><h2><span class="editsection"></span> <span class="mw-headline">For the biological interpretation</span></h2>
+<p>Here we describe how we would propose to analyse the output of RATT. Generally, there is not much interest in genes that are similar between two genomes. Deleted genes, new genes, genes that are or were pseudo genes, or changes in genes are usually more informative. We don't want to postulate that a few SNP's could change the transcription of a whole promoter, as this kind of analysis is one step after the annotation. Having said that, with RATT SNP differences between genomes are shown, so this kind of analysis could be run.
+</p><p><br>
+First the results should be loaded into artemis:
+</p>
+<pre>   art Seq/F11.fasta + F11.final.embl + Query/F11.Mutations.gff + F11.Report.gff 
+</pre>
+<p>Seq/F11.fasta is the sequence file.<br>
+F11.final.embl contains the final annotation.<br>
+
+Query/F11.Mutations.gff contains the differences between the two genomes (SNP's/indels) as well as the regions of the genomes that are not in synteny.<br>
+F11.Report.gff reports the changes made by RATT - therefore, it also indicates where genes are different.<br>
+</p><p>Obviously, these files can also be loaded into a act view, as described in <a href="#Post_visualization"><span class="toctext">Post visualization</span></a>. Here we describe the use in Artemis, which is nearly identical to ACT.
+</p><p>First, one should have a look at the regions that have no synteny with the reference:
+</p>
+<pre>  Menu: Select -&gt; Feature Selector: As key, replace "CDS" with "Synteny". 
+  Check the Key box and uncheck the Qualifier box. 
+  Then press view.
+
+</pre>
+<p>A new window will open. Browsing through this window, each line records a region with no synteny If the region is small, less than 200 base pairs, it is probably from a deletion. RATT should be able to fix the gene models where these deletions occur, but the resulting genes are likely to be quite different. If the region is bigger, it might be a gap or a real insertion in the query. Therefore there might be genes that:
+</p>
+<pre>  (i) Have lower similarity than specified in the comparison
+  (ii) Are deleted in the reference
+  (iii) Are a possible horizontal transfer
+</pre>
+<p>Next we propose to look for changes in the genes. First just tick the entry F11.Report.gff in the Artemis window. (Disable the entries F11.final.embl and F11.Mutations.gff. The lines in Artemis you see are: Error, Frameshift, CorrectStart, CorrectStop. By systematically going through this list, and checking the new annotation (enable again the entry F11.final.embl). You can find:
+</p>
+<pre>  Extended genes 
+  Shorter genes - important domain deleted?
+  Genes that are now pseudo genes
+  Genes that were pseudo genes
+</pre>
+<p>This is very useful for getting a feeling for what kind of genes have changed. A biologist working with the species, will can easily determine whether important genes have changed.
+</p><p>The last step is to open the not NOTtransfered genes. These are the genes that couldn't be transfered due to deletions or too low similarity. The file can be seen it directly using ACT, or in Artemis:
+</p>
+<pre>  art Tb_H37Rv.embl + F11.H37Rv.NOTTransfered.embl
+</pre>
+
+<p>Just unselect the Tb_H37Rv.embl and you will see the non mapped annotation features.
+</p><p>For more information about Artemis and Act, please find user manuals here: <a href="http://www.sanger.ac.uk/Software/Artemis/manual/" class="external free" title="http://www.sanger.ac.uk/Software/Artemis/manual/" rel="nofollow">http://www.sanger.ac.uk/Software/Artemis/manual/</a>  and <a href="http://www.sanger.ac.uk/Software/ACT/v7/manual/" class="external free" title="http://www.sanger.ac.uk/Software/ACT/v7/manual/" rel="nofollow">http://www.sanger.ac.uk/Software/ACT/v7/manual/</a>.
+</p>
+<a name="Functionality_of_main.ratt.pl"></a><h2><span class="editsection"></span> <span class="mw-headline">Functionality of main.ratt.pl</span></h2>
+<p>The main program is main.ratt.pl. Normally a user won't need to call this program directly. Never-the-less we describe here its different functions and how to call it:
+</p><p>$RATT_HOME/main.ratt.pl Transfer &lt;embl Directory&gt; &lt;mummer SNP file&gt; &lt;mummer coord file&gt; &lt;ResultName&gt;
+
+</p><p>This functionality uses the mummer output to map the annotation from embl files, which are in the &lt;embl Directory&gt;, to the query. It generates all the new annotation files (<b>ResultName.replicon</b>.embl), as well as files describing which annotations remain untransferred (<b>Replicon_reference</b>.NOTtransfered.embl). 
+</p><p><br>
+$RATT_HOME/main.ratt.pl Correct &lt;EMBL file&gt; &lt;fasta file&gt; &lt;ResultName&gt;
+</p><p>Corrects a given annotation, as described previously. The corrections are reported and the new file is saved as &lt;ResultName&gt;.embl. 
+
+</p><p><br>
+$RATT_HOME/main.ratt.pl Check &lt;EMBL file&gt; &lt;fasta file&gt; &lt;ResultName&gt;
+</p><p>Similar to the <b>correct</b> option, but it will only report errors in an EMBL file.
+</p><p><br>
+$RATT_HOME/main.ratt.pl EMBLFormatCheck &lt;EMBL file&gt; &lt;ResultName postfix&gt;
+
+</p><p>Some EMBL files have feature positions spanning several lines, this function consolidates these features so they appear on one line. The result name is &lt;EMBL File&gt;.&lt;ResultName postfix&gt;.
+</p><p><br>
+$RATT_HOME/main.ratt.pl Mutate &lt;(multi-)fasta-file&gt;
+</p><p>Every 250 base pairs a base is changed (mutated). The result is saved as &lt;fastafile&gt;.mutated. This is necessary to recalibrate RATT for similar genomes.
+</p><p><br>
+$RATT_HOME/main.ratt.pl Split &lt;multifasta-file&gt;
+</p><p>Splits a given multifasta file into individual files containing one sequence. This is necessary as visualization tools (e.g. Artemis) prefer single fasta files.
+
+</p><p><br>
+$RATT_HOME/main.ratt.pl Difference &lt;mummer SNP file&gt; &lt;mummer coord file&gt; &lt;ResultName&gt;
+</p><p>Generates files that report the SNP, indels and regions not shared by the reference and query. It also prints a statistic reporting coverage for each replicon.
+</p><p><br>
+$RATT_HOME/main.ratt.pl Embl2Fasta &lt;EMBL dir&gt; &lt;fasta file&gt;
+</p><p>Extracts the sequence from embl files in the &lt;EMBL directory&gt; and saves it as a &lt;fasta file&gt;.
+
+</p>
+
+<p><a href="http://ratt.sourceforge.net">main page</a></p>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 88/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+-->
+</td>
+</TR>
+</TABLE>
+<!-- Saved in parser cache with key wikidb:pcache:idhash:6669-0!1!0!!en!2 and timestamp 20100225120800 -->
+</body></html>

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 25
+/svnroot/ratt/!svn/ver/18
+END
+Documentation.html
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svnroot/ratt/!svn/ver/1/Documentation.html
+END
+ratt_correction.pm
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svnroot/ratt/!svn/ver/18/ratt_correction.pm
+END
+RATT.config
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svnroot/ratt/!svn/ver/13/RATT.config
+END
+start.ratt.sh
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svnroot/ratt/!svn/ver/16/start.ratt.sh
+END
+RATT.config_euk
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svnroot/ratt/!svn/ver/12/RATT.config_euk
+END
+RATT.config_euk_NoPseudo_SpliceSite
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svnroot/ratt/!svn/ver/11/RATT.config_euk_NoPseudo_SpliceSite
+END
+RATT.config_bac
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svnroot/ratt/!svn/ver/16/RATT.config_bac
+END
+main.ratt.pl
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svnroot/ratt/!svn/ver/18/main.ratt.pl
+END
