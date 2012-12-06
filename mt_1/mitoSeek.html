@@ -43,9 +43,9 @@
     background-color: #EEE;
     border:0;
     margin:0;
-	padding:0.5em;
+    padding:0.5em;
     height: 1.3em;
-	overflow:hidden;
+    overflow:hidden;
     font-size: 100%;
     font-weight: bold;
     position:fixed;
@@ -60,17 +60,17 @@
  }
  
  @media print {
-	img {
-		max-width:100% !important;
-		page-break-inside: avoid;
-	}
-	h2, h3 {
-		page-break-after: avoid;
-	}
-	div.header {
+    img {
+        max-width:100% !important;
+        page-break-inside: avoid;
+    }
+    h2, h3 {
+        page-break-after: avoid;
+    }
+    div.header {
       background-color: #FFF;
     }
-	
+    
  }
  
  body {    
@@ -121,7 +121,7 @@
   margin-bottom:-0.5em;
   margin-top:0.5em;
   }
-	  
+      
   div.main {
   background-color: white;
   }
@@ -130,7 +130,7 @@
   padding-bottom:1.5em;
   padding-top:1.5em;
   }
-	  
+      
   div.footer {
   background-color: #EEE;
   border:0;
@@ -228,78 +228,78 @@ background-color:#fff;
 table {
     margin-left: 3em;
     text-align: center;
-	border-width: 1px;
-	border-spacing: 2px;
-	border-style: outset;
-	border-color: gray;
-	border-collapse: collapse;
-	background-color: rgb(209, 255, 255);
+    border-width: 1px;
+    border-spacing: 2px;
+    border-style: outset;
+    border-color: gray;
+    border-collapse: collapse;
+    background-color: rgb(209, 255, 255);
 }
 table th {
-	border-width: 2px;
-	padding: 2px;
-	border-style: solid;
-	border-color: gray;
-	background-color: rgb(209, 255, 255);
-	text-align: center;
-	padding: 0.4em;
+    border-width: 2px;
+    padding: 2px;
+    border-style: solid;
+    border-color: gray;
+    background-color: rgb(209, 255, 255);
+    text-align: center;
+    padding: 0.4em;
 }
 table td {
-	border-width: 2px;
-	padding: 2px;
-	border-style: solid;
-	border-color: gray;
-	background-color: white;
-	font-family: monospace; 
+    border-width: 2px;
+    padding: 2px;
+    border-style: solid;
+    border-color: gray;
+    background-color: white;
+    font-family: monospace; 
   text-align: center;
   color: #000;
   padding: 0.4em;
 }
 pre {
-	padding: 1em;
-	border: 1px dashed #2f6fab;
-	color: black;
-	background-color: #f9f9f9;
-	line-height: 1.1em;
+    padding: 1em;
+    border: 1px dashed #2f6fab;
+    color: black;
+    background-color: #f9f9f9;
+    line-height: 1.1em;
 }
 </style>
 </head>
 <body>
 <div class="header">
-	<div id="header_title">MitoSeek Report</div>
-	<div id="header_filename">Created Time: Thu Nov 29 17:33:33 2012</div>
+    <div id="header_title">MitoSeek Report</div>
+    <div id="header_filename">Created Time: Thu Dec  6 17:15:02 2012</div>
 </div>
 
 <div class="summary">
-	<h2>Table of Contents</h2>
-		<ul>
-		    <li><a href="#M00">Command</a></li>
-			<li> <a href="#M0">QC</a></li>
-				<ol>
-					<li> <a href="#M00">Per base quality</a></li>
-					<li> <a href="#M01">Mapping quality</a></li>
-					<li> <a href="#M02">Depth distribution</a></li>
-					<li> <a href="#M03">Template length distribution</a></li>
-				</ol>
-			<li> <a href="#M1">Heteroplasmy</a></li>
-			<li> <a href="#M4">Structural Changes</a></li>
-			<li> <a href="#M2">Somatic Mutation</a></li>
-			<li> <a href="#M3">Relative Copy Number Estimation</a></li>
-			<li> <a href="#M5">File List</a></li>
-		</ul>
+    <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#M00">Command</a></li>
+            <li> <a href="#M0">QC</a></li>
+                <ol>
+                    <li> <a href="#M00">Per base quality</a></li>
+                    <li> <a href="#M01">Mapping quality</a></li>
+                    <li> <a href="#M02">Depth distribution</a></li>
+                    <li> <a href="#M03">Template length distribution</a></li>
+                </ol>
+            <li> <a href="#M1">Heteroplasmy</a></li>
+            <li> <a href="#M4">Structural Changes</a></li>
+            <li> <a href="#M2">Somatic Mutation</a></li>
+            <li> <a href="#M3">Relative Copy Number Estimation</a></li>
+            <li> <a href="#M5">File List</a></li>
+        </ul>
 </div>
 <div class="main">
     <div class="module"><h2 id="M00">Command</h2>
-		<p>Your command for generating this report, keep it in order to reproduce the result.</p>
-		<pre>perl mitoSeek.pl -i Examples/mt_1.bam -cn -sb 1 -hp 1 -d 10</pre>
-	</div>
-	<div class="module"><h2 id="M0">QC</h2>
-		<p>
-		Quality control (QC) is applied to the mapped reads on mitochondria. If -L [bed] is provided, the QC report following is constrained to your provided region. The QC report contains the following 4 parts.
-		</p>
-		<h3 id="M00">Per base quality</h3>
-		<p>
-		The y-axis on the graph shows the quality scores and the x-axis on the graph shows the positions in the fastq file. For each position a BoxWhisker type plot is drawn. The elements of the plot are as follows:
+        <p>Your command for generating this report, keep it in order to reproduce the result.</p>
+        <pre>perl mitoSeek.pl -i Examples/mt_1.bam -j Examples/brca_normal.bam -cn -sb 1 -hp 1 -d 10</pre>
+    </div>
+    <div class="module"><h2 id="M0">QC</h2>
+        <p>
+        Quality control (QC) is applied to the mapped reads on mitochondria. If -L [bed] is provided, the QC report following is constrained to your provided region. The QC report contains the following 4 parts.
+        </p>
+        <h3 id="M00">Per base quality</h3>
+        <p>
+        The y-axis on the graph shows the quality scores and the x-axis on the graph shows the positions in the fastq file. For each position a BoxWhisker type plot is drawn. The elements of the plot are as follows:
 
        <ul>
         <li>The central blue line is the median value</li>
@@ -309,588 +309,631 @@ pre {
         <li>The blue '*' mark outside the upper and lower whiskers represents the outlier points</li>
         <ul>
 
-		</p>
-	<ul id='image-container1'>
-		<li><img src='per_base_quality1.png' alt='Per base quality figure'></li>
-	</ul>
-		<h3 id="M01">Mapping quality</h3>
-		<p>
-		The y-axis on the graph shows the density and the x-axis on the graph shows the mapping quality scores. The mapping quality score is stored in the 5th column of a SAM/BAM file. It equals to <b>-10log10Pr{mapping position is wrong}</b>, rounded to the nearest integer. A summary of the mapping score is also included in the middle of the plot.
-		</p>
-	<ul id='image-container1'>
-		<li><img src='mapping_quality1.png' alt='Mapping quality figure'></li>
-	</ul>
-		<h3 id="M02">Depth distribution</h3>
-		<p>
-		The y-axis on the graph shows the density and the x-axis on the graph shows the depth. A summary of the depth is also included in the middle of the plot. 
-		</p>
-	<ul id='image-container1'>
-		<li><img src='depth_distribution1.png' alt='Depth distribution figure'></li>
-	</ul>
-		<h3 id="M03">Template length distribution</h3>
-		<p>
-		The y-axis on the graph shows the density and the x-axis on the graph shows the template length. The template length is stored in the 9th column of a SAM/BAM file. It is set as 0 for single-segment template or when the information is unavailable.
-		A summary of the template depth is also included in the middle of the plot. 
-		</p>
-	<ul id='image-container1'>
-		<li><img src='template_length_distribution1.png' alt='Template length distribution figure'>Tumor</li>
-	</ul>
-	</div>
-	<div class="module"><h2 id="M1">Heteroplasmy</h2>
-		<p>Heteroplasmy detection threshold is defined on two scales: read count (-ha) and read percentage (-hp). Read count denotes the number of reads we must observe to support heteroplasmy while read percentage denotes the percentage of reads we must observe to support heteroplasmy. Both scales can be used together or individually. The minimum recommended depth requirement (-d) for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling.</p>
-<div align='right'><a href='mito1_heteroplasmy.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+        </p>
+    <ul id='image-container'>
+        <li><img src='per_base_quality1.png' alt='Per base quality figure'>Tumor</li>
+        <li><img src='per_base_quality2.png' alt='Per base quality figure'>Normal</li>
+    </ul>
+        <h3 id="M01">Mapping quality</h3>
+        <p>
+        The y-axis on the graph shows the density and the x-axis on the graph shows the mapping quality scores. The mapping quality score is stored in the 5th column of a SAM/BAM file. It equals to <b>-10log10Pr{mapping position is wrong}</b>, rounded to the nearest integer. A summary of the mapping score is also included in the middle of the plot.
+        </p>
+    <ul id='image-container'>
+        <li><img src='mapping_quality1.png' alt='Mapping quality figure'>Tumor</li>
+        <li><img src='mapping_quality2.png' alt='Mapping quality figure'>Normal</li>
+    </ul>
+        <h3 id="M02">Depth distribution</h3>
+        <p>
+        The y-axis on the graph shows the density and the x-axis on the graph shows the depth. A summary of the depth is also included in the middle of the plot. 
+        </p>
+    <ul id='image-container'>
+        <li><img src='depth_distribution1.png' alt='Depth distribution figure'>Tumor</li>
+        <li><img src='depth_distribution2.png' alt='Depth distribution figure'>Normal</li>
+    </ul>
+        <h3 id="M03">Template length distribution</h3>
+        <p>
+        The y-axis on the graph shows the density and the x-axis on the graph shows the template length. The template length is stored in the 9th column of a SAM/BAM file. It is set as 0 for single-segment template or when the information is unavailable.
+        A summary of the template depth is also included in the middle of the plot. 
+        </p>
+    <ul id='image-container'>
+        <li><img src='template_length_distribution1.png' alt='Template length distribution figure'>Tumor</li>
+        <li><img src='template_length_distribution2.png' alt='Template length distribution figure'>Normal</li>
+    </ul>
+    </div>
+    <div class="module"><h2 id="M1">Heteroplasmy</h2>
+        <p>Heteroplasmy detection threshold is defined on two scales: read count (-ha) and read percentage (-hp). Read count denotes the number of reads we must observe to support heteroplasmy while read percentage denotes the percentage of reads we must observe to support heteroplasmy. Both scales can be used together or individually. The minimum recommended depth requirement (-d) for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling.</p>
+<h3>Tumor</h3><div align='right'><a href='mito1_heteroplasmy.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
-<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>strand_bias</th></tr>
-<tr><td>MT</td><td>83</td><td>T</td><td>1</td><td>27</td><td>0</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td><td>0.0285714285714286</td><td>0</td><td>0.0837656311655417</td><td>T</td><td>A</td><td>34</td><td>1</td><td>1.25</td></tr>
-<tr><td>MT</td><td>153</td><td>A</td><td>40</td><td>0</td><td>0</td><td>1</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0.0163934426229508</td><td>0</td><td>0.0482601317774987</td><td>A</td><td>G</td><td>60</td><td>1</td><td>1.48780487804878</td></tr>
-<tr><td>MT</td><td>195</td><td>T</td><td>0</td><td>10</td><td>5</td><td>0</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0.352941176470588</td><td>0.125769252042141</td><td>0.580113100899036</td><td>T</td><td>C</td><td>11</td><td>6</td><td>0.472222222222222</td></tr>
-<tr><td>MT</td><td>217</td><td>T</td><td>0</td><td>52</td><td>1</td><td>0</td><td>0</td><td>13</td><td>0</td><td>0</td><td>0.0151515151515152</td><td>0</td><td>0.0446226491018119</td><td>T</td><td>C</td><td>65</td><td>1</td><td>1.24528301886792</td></tr>
-<tr><td>MT</td><td>345</td><td>C</td><td>0</td><td>1</td><td>41</td><td>0</td><td>0</td><td>0</td><td>34</td><td>0</td><td>0.0131578947368421</td><td>0</td><td>0.0387771390116528</td><td>C</td><td>T</td><td>75</td><td>1</td><td>1.80952380952381</td></tr>
-<tr><td>MT</td><td>872</td><td>G</td><td>0</td><td>0</td><td>0</td><td>33</td><td>0</td><td>1</td><td>0</td><td>62</td><td>0.0104166666666667</td><td>0</td><td>0.0307267181572692</td><td>G</td><td>T</td><td>95</td><td>1</td><td>1.52380952380952</td></tr>
-<tr><td>MT</td><td>1149</td><td>G</td><td>9</td><td>0</td><td>0</td><td>50</td><td>5</td><td>0</td><td>0</td><td>33</td><td>0.144329896907216</td><td>0.074393776963065</td><td>0.214266016851368</td><td>G</td><td>A</td><td>83</td><td>14</td><td>0.145246591053906</td></tr>
-<tr><td>MT</td><td>1167</td><td>A</td><td>53</td><td>0</td><td>0</td><td>1</td><td>42</td><td>0</td><td>0</td><td>0</td><td>0.0104166666666667</td><td>0</td><td>0.0307267181572692</td><td>A</td><td>G</td><td>95</td><td>1</td><td>1.77777777777778</td></tr>
-<tr><td>MT</td><td>1181</td><td>G</td><td>0</td><td>0</td><td>0</td><td>48</td><td>0</td><td>1</td><td>0</td><td>40</td><td>0.0112359550561798</td><td>0</td><td>0.0331343557147237</td><td>G</td><td>T</td><td>88</td><td>1</td><td>2.17073170731707</td></tr>
-<tr><td>MT</td><td>1391</td><td>T</td><td>0</td><td>45</td><td>0</td><td>0</td><td>0</td><td>50</td><td>1</td><td>0</td><td>0.0104166666666667</td><td>0</td><td>0.0307267181572692</td><td>T</td><td>C</td><td>95</td><td>1</td><td>1.88235294117647</td></tr>
-<tr><td>MT</td><td>1516</td><td>G</td><td>0</td><td>0</td><td>1</td><td>53</td><td>0</td><td>0</td><td>0</td><td>40</td><td>0.0106382978723404</td><td>0</td><td>0.0313781552354471</td><td>G</td><td>C</td><td>93</td><td>1</td><td>1.74074074074074</td></tr>
-<tr><td>MT</td><td>1851</td><td>G</td><td>2</td><td>0</td><td>0</td><td>72</td><td>0</td><td>0</td><td>0</td><td>56</td><td>0.0153846153846154</td><td>0</td><td>0.0365419534503603</td><td>G</td><td>A</td><td>128</td><td>2</td><td>1.75675675675676</td></tr>
-<tr><td>MT</td><td>2643</td><td>G</td><td>1</td><td>0</td><td>0</td><td>63</td><td>1</td><td>0</td><td>0</td><td>114</td><td>0.0111731843575419</td><td>0</td><td>0.0265716750869098</td><td>G</td><td>A</td><td>177</td><td>2</td><td>0.620176630434783</td></tr>
-<tr><td>MT</td><td>2711</td><td>A</td><td>56</td><td>0</td><td>0</td><td>1</td><td>110</td><td>0</td><td>0</td><td>1</td><td>0.0119047619047619</td><td>0</td><td>0.0283054168149014</td><td>A</td><td>G</td><td>166</td><td>2</td><td>0.716927453769559</td></tr>
-<tr><td>MT</td><td>2960</td><td>T</td><td>0</td><td>62</td><td>2</td><td>0</td><td>0</td><td>42</td><td>0</td><td>0</td><td>0.0188679245283019</td><td>0</td><td>0.0447696646057745</td><td>T</td><td>C</td><td>104</td><td>2</td><td>1.65625</td></tr>
-<tr><td>MT</td><td>4571</td><td>A</td><td>30</td><td>0</td><td>0</td><td>0</td><td>45</td><td>0</td><td>0</td><td>1</td><td>0.0131578947368421</td><td>0</td><td>0.0387771390116528</td><td>A</td><td>G</td><td>75</td><td>1</td><td>1.65217391304348</td></tr>
-<tr><td>MT</td><td>4608</td><td>A</td><td>32</td><td>0</td><td>0</td><td>0</td><td>40</td><td>0</td><td>0</td><td>1</td><td>0.0136986301369863</td><td>0</td><td>0.0403634116437366</td><td>A</td><td>G</td><td>72</td><td>1</td><td>1.78048780487805</td></tr>
-<tr><td>MT</td><td>5181</td><td>A</td><td>226</td><td>0</td><td>0</td><td>4</td><td>96</td><td>0</td><td>0</td><td>0</td><td>0.0122699386503067</td><td>0.000319396644222345</td><td>0.0242204806563912</td><td>A</td><td>G</td><td>322</td><td>4</td><td>1.41739130434783</td></tr>
-<tr><td>MT</td><td>5701</td><td>A</td><td>32</td><td>0</td><td>1</td><td>0</td><td>40</td><td>0</td><td>0</td><td>0</td><td>0.0136986301369863</td><td>0</td><td>0.0403634116437366</td><td>A</td><td>C</td><td>72</td><td>1</td><td>2.21212121212121</td></tr>
-<tr><td>MT</td><td>5705</td><td>A</td><td>32</td><td>0</td><td>0</td><td>0</td><td>32</td><td>0</td><td>1</td><td>0</td><td>0.0153846153846154</td><td>0</td><td>0.0453056098209044</td><td>A</td><td>C</td><td>64</td><td>1</td><td>1.96969696969697</td></tr>
-<tr><td>MT</td><td>5744</td><td>G</td><td>1</td><td>0</td><td>0</td><td>46</td><td>0</td><td>0</td><td>0</td><td>29</td><td>0.0131578947368421</td><td>0</td><td>0.0387771390116528</td><td>G</td><td>A</td><td>75</td><td>1</td><td>1.61702127659574</td></tr>
-<tr><td>MT</td><td>7425</td><td>C</td><td>0</td><td>0</td><td>42</td><td>1</td><td>0</td><td>0</td><td>39</td><td>0</td><td>0.0121951219512195</td><td>0</td><td>0.0359513673165889</td><td>C</td><td>G</td><td>81</td><td>1</td><td>1.90697674418605</td></tr>
-<tr><td>MT</td><td>8165</td><td>G</td><td>20</td><td>0</td><td>0</td><td>42</td><td>39</td><td>0</td><td>0</td><td>60</td><td>0.366459627329193</td><td>0.292030427672835</td><td>0.44088882698555</td><td>G</td><td>A</td><td>102</td><td>59</td><td>0.194724721241944</td></tr>
-<tr><td>MT</td><td>8878</td><td>C</td><td>1</td><td>0</td><td>83</td><td>0</td><td>1</td><td>0</td><td>99</td><td>0</td><td>0.0108695652173913</td><td>0</td><td>0.0258519183338652</td><td>C</td><td>A</td><td>182</td><td>2</td><td>0.175238095238095</td></tr>
-<tr><td>MT</td><td>9952</td><td>G</td><td>0</td><td>0</td><td>0</td><td>53</td><td>2</td><td>0</td><td>0</td><td>89</td><td>0.0138888888888889</td><td>0</td><td>0.0330037656891501</td><td>G</td><td>A</td><td>142</td><td>2</td><td>1.58241758241758</td></tr>
-<tr><td>MT</td><td>10277</td><td>A</td><td>38</td><td>0</td><td>0</td><td>0</td><td>41</td><td>0</td><td>2</td><td>0</td><td>0.0246913580246914</td><td>0</td><td>0.0584867187604307</td><td>A</td><td>C</td><td>79</td><td>2</td><td>1.88372093023256</td></tr>
-<tr><td>MT</td><td>10306</td><td>A</td><td>41</td><td>0</td><td>0</td><td>0</td><td>37</td><td>0</td><td>4</td><td>0</td><td>0.0487804878048781</td><td>0.00215615932737761</td><td>0.0954048162823785</td><td>A</td><td>C</td><td>78</td><td>4</td><td>2</td></tr>
-<tr><td>MT</td><td>10511</td><td>C</td><td>0</td><td>0</td><td>37</td><td>1</td><td>0</td><td>0</td><td>39</td><td>0</td><td>0.012987012987013</td><td>0</td><td>0.0382757290186233</td><td>C</td><td>G</td><td>76</td><td>1</td><td>2.02631578947368</td></tr>
-<tr><td>MT</td><td>10645</td><td>T</td><td>0</td><td>96</td><td>2</td><td>0</td><td>0</td><td>38</td><td>0</td><td>0</td><td>0.0147058823529412</td><td>0</td><td>0.034936777807104</td><td>T</td><td>C</td><td>134</td><td>2</td><td>1.38775510204082</td></tr>
-<tr><td>MT</td><td>11674</td><td>C</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>45</td><td>1</td><td>0</td><td>0.0178571428571429</td><td>0</td><td>0.0525432351709219</td><td>T</td><td>C</td><td>55</td><td>1</td><td>1.21739130434783</td></tr>
-<tr><td>MT</td><td>12414</td><td>T</td><td>0</td><td>1</td><td>10</td><td>0</td><td>0</td><td>1</td><td>12</td><td>0</td><td>0.0833333333333333</td><td>0</td><td>0.193910522729767</td><td>C</td><td>T</td><td>22</td><td>2</td><td>0.167832167832168</td></tr>
-<tr><td>MT</td><td>12661</td><td>A</td><td>28</td><td>0</td><td>0</td><td>5</td><td>53</td><td>0</td><td>0</td><td>9</td><td>0.147368421052632</td><td>0.0760868618707553</td><td>0.218649980234508</td><td>A</td><td>G</td><td>81</td><td>14</td><td>0.0431154866638737</td></tr>
-<tr><td>MT</td><td>12684</td><td>G</td><td>0</td><td>0</td><td>0</td><td>45</td><td>2</td><td>0</td><td>0</td><td>71</td><td>0.0169491525423729</td><td>0</td><td>0.0402395581986182</td><td>G</td><td>A</td><td>116</td><td>2</td><td>1.61643835616438</td></tr>
-<tr><td>MT</td><td>12791</td><td>T</td><td>0</td><td>59</td><td>1</td><td>0</td><td>0</td><td>38</td><td>0</td><td>0</td><td>0.0102040816326531</td><td>0</td><td>0.0301017791714875</td><td>T</td><td>C</td><td>97</td><td>1</td><td>1.63333333333333</td></tr>
-<tr><td>MT</td><td>15612</td><td>G</td><td>7</td><td>0</td><td>0</td><td>59</td><td>10</td><td>0</td><td>0</td><td>99</td><td>0.0971428571428571</td><td>0.0532643339224934</td><td>0.141021380363221</td><td>G</td><td>A</td><td>158</td><td>17</td><td>0.147385893473319</td></tr>
-<tr><td>MT</td><td>16192</td><td>C</td><td>0</td><td>34</td><td>1</td><td>0</td><td>0</td><td>18</td><td>0</td><td>0</td><td>0.0188679245283019</td><td>0</td><td>0.0554985166349265</td><td>T</td><td>C</td><td>52</td><td>1</td><td>1.51428571428571</td></tr>
-<tr><td>MT</td><td>16271</td><td>T</td><td>0</td><td>25</td><td>124</td><td>0</td><td>0</td><td>13</td><td>85</td><td>0</td><td>0.153846153846154</td><td>0.108849980332351</td><td>0.198842327359956</td><td>C</td><td>T</td><td>209</td><td>38</td><td>0.228359128886454</td></tr>
-<tr><td>MT</td><td>16477</td><td>G</td><td>0</td><td>0</td><td>0</td><td>8</td><td>2</td><td>0</td><td>0</td><td>129</td><td>0.0143884892086331</td><td>0</td><td>0.0341859345402906</td><td>G</td><td>A</td><td>137</td><td>2</td><td>1.06106870229008</td></tr>
-<tr><td>MT</td><td>16527</td><td>C</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>90</td><td>1</td><td>0.010752688172043</td><td>0</td><td>0.0317143428525846</td><td>C</td><td>G</td><td>92</td><td>1</td><td>1.02197802197802</td></tr>
-<tr><td>MT</td><td>16541</td><td>A</td><td>1</td><td>0</td><td>0</td><td>0</td><td>79</td><td>0</td><td>0</td><td>1</td><td>0.0123456790123457</td><td>0</td><td>0.0363933785234545</td><td>A</td><td>G</td><td>80</td><td>1</td><td>1.0125</td></tr>
-</table>	</div>
-	<div class="module"><h2 id="M4">Structural Changes</h2>
-	<p>
-	MitoSeek reports mitochondria structural changes when pair-end sequencing data is given as input. During alignment, a portion of the read-pairs will be discordantly mapped, meaning one read of the pair is aligned to mitochondria and the mate pair is aligned elsewhere. Such reads are like to be the results of alignment errors from homologous regions between mitochondria genome and other genomes. However, they could also indicate mitochondria integration into other genomes which has been reported to be possible by multiple studies. Only those structural changes with >=n (-str) spanning reads support will be outputed.
-	</p>
-<div align='right'><a href='mito1_structure.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th></tr>
+<tr><td>MT</td><td>217</td><td>T</td><td>0</td><td>52</td><td>1</td><td>0</td><td>0</td><td>13</td><td>0</td><td>0</td><td>0.015</td><td>0.000</td><td>0.044</td><td>T</td><td>C</td><td>65</td><td>1</td><td></td><td></td><td></td><td></td><td>1.245</td></tr>
+</table><h3>Normal</h3><div align='right'><a href='mito2_heteroplasmy.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
-<tr><th>#MitoChr</th><th>MitoPos</th><th>VarChr</th><th>VarPos</th><th>SupportedReads</th><th>MeanMappingQuality</th></tr>
-<tr><td>MT</td><td>10017</td><td>2</td><td>64132194</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10041</td><td>8</td><td>75263507</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10053</td><td>5</td><td>41191906</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10065</td><td>15</td><td>72611438</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10073</td><td>11</td><td>94630311</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10196</td><td>7</td><td>97488352</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10201</td><td>15</td><td>74740932</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>10201</td><td>7</td><td>117876367</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10292</td><td>1</td><td>92591656</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10383</td><td>1</td><td>11175386</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10505</td><td>3</td><td>132956216</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>10539</td><td>11</td><td>60468320</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10544</td><td>2</td><td>165578525</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10584</td><td>9</td><td>107367469</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>10677</td><td>1</td><td>28339538</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10692</td><td>20</td><td>13514768</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10734</td><td>13</td><td>34540093</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10776</td><td>1</td><td>149922154</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>10783</td><td>12</td><td>78709408</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10797</td><td>3</td><td>194168722</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>10815</td><td>8</td><td>143602141</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10874</td><td>19</td><td>38799417</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>10919</td><td>9</td><td>23701465</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11032</td><td>8</td><td>102731651</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11042</td><td>11</td><td>12951775</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>11042</td><td>3</td><td>175602625</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>11098</td><td>11</td><td>101984933</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11120</td><td>7</td><td>16756530</td><td>2</td><td>30</td></tr>
-<tr><td>MT</td><td>11124</td><td>10</td><td>98166532</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11131</td><td>4</td><td>35756708</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11151</td><td>1</td><td>568796</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11169</td><td>1</td><td>19505632</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11174</td><td>6</td><td>125181356</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11220</td><td>1</td><td>146041021</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11258</td><td>5</td><td>38933422</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>11268</td><td>16</td><td>19451689</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11308</td><td>6</td><td>16327360</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11347</td><td>19</td><td>54070305</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11359</td><td>12</td><td>12597033</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11389</td><td>1</td><td>178379455</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11393</td><td>10</td><td>100135994</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11396</td><td>4</td><td>127210886</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11421</td><td>19</td><td>18324096</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11474</td><td>15</td><td>43973943</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11571</td><td>3</td><td>40524022</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11591</td><td>19</td><td>53211247</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11644</td><td>7</td><td>84834362</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>11695</td><td>19</td><td>44328554</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11763</td><td>3</td><td>142249817</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>11921</td><td>3</td><td>14804894</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11932</td><td>11</td><td>120783345</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11978</td><td>1</td><td>193107239</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>11986</td><td>2</td><td>152527645</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12036</td><td>6</td><td>114951057</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>121</td><td>21</td><td>14788698</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12117</td><td>8</td><td>118380974</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12194</td><td>2</td><td>89534535</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12196</td><td>1</td><td>81719331</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12213</td><td>5</td><td>104669566</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>12216</td><td>19</td><td>43348608</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>12251</td><td>12</td><td>128594404</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12272</td><td>12</td><td>119559777</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12298</td><td>13</td><td>101795333</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12321</td><td>8</td><td>24211284</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12433</td><td>8</td><td>7829237</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12434</td><td>16</td><td>71411531</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>12461</td><td>11</td><td>4903227</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12472</td><td>1</td><td>61433341</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12482</td><td>3</td><td>107910150</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12491</td><td>18</td><td>57409214</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>12501</td><td>13</td><td>77799561</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12511</td><td>11</td><td>118676718</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12549</td><td>13</td><td>39587007</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12646</td><td>3</td><td>87675571</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>12679</td><td>14</td><td>22636773</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12688</td><td>4</td><td>49311162</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12704</td><td>12</td><td>66707831</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12734</td><td>11</td><td>132692386</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12758</td><td>14</td><td>39832928</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12766</td><td>2</td><td>42697128</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12781</td><td>11</td><td>113802512</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>12782</td><td>12</td><td>105151297</td><td>2</td><td>31</td></tr>
-<tr><td>MT</td><td>12852</td><td>7</td><td>140487247</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>129</td><td>2</td><td>83454197</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13016</td><td>17</td><td>14095582</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13021</td><td>4</td><td>55604570</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13040</td><td>1</td><td>193093917</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>13052</td><td>17</td><td>28652505</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1312</td><td>1</td><td>240308058</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13122</td><td>8</td><td>119780375</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1319</td><td>19</td><td>53453234</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13220</td><td>2</td><td>81495385</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13267</td><td>1</td><td>86591170</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13335</td><td>2</td><td>99979932</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13411</td><td>9</td><td>107973301</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13439</td><td>3</td><td>142272000</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13516</td><td>21</td><td>40570915</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13519</td><td>4</td><td>183603766</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>13547</td><td>12</td><td>88747305</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13693</td><td>7</td><td>19469351</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>13733</td><td>1</td><td>84732689</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>13760</td><td>2</td><td>178740573</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>13861</td><td>2</td><td>170663539</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13866</td><td>1</td><td>159015171</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13885</td><td>20</td><td>23702001</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13908</td><td>4</td><td>55564576</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13964</td><td>1</td><td>35369741</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>13969</td><td>X</td><td>18283539</td><td>2</td><td>25</td></tr>
-<tr><td>MT</td><td>13982</td><td>2</td><td>40366702</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14014</td><td>5</td><td>7894229</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14026</td><td>4</td><td>162044521</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14028</td><td>6</td><td>42985567</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1404</td><td>1</td><td>171981740</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>14056</td><td>X</td><td>79974884</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14097</td><td>6</td><td>51887630</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14097</td><td>9</td><td>44282721</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14102</td><td>3</td><td>87072617</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14123</td><td>7</td><td>24671999</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14132</td><td>7</td><td>20652754</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14134</td><td>X</td><td>133663514</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14150</td><td>5</td><td>65985088</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14155</td><td>22</td><td>38406900</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14157</td><td>16</td><td>52010758</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14182</td><td>20</td><td>33330840</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14192</td><td>5</td><td>179044440</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14219</td><td>13</td><td>66362090</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14245</td><td>2</td><td>162309865</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14256</td><td>21</td><td>34418910</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14258</td><td>20</td><td>5260069</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14258</td><td>4</td><td>190283382</td><td>5</td><td>37</td></tr>
-<tr><td>MT</td><td>14264</td><td>10</td><td>14560055</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14291</td><td>20</td><td>6438988</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14307</td><td>2</td><td>37264955</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>14309</td><td>2</td><td>177491429</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14333</td><td>8</td><td>137571749</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14342</td><td>X</td><td>135098916</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14379</td><td>9</td><td>110399256</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14389</td><td>20</td><td>60067446</td><td>2</td><td>22.5</td></tr>
-<tr><td>MT</td><td>14393</td><td>15</td><td>85280166</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14393</td><td>8</td><td>125862721</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14399</td><td>3</td><td>133760726</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14409</td><td>17</td><td>43591704</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14410</td><td>19</td><td>426912</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14417</td><td>1</td><td>161143431</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14453</td><td>6</td><td>156922708</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14514</td><td>15</td><td>22148663</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14647</td><td>1</td><td>183486742</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14652</td><td>11</td><td>1017052</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14669</td><td>7</td><td>151236100</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14673</td><td>5</td><td>81572045</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14676</td><td>2</td><td>239141396</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14702</td><td>1</td><td>159100019</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14718</td><td>2</td><td>152112018</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14739</td><td>10</td><td>103294360</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14743</td><td>2</td><td>81858824</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14768</td><td>21</td><td>43602642</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14798</td><td>13</td><td>109754569</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14839</td><td>8</td><td>80965689</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14871</td><td>8</td><td>65334387</td><td>3</td><td>32.3333333333333</td></tr>
-<tr><td>MT</td><td>14895</td><td>1</td><td>167403234</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14895</td><td>15</td><td>72361838</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14911</td><td>8</td><td>69129697</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14917</td><td>10</td><td>82690709</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14922</td><td>9</td><td>33533193</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14936</td><td>18</td><td>39838007</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14952</td><td>10</td><td>10783779</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14967</td><td>4</td><td>29639264</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>14973</td><td>1</td><td>152129345</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>14977</td><td>11</td><td>10059615</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1521</td><td>20</td><td>20311516</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>15288</td><td>10</td><td>56423976</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15326</td><td>3</td><td>131442391</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15343</td><td>2</td><td>209944763</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>15351</td><td>8</td><td>120476172</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>15376</td><td>6</td><td>38818127</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15386</td><td>14</td><td>31050459</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15407</td><td>11</td><td>32405675</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15422</td><td>3</td><td>82044706</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15466</td><td>2</td><td>196032031</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15490</td><td>5</td><td>170818236</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>15539</td><td>16</td><td>80410486</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15562</td><td>2</td><td>157731236</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15564</td><td>20</td><td>3785302</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15566</td><td>2</td><td>98795466</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15577</td><td>X</td><td>112331741</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15594</td><td>11</td><td>73007832</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>156</td><td>4</td><td>13706983</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15626</td><td>12</td><td>49093574</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15635</td><td>4</td><td>107157488</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>15642</td><td>17</td><td>42971738</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15647</td><td>5</td><td>158019033</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15685</td><td>13</td><td>50338704</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15685</td><td>6</td><td>49556438</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15776</td><td>1</td><td>101525535</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15834</td><td>4</td><td>182173073</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>15868</td><td>12</td><td>98228862</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15897</td><td>13</td><td>25827656</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15901</td><td>21</td><td>46117248</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15932</td><td>X</td><td>128975728</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15977</td><td>1</td><td>222806194</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>15987</td><td>12</td><td>31250820</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16018</td><td>21</td><td>34113630</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1602</td><td>11</td><td>32072343</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16024</td><td>4</td><td>102280746</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16056</td><td>7</td><td>158463938</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16057</td><td>8</td><td>121392634</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16063</td><td>16</td><td>58811085</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16120</td><td>4</td><td>43206276</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1615</td><td>2</td><td>243167246</td><td>2</td><td>31</td></tr>
-<tr><td>MT</td><td>16182</td><td>2</td><td>135926332</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>16194</td><td>19</td><td>9010958</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16227</td><td>10</td><td>51374335</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16229</td><td>1</td><td>67764568</td><td>2</td><td>25</td></tr>
-<tr><td>MT</td><td>16240</td><td>17</td><td>28380833</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16250</td><td>1</td><td>119938190</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16257</td><td>Y</td><td>59373563</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16258</td><td>9</td><td>79954746</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>16348</td><td>9</td><td>6980615</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16349</td><td>21</td><td>24516383</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16377</td><td>X</td><td>101091008</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>16401</td><td>2</td><td>14353252</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>16454</td><td>14</td><td>23999418</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1666</td><td>18</td><td>43488016</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1749</td><td>2</td><td>160741741</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1756</td><td>1</td><td>186281362</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1788</td><td>4</td><td>47408647</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1799</td><td>6</td><td>5609611</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1814</td><td>3</td><td>58302339</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>1881</td><td>10</td><td>63525562</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1881</td><td>3</td><td>175892782</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>1882</td><td>8</td><td>41615538</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>1927</td><td>10</td><td>115391195</td><td>3</td><td>27.6666666666667</td></tr>
-<tr><td>MT</td><td>1945</td><td>14</td><td>59409450</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>1946</td><td>7</td><td>7916541</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>1960</td><td>6</td><td>49323483</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2088</td><td>3</td><td>155632241</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2148</td><td>5</td><td>142435648</td><td>6</td><td>37</td></tr>
-<tr><td>MT</td><td>2168</td><td>2</td><td>86434336</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>2179</td><td>4</td><td>91796244</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>2233</td><td>15</td><td>65891075</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2240</td><td>3</td><td>108698392</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2252</td><td>1</td><td>171041986</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2280</td><td>12</td><td>120181659</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2289</td><td>3</td><td>148880612</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2302</td><td>15</td><td>43025250</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>2303</td><td>16</td><td>63586948</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2329</td><td>11</td><td>118342588</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2330</td><td>15</td><td>41476530</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>2334</td><td>4</td><td>109747703</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2336</td><td>7</td><td>138265174</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2347</td><td>7</td><td>129858225</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2389</td><td>X</td><td>125431554</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2472</td><td>X</td><td>94213012</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2504</td><td>2</td><td>90259631</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2516</td><td>18</td><td>22020479</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2535</td><td>1</td><td>186031615</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>2639</td><td>11</td><td>113631024</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2700</td><td>7</td><td>44046897</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2701</td><td>3</td><td>189248400</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>2747</td><td>7</td><td>152992197</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2860</td><td>8</td><td>88779528</td><td>5</td><td>37</td></tr>
-<tr><td>MT</td><td>2865</td><td>19</td><td>13627653</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2926</td><td>11</td><td>79665492</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>2959</td><td>8</td><td>139809017</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3011</td><td>10</td><td>68848295</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3021</td><td>3</td><td>170071230</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3031</td><td>5</td><td>50808391</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>3042</td><td>4</td><td>113553372</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>3195</td><td>1</td><td>152601128</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>3203</td><td>19</td><td>55289946</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3223</td><td>3</td><td>47084176</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3253</td><td>X</td><td>152878453</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3293</td><td>6</td><td>49473486</td><td>5</td><td>37</td></tr>
-<tr><td>MT</td><td>3298</td><td>X</td><td>134889638</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3329</td><td>8</td><td>33139317</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3340</td><td>5</td><td>13234705</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3409</td><td>2</td><td>125274764</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3432</td><td>3</td><td>170883343</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>346</td><td>19</td><td>1774871</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3530</td><td>5</td><td>4551848</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3630</td><td>18</td><td>258898</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3664</td><td>3</td><td>184429282</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>3725</td><td>1</td><td>77588017</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3746</td><td>1</td><td>223285338</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>3800</td><td>17</td><td>37185240</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4015</td><td>8</td><td>103274072</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4237</td><td>16</td><td>76000898</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4295</td><td>4</td><td>104884750</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>430</td><td>12</td><td>46265687</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4357</td><td>10</td><td>17204126</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>4372</td><td>21</td><td>27078272</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>4414</td><td>X</td><td>18198809</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>4653</td><td>5</td><td>153414326</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>475</td><td>13</td><td>102891761</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4802</td><td>22</td><td>45209754</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>4805</td><td>13</td><td>32709061</td><td>2</td><td>30</td></tr>
-<tr><td>MT</td><td>4935</td><td>2</td><td>219602675</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4964</td><td>2</td><td>58235381</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4965</td><td>2</td><td>204131290</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4965</td><td>2</td><td>207299066</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>4968</td><td>1</td><td>565240</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5025</td><td>4</td><td>31762572</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5032</td><td>19</td><td>9006237</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5048</td><td>X</td><td>137982429</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5074</td><td>X</td><td>154507006</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>5098</td><td>10</td><td>22396641</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5101</td><td>6</td><td>90605799</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5141</td><td>6</td><td>53655785</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5143</td><td>20</td><td>50950414</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5255</td><td>X</td><td>6195272</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5256</td><td>4</td><td>176561798</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5276</td><td>3</td><td>166684781</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>5278</td><td>20</td><td>57019037</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5290</td><td>1</td><td>145235137</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5301</td><td>1</td><td>78430467</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5301</td><td>10</td><td>132843524</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5301</td><td>5</td><td>36051976</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5303</td><td>22</td><td>42452817</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5336</td><td>16</td><td>15111392</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5341</td><td>11</td><td>60994506</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5352</td><td>1</td><td>219706319</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5370</td><td>2</td><td>162362610</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5375</td><td>1</td><td>158605806</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5386</td><td>11</td><td>79229247</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5392</td><td>15</td><td>53316816</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5393</td><td>6</td><td>47384220</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5414</td><td>7</td><td>87038462</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5418</td><td>X</td><td>15344073</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5439</td><td>10</td><td>24873359</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5445</td><td>6</td><td>48117465</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>5450</td><td>4</td><td>128628085</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5456</td><td>11</td><td>5776681</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5477</td><td>1</td><td>568784</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5484</td><td>2</td><td>160879386</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5515</td><td>2</td><td>13876255</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>5543</td><td>14</td><td>89154598</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>5554</td><td>1</td><td>158815682</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>565</td><td>15</td><td>20083728</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5752</td><td>5</td><td>164442718</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5794</td><td>2</td><td>120844214</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5813</td><td>X</td><td>149202743</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5819</td><td>X</td><td>17311854</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>5823</td><td>2</td><td>25470308</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>590</td><td>21</td><td>17191066</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>594</td><td>12</td><td>3796713</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>5974</td><td>2</td><td>198283329</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>6012</td><td>4</td><td>123308241</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>6176</td><td>1</td><td>109724253</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6340</td><td>1</td><td>169510243</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>6370</td><td>7</td><td>156754896</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6381</td><td>11</td><td>121475769</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6416</td><td>2</td><td>109381535</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6421</td><td>3</td><td>150842297</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6431</td><td>12</td><td>74186147</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>647</td><td>14</td><td>99755533</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6509</td><td>X</td><td>154020192</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6522</td><td>21</td><td>30353496</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6525</td><td>3</td><td>195518313</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>654</td><td>2</td><td>81061514</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6554</td><td>1</td><td>241943096</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6605</td><td>9</td><td>79691545</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>6625</td><td>12</td><td>63962971</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6681</td><td>10</td><td>76339062</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6840</td><td>1</td><td>109770991</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6885</td><td>2</td><td>181493300</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6898</td><td>18</td><td>47586099</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>690</td><td>3</td><td>102019354</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6917</td><td>18</td><td>24179922</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>6938</td><td>X</td><td>79254470</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7085</td><td>1</td><td>566657</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7152</td><td>X</td><td>89355918</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7180</td><td>7</td><td>28360230</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7183</td><td>4</td><td>63614944</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7227</td><td>12</td><td>126049473</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7240</td><td>X</td><td>142596683</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7265</td><td>3</td><td>119456301</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7288</td><td>21</td><td>31973508</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>744</td><td>2</td><td>214735578</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7461</td><td>17</td><td>45234359</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7512</td><td>15</td><td>28277161</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7568</td><td>7</td><td>26948267</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7572</td><td>8</td><td>27533948</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7579</td><td>9</td><td>37777554</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7656</td><td>10</td><td>70097532</td><td>5</td><td>23</td></tr>
-<tr><td>MT</td><td>7696</td><td>11</td><td>106996755</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7715</td><td>2</td><td>207605924</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>772</td><td>18</td><td>68752260</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7726</td><td>9</td><td>91940889</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7730</td><td>8</td><td>25205120</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7753</td><td>15</td><td>93527680</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7766</td><td>12</td><td>82880878</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>7783</td><td>1</td><td>107323763</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7790</td><td>12</td><td>49398332</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7811</td><td>10</td><td>119617332</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7843</td><td>1</td><td>226576197</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7844</td><td>1</td><td>183559363</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>7892</td><td>12</td><td>9596215</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7894</td><td>4</td><td>175356964</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>7975</td><td>3</td><td>122000841</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>7992</td><td>X</td><td>77666298</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8031</td><td>13</td><td>39863494</td><td>2</td><td>20</td></tr>
-<tr><td>MT</td><td>8053</td><td>3</td><td>188123839</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8094</td><td>17</td><td>57307223</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8129</td><td>11</td><td>29088839</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>8172</td><td>21</td><td>20230448</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8311</td><td>9</td><td>102698057</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8328</td><td>12</td><td>113435737</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8344</td><td>4</td><td>67101922</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8349</td><td>20</td><td>37005294</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8358</td><td>5</td><td>70898719</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8383</td><td>X</td><td>130357703</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>8391</td><td>2</td><td>209168895</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8445</td><td>X</td><td>70127627</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8472</td><td>7</td><td>67572745</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>8512</td><td>6</td><td>114808537</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>8533</td><td>10</td><td>97917632</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8583</td><td>2</td><td>198244931</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8586</td><td>16</td><td>29395565</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8624</td><td>2</td><td>138884146</td><td>4</td><td>37</td></tr>
-<tr><td>MT</td><td>8637</td><td>2</td><td>7376265</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8640</td><td>5</td><td>80476389</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8647</td><td>2</td><td>152988600</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8676</td><td>16</td><td>30516679</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>8880</td><td>1</td><td>40477188</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8880</td><td>4</td><td>112473024</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8896</td><td>2</td><td>145991396</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8898</td><td>9</td><td>116930895</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>8903</td><td>6</td><td>142510624</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8908</td><td>14</td><td>24274293</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>8928</td><td>17</td><td>45821651</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>8963</td><td>12</td><td>11546583</td><td>3</td><td>23</td></tr>
-<tr><td>MT</td><td>8984</td><td>17</td><td>72206116</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9007</td><td>10</td><td>115971271</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9007</td><td>8</td><td>55210137</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9020</td><td>5</td><td>68684934</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9023</td><td>13</td><td>102993269</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9039</td><td>10</td><td>133862870</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9044</td><td>9</td><td>8428060</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9046</td><td>13</td><td>32953325</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9055</td><td>17</td><td>73231443</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9077</td><td>7</td><td>128133868</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9083</td><td>19</td><td>33949075</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9086</td><td>1</td><td>65878571</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9093</td><td>19</td><td>22419977</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9095</td><td>12</td><td>66638827</td><td>4</td><td>23</td></tr>
-<tr><td>MT</td><td>9098</td><td>22</td><td>28059066</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9128</td><td>12</td><td>81758489</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9131</td><td>1</td><td>192150611</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9151</td><td>12</td><td>77565545</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9187</td><td>3</td><td>127783814</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9222</td><td>8</td><td>129348378</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9231</td><td>12</td><td>66627946</td><td>2</td><td>22.5</td></tr>
-<tr><td>MT</td><td>9232</td><td>2</td><td>232318134</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9271</td><td>5</td><td>111505823</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9362</td><td>1</td><td>90689990</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>9430</td><td>1</td><td>206869450</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9460</td><td>X</td><td>153549119</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9585</td><td>2</td><td>58667107</td><td>2</td><td>23</td></tr>
-<tr><td>MT</td><td>965</td><td>16</td><td>15198474</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9683</td><td>16</td><td>7238807</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9687</td><td>1</td><td>198918172</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9687</td><td>3</td><td>102498847</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9728</td><td>10</td><td>38407612</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9742</td><td>6</td><td>19597310</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9768</td><td>3</td><td>10578066</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9768</td><td>5</td><td>160688327</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9775</td><td>1</td><td>214488189</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9798</td><td>17</td><td>74772635</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9836</td><td>11</td><td>8706880</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9843</td><td>13</td><td>103747736</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9873</td><td>11</td><td>105009663</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9920</td><td>5</td><td>114860215</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9935</td><td>3</td><td>37861891</td><td>2</td><td>37</td></tr>
-<tr><td>MT</td><td>9947</td><td>1</td><td>156565263</td><td>3</td><td>37</td></tr>
-<tr><td>MT</td><td>9957</td><td>2</td><td>220980198</td><td>2</td><td>37</td></tr>
-</table>	</div>
-	<div class="module"><h2 id="M2">Somatic Mutation</h2>
-	<p>
-	MitoSeek takes the input bam provided by <b>-i</b> as tumor while the other input bam by <b>-j</b> as its control normal. We propose to compare the empirical allele counts between tumor and normal control directly instead of using a genotype caller. MitoSeek can extract empirical allele count for every mitochondria position then compare the allele counts between tumor and normal to determine somatic mutation status. Two parameters (-sp and -sa) control the somatic mutation detection.
-	</p>
-NA
-	</div>
-	<div class="module"><h2 id="M3">Relative Copy Number Estimation</h2>
-	<p>
-	Two methods are implemented in MitoSeek to estimate the relative copy number of mithochondria, namely '<b>byRead</b>' and '<b>byDepth</b>'.<br/>
-	<h4>byRead</h4>
-	<b>CN=Rm/Rt</b>,  where <b>Rm</b> is the reads aligned to mitochondria and passed quality filter and <b>Rt</b> is the total reads passed quality filter. 
-	<h4>byDepth</h4>
-	<b>CN=Dm/Dt</b>, where <b>Dm</b> is the average depth of mitochondria, and <b>Dt</b> is the average of exome or whole genome, depending on your input data.
-	</p>
-<div align='right'><a href='mito1_cnv.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th></tr>
+<tr><td>MT</td><td>45</td><td>A</td><td>12</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>A</td><td>C</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td></tr>
+<tr><td>MT</td><td>48</td><td>C</td><td>0</td><td>1</td><td>12</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>C</td><td>T</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td></tr>
+<tr><td>MT</td><td>239</td><td>T</td><td>1</td><td>17</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0.050</td><td>0.000</td><td>0.146</td><td>T</td><td>A</td><td>19</td><td>1</td><td></td><td></td><td></td><td></td><td>1.111</td></tr>
+</table>    </div>
+    <div class="module"><h2 id="M4">Structural Changes</h2>
+    <p>
+    MitoSeek reports mitochondria structural changes when pair-end sequencing data is given as input. During alignment, a portion of the read-pairs will be discordantly mapped, meaning one read of the pair is aligned to mitochondria and the mate pair is aligned elsewhere. Such reads are like to be the results of alignment errors from homologous regions between mitochondria genome and other genomes. However, they could also indicate mitochondria integration into other genomes which has been reported to be possible by multiple studies. Only those structural changes with >=n (-str) spanning reads support will be outputed.
+    </p>
+<h3>Tumor</h3><div align='right'><a href='mito1_structure.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>#MitoChr</th><th>MitoPos</th><th>VarChr</th><th>VarPos</th><th>SupportedReads</th><th>MeanMappingQuality</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
+<tr><td>MT</td><td>10017</td><td>MT</td><td>64132194</td><td>2</td><td>37</td><td>TRNG</td><td>MTTG:tRNA:9992-10059:(+)</td></tr>
+<tr><td>MT</td><td>10041</td><td>MT</td><td>75263507</td><td>2</td><td>37</td><td>TRNG</td><td>MTTG:tRNA:9992-10059:(+)</td></tr>
+<tr><td>MT</td><td>10053</td><td>MT</td><td>41191906</td><td>2</td><td>37</td><td>TRNG</td><td>MTTG:tRNA:9992-10059:(+)</td></tr>
+<tr><td>MT</td><td>10065</td><td>MT</td><td>72611438</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10073</td><td>MT</td><td>94630311</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10196</td><td>MT</td><td>97488352</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10201</td><td>MT</td><td>74740932</td><td>3</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10201</td><td>MT</td><td>117876367</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10292</td><td>MT</td><td>92591656</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10383</td><td>MT</td><td>11175386</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10505</td><td>MT</td><td>132956216</td><td>3</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10539</td><td>MT</td><td>60468320</td><td>2</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10544</td><td>MT</td><td>165578525</td><td>2</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10584</td><td>MT</td><td>107367469</td><td>3</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10677</td><td>MT</td><td>28339538</td><td>2</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10692</td><td>MT</td><td>13514768</td><td>2</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10734</td><td>MT</td><td>34540093</td><td>2</td><td>37</td><td>ND4L</td><td>MTND4L:mRNA:10471-10767:(+)</td></tr>
+<tr><td>MT</td><td>10776</td><td>MT</td><td>149922154</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10783</td><td>MT</td><td>78709408</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10797</td><td>MT</td><td>194168722</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10815</td><td>MT</td><td>143602141</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10874</td><td>MT</td><td>38799417</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10919</td><td>MT</td><td>23701465</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11032</td><td>MT</td><td>102731651</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11042</td><td>MT</td><td>12951775</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11042</td><td>MT</td><td>175602625</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11098</td><td>MT</td><td>101984933</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11120</td><td>MT</td><td>16756530</td><td>2</td><td>30</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11124</td><td>MT</td><td>98166532</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11131</td><td>MT</td><td>35756708</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11151</td><td>MT</td><td>568796</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11169</td><td>MT</td><td>19505632</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11174</td><td>MT</td><td>125181356</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11220</td><td>MT</td><td>146041021</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11258</td><td>MT</td><td>38933422</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11268</td><td>MT</td><td>19451689</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11308</td><td>MT</td><td>16327360</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11347</td><td>MT</td><td>54070305</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11359</td><td>MT</td><td>12597033</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11389</td><td>MT</td><td>178379455</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11393</td><td>MT</td><td>100135994</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11396</td><td>MT</td><td>127210886</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11421</td><td>MT</td><td>18324096</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11474</td><td>MT</td><td>43973943</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11571</td><td>MT</td><td>40524022</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11591</td><td>MT</td><td>53211247</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11644</td><td>MT</td><td>84834362</td><td>2</td><td>23</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11695</td><td>MT</td><td>44328554</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11763</td><td>MT</td><td>142249817</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11921</td><td>MT</td><td>14804894</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11932</td><td>MT</td><td>120783345</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11978</td><td>MT</td><td>193107239</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11986</td><td>MT</td><td>152527645</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>12036</td><td>MT</td><td>114951057</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>121</td><td>MT</td><td>14788698</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>12117</td><td>MT</td><td>118380974</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>12194</td><td>MT</td><td>89534535</td><td>2</td><td>37</td><td>TRNH</td><td>MTTH:tRNA:12139-12207:(+)</td></tr>
+<tr><td>MT</td><td>12196</td><td>MT</td><td>81719331</td><td>2</td><td>37</td><td>TRNH</td><td>MTTH:tRNA:12139-12207:(+)</td></tr>
+<tr><td>MT</td><td>12213</td><td>MT</td><td>104669566</td><td>3</td><td>37</td><td>TRNS2</td><td>MTTS2:tRNA:12208-12266:(+)</td></tr>
+<tr><td>MT</td><td>12216</td><td>MT</td><td>43348608</td><td>3</td><td>37</td><td>TRNS2</td><td>MTTS2:tRNA:12208-12266:(+)</td></tr>
+<tr><td>MT</td><td>12251</td><td>MT</td><td>128594404</td><td>2</td><td>37</td><td>TRNS2</td><td>MTTS2:tRNA:12208-12266:(+)</td></tr>
+<tr><td>MT</td><td>12272</td><td>MT</td><td>119559777</td><td>2</td><td>37</td><td>TRNL2</td><td>MTTL2:tRNA:12267-12337:(+)</td></tr>
+<tr><td>MT</td><td>12298</td><td>MT</td><td>101795333</td><td>2</td><td>37</td><td>TRNL2</td><td>MTTL2:tRNA:12267-12337:(+)</td></tr>
+<tr><td>MT</td><td>12321</td><td>MT</td><td>24211284</td><td>2</td><td>37</td><td>TRNL2</td><td>MTTL2:tRNA:12267-12337:(+)</td></tr>
+<tr><td>MT</td><td>12433</td><td>MT</td><td>7829237</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12434</td><td>MT</td><td>71411531</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12461</td><td>MT</td><td>4903227</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12472</td><td>MT</td><td>61433341</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12482</td><td>MT</td><td>107910150</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12491</td><td>MT</td><td>57409214</td><td>4</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12501</td><td>MT</td><td>77799561</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12511</td><td>MT</td><td>118676718</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12549</td><td>MT</td><td>39587007</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12646</td><td>MT</td><td>87675571</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12679</td><td>MT</td><td>22636773</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12688</td><td>MT</td><td>49311162</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12704</td><td>MT</td><td>66707831</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12734</td><td>MT</td><td>132692386</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12758</td><td>MT</td><td>39832928</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12766</td><td>MT</td><td>42697128</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12781</td><td>MT</td><td>113802512</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12782</td><td>MT</td><td>105151297</td><td>2</td><td>31</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12852</td><td>MT</td><td>140487247</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>129</td><td>MT</td><td>83454197</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>13016</td><td>MT</td><td>14095582</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13021</td><td>MT</td><td>55604570</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13040</td><td>MT</td><td>193093917</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13052</td><td>MT</td><td>28652505</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>1312</td><td>MT</td><td>240308058</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>13122</td><td>MT</td><td>119780375</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>1319</td><td>MT</td><td>53453234</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>13220</td><td>MT</td><td>81495385</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13267</td><td>MT</td><td>86591170</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13335</td><td>MT</td><td>99979932</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13411</td><td>MT</td><td>107973301</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13439</td><td>MT</td><td>142272000</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13516</td><td>MT</td><td>40570915</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13519</td><td>MT</td><td>183603766</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13547</td><td>MT</td><td>88747305</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13693</td><td>MT</td><td>19469351</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13733</td><td>MT</td><td>84732689</td><td>4</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13760</td><td>MT</td><td>178740573</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13861</td><td>MT</td><td>170663539</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13866</td><td>MT</td><td>159015171</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13885</td><td>MT</td><td>23702001</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13908</td><td>MT</td><td>55564576</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13964</td><td>MT</td><td>35369741</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13969</td><td>MT</td><td>18283539</td><td>2</td><td>25</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13982</td><td>MT</td><td>40366702</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14014</td><td>MT</td><td>7894229</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14026</td><td>MT</td><td>162044521</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14028</td><td>MT</td><td>42985567</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>1404</td><td>MT</td><td>171981740</td><td>3</td><td>23</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>14056</td><td>MT</td><td>79974884</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14097</td><td>MT</td><td>51887630</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14097</td><td>MT</td><td>44282721</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14102</td><td>MT</td><td>87072617</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14123</td><td>MT</td><td>24671999</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14132</td><td>MT</td><td>20652754</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14134</td><td>MT</td><td>133663514</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14150</td><td>MT</td><td>65985088</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14155</td><td>MT</td><td>38406900</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14157</td><td>MT</td><td>52010758</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14182</td><td>MT</td><td>33330840</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14192</td><td>MT</td><td>179044440</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14219</td><td>MT</td><td>66362090</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14245</td><td>MT</td><td>162309865</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14256</td><td>MT</td><td>34418910</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14258</td><td>MT</td><td>5260069</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14258</td><td>MT</td><td>190283382</td><td>5</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14264</td><td>MT</td><td>14560055</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14291</td><td>MT</td><td>6438988</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14307</td><td>MT</td><td>37264955</td><td>4</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14309</td><td>MT</td><td>177491429</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14333</td><td>MT</td><td>137571749</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14342</td><td>MT</td><td>135098916</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14379</td><td>MT</td><td>110399256</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14389</td><td>MT</td><td>60067446</td><td>2</td><td>22.5</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14393</td><td>MT</td><td>85280166</td><td>3</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14393</td><td>MT</td><td>125862721</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14399</td><td>MT</td><td>133760726</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14409</td><td>MT</td><td>43591704</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14410</td><td>MT</td><td>426912</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14417</td><td>MT</td><td>161143431</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14453</td><td>MT</td><td>156922708</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14514</td><td>MT</td><td>22148663</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14647</td><td>MT</td><td>183486742</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14652</td><td>MT</td><td>1017052</td><td>3</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14669</td><td>MT</td><td>151236100</td><td>3</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14673</td><td>MT</td><td>81572045</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14676</td><td>MT</td><td>239141396</td><td>3</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>14702</td><td>MT</td><td>159100019</td><td>2</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>14718</td><td>MT</td><td>152112018</td><td>2</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>14739</td><td>MT</td><td>103294360</td><td>2</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>14743</td><td>MT</td><td>81858824</td><td>2</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>14768</td><td>MT</td><td>43602642</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14798</td><td>MT</td><td>109754569</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14839</td><td>MT</td><td>80965689</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14871</td><td>MT</td><td>65334387</td><td>3</td><td>32.3333333333333</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14895</td><td>MT</td><td>167403234</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14895</td><td>MT</td><td>72361838</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14911</td><td>MT</td><td>69129697</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14917</td><td>MT</td><td>82690709</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14922</td><td>MT</td><td>33533193</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14936</td><td>MT</td><td>39838007</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14952</td><td>MT</td><td>10783779</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14967</td><td>MT</td><td>29639264</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14973</td><td>MT</td><td>152129345</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>14977</td><td>MT</td><td>10059615</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>1521</td><td>MT</td><td>20311516</td><td>2</td><td>23</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>15288</td><td>MT</td><td>56423976</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15326</td><td>MT</td><td>131442391</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15343</td><td>MT</td><td>209944763</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15351</td><td>MT</td><td>120476172</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15376</td><td>MT</td><td>38818127</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15386</td><td>MT</td><td>31050459</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15407</td><td>MT</td><td>32405675</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15422</td><td>MT</td><td>82044706</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15466</td><td>MT</td><td>196032031</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15490</td><td>MT</td><td>170818236</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15539</td><td>MT</td><td>80410486</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15562</td><td>MT</td><td>157731236</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15564</td><td>MT</td><td>3785302</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15566</td><td>MT</td><td>98795466</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15577</td><td>MT</td><td>112331741</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15594</td><td>MT</td><td>73007832</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>156</td><td>MT</td><td>13706983</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>15626</td><td>MT</td><td>49093574</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15635</td><td>MT</td><td>107157488</td><td>4</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15642</td><td>MT</td><td>42971738</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15647</td><td>MT</td><td>158019033</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15685</td><td>MT</td><td>50338704</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15685</td><td>MT</td><td>49556438</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15776</td><td>MT</td><td>101525535</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15834</td><td>MT</td><td>182173073</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15868</td><td>MT</td><td>98228862</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15897</td><td>MT</td><td>25827656</td><td>2</td><td>37</td><td>TRNT</td><td>MTTT:tRNA:15889-15954:(+)</td></tr>
+<tr><td>MT</td><td>15901</td><td>MT</td><td>46117248</td><td>2</td><td>37</td><td>TRNT</td><td>MTTT:tRNA:15889-15954:(+)</td></tr>
+<tr><td>MT</td><td>15932</td><td>MT</td><td>128975728</td><td>2</td><td>37</td><td>TRNT</td><td>MTTT:tRNA:15889-15954:(+)</td></tr>
+<tr><td>MT</td><td>15977</td><td>MT</td><td>222806194</td><td>2</td><td>37</td><td>TRNP</td><td>MTTP:tRNA:15956-16024:(-)</td></tr>
+<tr><td>MT</td><td>15987</td><td>MT</td><td>31250820</td><td>2</td><td>37</td><td>TRNP</td><td>MTTP:tRNA:15956-16024:(-)</td></tr>
+<tr><td>MT</td><td>16018</td><td>MT</td><td>34113630</td><td>3</td><td>37</td><td>TRNP</td><td>MTTP:tRNA:15956-16024:(-)</td></tr>
+<tr><td>MT</td><td>1602</td><td>MT</td><td>32072343</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>16024</td><td>MT</td><td>102280746</td><td>2</td><td>37</td><td>TRNP</td><td>MTTP:tRNA:15956-16024:(-)</td></tr>
+<tr><td>MT</td><td>16056</td><td>MT</td><td>158463938</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16057</td><td>MT</td><td>121392634</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16063</td><td>MT</td><td>58811085</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16120</td><td>MT</td><td>43206276</td><td>3</td><td>37</td></tr>
+<tr><td>MT</td><td>1615</td><td>MT</td><td>243167246</td><td>2</td><td>31</td><td>TRNV</td><td>MTTV:tRNA:1604-1672:(+)</td></tr>
+<tr><td>MT</td><td>16182</td><td>MT</td><td>135926332</td><td>3</td><td>37</td></tr>
+<tr><td>MT</td><td>16194</td><td>MT</td><td>9010958</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16227</td><td>MT</td><td>51374335</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16229</td><td>MT</td><td>67764568</td><td>2</td><td>25</td></tr>
+<tr><td>MT</td><td>16240</td><td>MT</td><td>28380833</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16250</td><td>MT</td><td>119938190</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16257</td><td>MT</td><td>59373563</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16258</td><td>MT</td><td>79954746</td><td>4</td><td>37</td></tr>
+<tr><td>MT</td><td>16348</td><td>MT</td><td>6980615</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16349</td><td>MT</td><td>24516383</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16377</td><td>MT</td><td>101091008</td><td>3</td><td>37</td></tr>
+<tr><td>MT</td><td>16401</td><td>MT</td><td>14353252</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16454</td><td>MT</td><td>23999418</td><td>3</td><td>37</td></tr>
+<tr><td>MT</td><td>1666</td><td>MT</td><td>43488016</td><td>2</td><td>37</td><td>TRNV</td><td>MTTV:tRNA:1604-1672:(+)</td></tr>
+<tr><td>MT</td><td>1749</td><td>MT</td><td>160741741</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1756</td><td>MT</td><td>186281362</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1788</td><td>MT</td><td>47408647</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1799</td><td>MT</td><td>5609611</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1814</td><td>MT</td><td>58302339</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1881</td><td>MT</td><td>63525562</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1881</td><td>MT</td><td>175892782</td><td>4</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1882</td><td>MT</td><td>41615538</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1927</td><td>MT</td><td>115391195</td><td>3</td><td>27.6666666666667</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1945</td><td>MT</td><td>59409450</td><td>2</td><td>23</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1946</td><td>MT</td><td>7916541</td><td>3</td><td>23</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1960</td><td>MT</td><td>49323483</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2088</td><td>MT</td><td>155632241</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2148</td><td>MT</td><td>142435648</td><td>6</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2168</td><td>MT</td><td>86434336</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2179</td><td>MT</td><td>91796244</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2233</td><td>MT</td><td>65891075</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2240</td><td>MT</td><td>108698392</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2252</td><td>MT</td><td>171041986</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2280</td><td>MT</td><td>120181659</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2289</td><td>MT</td><td>148880612</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2302</td><td>MT</td><td>43025250</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2303</td><td>MT</td><td>63586948</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2329</td><td>MT</td><td>118342588</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2330</td><td>MT</td><td>41476530</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2334</td><td>MT</td><td>109747703</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2336</td><td>MT</td><td>138265174</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2347</td><td>MT</td><td>129858225</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2389</td><td>MT</td><td>125431554</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2472</td><td>MT</td><td>94213012</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2504</td><td>MT</td><td>90259631</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2516</td><td>MT</td><td>22020479</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2535</td><td>MT</td><td>186031615</td><td>4</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2639</td><td>MT</td><td>113631024</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2700</td><td>MT</td><td>44046897</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2701</td><td>MT</td><td>189248400</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2747</td><td>MT</td><td>152992197</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2860</td><td>MT</td><td>88779528</td><td>5</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2865</td><td>MT</td><td>13627653</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2926</td><td>MT</td><td>79665492</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2959</td><td>MT</td><td>139809017</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3011</td><td>MT</td><td>68848295</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3021</td><td>MT</td><td>170071230</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3031</td><td>MT</td><td>50808391</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3042</td><td>MT</td><td>113553372</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3195</td><td>MT</td><td>152601128</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3203</td><td>MT</td><td>55289946</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3223</td><td>MT</td><td>47084176</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3253</td><td>MT</td><td>152878453</td><td>2</td><td>37</td><td>TRNL1</td><td>MTTL1:tRNA:3231-3305:(+)</td></tr>
+<tr><td>MT</td><td>3293</td><td>MT</td><td>49473486</td><td>5</td><td>37</td><td>TRNL1</td><td>MTTL1:tRNA:3231-3305:(+)</td></tr>
+<tr><td>MT</td><td>3298</td><td>MT</td><td>134889638</td><td>2</td><td>37</td><td>TRNL1</td><td>MTTL1:tRNA:3231-3305:(+)</td></tr>
+<tr><td>MT</td><td>3329</td><td>MT</td><td>33139317</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3340</td><td>MT</td><td>13234705</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3409</td><td>MT</td><td>125274764</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3432</td><td>MT</td><td>170883343</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>346</td><td>MT</td><td>1774871</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>3530</td><td>MT</td><td>4551848</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3630</td><td>MT</td><td>258898</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3664</td><td>MT</td><td>184429282</td><td>3</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3725</td><td>MT</td><td>77588017</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3746</td><td>MT</td><td>223285338</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>3800</td><td>MT</td><td>37185240</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>4015</td><td>MT</td><td>103274072</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>4237</td><td>MT</td><td>76000898</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>4295</td><td>MT</td><td>104884750</td><td>2</td><td>37</td><td>TRNI</td><td>MTTI:tRNA:4264-4332:(+)</td></tr>
+<tr><td>MT</td><td>430</td><td>MT</td><td>46265687</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>4357</td><td>MT</td><td>17204126</td><td>2</td><td>23</td><td>TRNQ</td><td>MTTQ:tRNA:4330-4401:(-)</td></tr>
+<tr><td>MT</td><td>4372</td><td>MT</td><td>27078272</td><td>2</td><td>23</td><td>TRNQ</td><td>MTTQ:tRNA:4330-4401:(-)</td></tr>
+<tr><td>MT</td><td>4414</td><td>MT</td><td>18198809</td><td>2</td><td>23</td><td>TRNM</td><td>MTTM:tRNA:4403-4470:(+)</td></tr>
+<tr><td>MT</td><td>4653</td><td>MT</td><td>153414326</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>475</td><td>MT</td><td>102891761</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>4802</td><td>MT</td><td>45209754</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4805</td><td>MT</td><td>32709061</td><td>2</td><td>30</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4935</td><td>MT</td><td>219602675</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4964</td><td>MT</td><td>58235381</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4965</td><td>MT</td><td>204131290</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4965</td><td>MT</td><td>207299066</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>4968</td><td>MT</td><td>565240</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5025</td><td>MT</td><td>31762572</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5032</td><td>MT</td><td>9006237</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5048</td><td>MT</td><td>137982429</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5074</td><td>MT</td><td>154507006</td><td>3</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5098</td><td>MT</td><td>22396641</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5101</td><td>MT</td><td>90605799</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5141</td><td>MT</td><td>53655785</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5143</td><td>MT</td><td>50950414</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5255</td><td>MT</td><td>6195272</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5256</td><td>MT</td><td>176561798</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5276</td><td>MT</td><td>166684781</td><td>4</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5278</td><td>MT</td><td>57019037</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5290</td><td>MT</td><td>145235137</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5301</td><td>MT</td><td>78430467</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5301</td><td>MT</td><td>132843524</td><td>3</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5301</td><td>MT</td><td>36051976</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5303</td><td>MT</td><td>42452817</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5336</td><td>MT</td><td>15111392</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5341</td><td>MT</td><td>60994506</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5352</td><td>MT</td><td>219706319</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5370</td><td>MT</td><td>162362610</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5375</td><td>MT</td><td>158605806</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5386</td><td>MT</td><td>79229247</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5392</td><td>MT</td><td>53316816</td><td>3</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5393</td><td>MT</td><td>47384220</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5414</td><td>MT</td><td>87038462</td><td>3</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5418</td><td>MT</td><td>15344073</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5439</td><td>MT</td><td>24873359</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5445</td><td>MT</td><td>48117465</td><td>4</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5450</td><td>MT</td><td>128628085</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5456</td><td>MT</td><td>5776681</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5477</td><td>MT</td><td>568784</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5484</td><td>MT</td><td>160879386</td><td>2</td><td>37</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5515</td><td>MT</td><td>13876255</td><td>3</td><td>23</td><td>TRNW</td><td>MTTW:tRNA:5513-5580:(+)</td></tr>
+<tr><td>MT</td><td>5543</td><td>MT</td><td>89154598</td><td>2</td><td>23</td><td>TRNW</td><td>MTTW:tRNA:5513-5580:(+)</td></tr>
+<tr><td>MT</td><td>5554</td><td>MT</td><td>158815682</td><td>3</td><td>23</td><td>TRNW</td><td>MTTW:tRNA:5513-5580:(+)</td></tr>
+<tr><td>MT</td><td>565</td><td>MT</td><td>20083728</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>5752</td><td>MT</td><td>164442718</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>5794</td><td>MT</td><td>120844214</td><td>3</td><td>37</td><td>TRNC</td><td>MTTC:tRNA:5762-5827:(-)</td></tr>
+<tr><td>MT</td><td>5813</td><td>MT</td><td>149202743</td><td>3</td><td>37</td><td>TRNC</td><td>MTTC:tRNA:5762-5827:(-)</td></tr>
+<tr><td>MT</td><td>5819</td><td>MT</td><td>17311854</td><td>2</td><td>37</td><td>TRNC</td><td>MTTC:tRNA:5762-5827:(-)</td></tr>
+<tr><td>MT</td><td>5823</td><td>MT</td><td>25470308</td><td>2</td><td>23</td><td>TRNC</td><td>MTTC:tRNA:5762-5827:(-)</td></tr>
+<tr><td>MT</td><td>590</td><td>MT</td><td>17191066</td><td>2</td><td>37</td><td>TRNF</td><td>MTTF:tRNA:579-649:(+)</td></tr>
+<tr><td>MT</td><td>594</td><td>MT</td><td>3796713</td><td>3</td><td>37</td><td>TRNF</td><td>MTTF:tRNA:579-649:(+)</td></tr>
+<tr><td>MT</td><td>5974</td><td>MT</td><td>198283329</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6012</td><td>MT</td><td>123308241</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6176</td><td>MT</td><td>109724253</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6340</td><td>MT</td><td>169510243</td><td>3</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6370</td><td>MT</td><td>156754896</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6381</td><td>MT</td><td>121475769</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6416</td><td>MT</td><td>109381535</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6421</td><td>MT</td><td>150842297</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6431</td><td>MT</td><td>74186147</td><td>3</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>647</td><td>MT</td><td>99755533</td><td>2</td><td>37</td><td>TRNF</td><td>MTTF:tRNA:579-649:(+)</td></tr>
+<tr><td>MT</td><td>6509</td><td>MT</td><td>154020192</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6522</td><td>MT</td><td>30353496</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6525</td><td>MT</td><td>195518313</td><td>3</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>654</td><td>MT</td><td>81061514</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>6554</td><td>MT</td><td>241943096</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6605</td><td>MT</td><td>79691545</td><td>3</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6625</td><td>MT</td><td>63962971</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6681</td><td>MT</td><td>76339062</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6840</td><td>MT</td><td>109770991</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6885</td><td>MT</td><td>181493300</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6898</td><td>MT</td><td>47586099</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>690</td><td>MT</td><td>102019354</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>6917</td><td>MT</td><td>24179922</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6938</td><td>MT</td><td>79254470</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7085</td><td>MT</td><td>566657</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7152</td><td>MT</td><td>89355918</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7180</td><td>MT</td><td>28360230</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7183</td><td>MT</td><td>63614944</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7227</td><td>MT</td><td>126049473</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7240</td><td>MT</td><td>142596683</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7265</td><td>MT</td><td>119456301</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7288</td><td>MT</td><td>31973508</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>744</td><td>MT</td><td>214735578</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>7461</td><td>MT</td><td>45234359</td><td>2</td><td>23</td><td>TRNS1</td><td>MTTS1:tRNA:7446-7517:(-)</td></tr>
+<tr><td>MT</td><td>7512</td><td>MT</td><td>28277161</td><td>2</td><td>23</td><td>TRNS1</td><td>MTTS1:tRNA:7446-7517:(-)</td></tr>
+<tr><td>MT</td><td>7568</td><td>MT</td><td>26948267</td><td>2</td><td>23</td><td>TRND</td><td>MTTD:tRNA:7519-7586:(+)</td></tr>
+<tr><td>MT</td><td>7572</td><td>MT</td><td>27533948</td><td>2</td><td>23</td><td>TRND</td><td>MTTD:tRNA:7519-7586:(+)</td></tr>
+<tr><td>MT</td><td>7579</td><td>MT</td><td>37777554</td><td>2</td><td>23</td><td>TRND</td><td>MTTD:tRNA:7519-7586:(+)</td></tr>
+<tr><td>MT</td><td>7656</td><td>MT</td><td>70097532</td><td>5</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7696</td><td>MT</td><td>106996755</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7715</td><td>MT</td><td>207605924</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>772</td><td>MT</td><td>68752260</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>7726</td><td>MT</td><td>91940889</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7730</td><td>MT</td><td>25205120</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7753</td><td>MT</td><td>93527680</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7766</td><td>MT</td><td>82880878</td><td>3</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7783</td><td>MT</td><td>107323763</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7790</td><td>MT</td><td>49398332</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7811</td><td>MT</td><td>119617332</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7843</td><td>MT</td><td>226576197</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7844</td><td>MT</td><td>183559363</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7892</td><td>MT</td><td>9596215</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7894</td><td>MT</td><td>175356964</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7975</td><td>MT</td><td>122000841</td><td>3</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7992</td><td>MT</td><td>77666298</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8031</td><td>MT</td><td>39863494</td><td>2</td><td>20</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8053</td><td>MT</td><td>188123839</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8094</td><td>MT</td><td>57307223</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8129</td><td>MT</td><td>29088839</td><td>3</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8172</td><td>MT</td><td>20230448</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8311</td><td>MT</td><td>102698057</td><td>2</td><td>23</td><td>TRNK</td><td>MTTK:tRNA:8296-8365:(+)</td></tr>
+<tr><td>MT</td><td>8328</td><td>MT</td><td>113435737</td><td>2</td><td>23</td><td>TRNK</td><td>MTTK:tRNA:8296-8365:(+)</td></tr>
+<tr><td>MT</td><td>8344</td><td>MT</td><td>67101922</td><td>2</td><td>23</td><td>TRNK</td><td>MTTK:tRNA:8296-8365:(+)</td></tr>
+<tr><td>MT</td><td>8349</td><td>MT</td><td>37005294</td><td>2</td><td>23</td><td>TRNK</td><td>MTTK:tRNA:8296-8365:(+)</td></tr>
+<tr><td>MT</td><td>8358</td><td>MT</td><td>70898719</td><td>2</td><td>37</td><td>TRNK</td><td>MTTK:tRNA:8296-8365:(+)</td></tr>
+<tr><td>MT</td><td>8383</td><td>MT</td><td>130357703</td><td>3</td><td>37</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8391</td><td>MT</td><td>209168895</td><td>2</td><td>37</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8445</td><td>MT</td><td>70127627</td><td>2</td><td>37</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8472</td><td>MT</td><td>67572745</td><td>4</td><td>37</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8512</td><td>MT</td><td>114808537</td><td>3</td><td>23</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8533</td><td>MT</td><td>97917632</td><td>2</td><td>23</td><td>ATP8|ATP6</td><td>MTATP8:mRNA:8367-8573:(+)|MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8583</td><td>MT</td><td>198244931</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8586</td><td>MT</td><td>29395565</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8624</td><td>MT</td><td>138884146</td><td>4</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8637</td><td>MT</td><td>7376265</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8640</td><td>MT</td><td>80476389</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8647</td><td>MT</td><td>152988600</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8676</td><td>MT</td><td>30516679</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8880</td><td>MT</td><td>40477188</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8880</td><td>MT</td><td>112473024</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8896</td><td>MT</td><td>145991396</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8898</td><td>MT</td><td>116930895</td><td>3</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8903</td><td>MT</td><td>142510624</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8908</td><td>MT</td><td>24274293</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8928</td><td>MT</td><td>45821651</td><td>3</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8963</td><td>MT</td><td>11546583</td><td>3</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8984</td><td>MT</td><td>72206116</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9007</td><td>MT</td><td>115971271</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9007</td><td>MT</td><td>55210137</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9020</td><td>MT</td><td>68684934</td><td>3</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9023</td><td>MT</td><td>102993269</td><td>3</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9039</td><td>MT</td><td>133862870</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9044</td><td>MT</td><td>8428060</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9046</td><td>MT</td><td>32953325</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9055</td><td>MT</td><td>73231443</td><td>2</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9077</td><td>MT</td><td>128133868</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9083</td><td>MT</td><td>33949075</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9086</td><td>MT</td><td>65878571</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9093</td><td>MT</td><td>22419977</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9095</td><td>MT</td><td>66638827</td><td>4</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9098</td><td>MT</td><td>28059066</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9128</td><td>MT</td><td>81758489</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9131</td><td>MT</td><td>192150611</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9151</td><td>MT</td><td>77565545</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9187</td><td>MT</td><td>127783814</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9222</td><td>MT</td><td>129348378</td><td>2</td><td>23</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9231</td><td>MT</td><td>66627946</td><td>2</td><td>22.5</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9232</td><td>MT</td><td>232318134</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9271</td><td>MT</td><td>111505823</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9362</td><td>MT</td><td>90689990</td><td>2</td><td>23</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9430</td><td>MT</td><td>206869450</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9460</td><td>MT</td><td>153549119</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9585</td><td>MT</td><td>58667107</td><td>2</td><td>23</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>965</td><td>MT</td><td>15198474</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>9683</td><td>MT</td><td>7238807</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9687</td><td>MT</td><td>198918172</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9687</td><td>MT</td><td>102498847</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9728</td><td>MT</td><td>38407612</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9742</td><td>MT</td><td>19597310</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9768</td><td>MT</td><td>10578066</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9768</td><td>MT</td><td>160688327</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9775</td><td>MT</td><td>214488189</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9798</td><td>MT</td><td>74772635</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9836</td><td>MT</td><td>8706880</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9843</td><td>MT</td><td>103747736</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9873</td><td>MT</td><td>105009663</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9920</td><td>MT</td><td>114860215</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9935</td><td>MT</td><td>37861891</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9947</td><td>MT</td><td>156565263</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9957</td><td>MT</td><td>220980198</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+</table><h3>Normal</h3><div align='right'><a href='mito2_structure.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>#MitoChr</th><th>MitoPos</th><th>VarChr</th><th>VarPos</th><th>SupportedReads</th><th>MeanMappingQuality</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
+<tr><td>MT</td><td>10207</td><td>MT</td><td>38898004</td><td>2</td><td>37</td><td>ND3</td><td>MTND3:mRNA:10060-10405:(+)</td></tr>
+<tr><td>MT</td><td>10910</td><td>MT</td><td>33331463</td><td>5</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11054</td><td>MT</td><td>179920442</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11571</td><td>MT</td><td>63982028</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11724</td><td>MT</td><td>33733011</td><td>2</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>11983</td><td>MT</td><td>58589270</td><td>3</td><td>37</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>12482</td><td>MT</td><td>32793960</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12500</td><td>MT</td><td>159304252</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>1272</td><td>MT</td><td>76024540</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>12769</td><td>MT</td><td>64683902</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>12883</td><td>MT</td><td>107955973</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>1293</td><td>MT</td><td>31639934</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>13773</td><td>MT</td><td>65996646</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13821</td><td>MT</td><td>43733950</td><td>3</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13834</td><td>MT</td><td>35162643</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>13990</td><td>MT</td><td>21739743</td><td>2</td><td>37</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
+<tr><td>MT</td><td>14289</td><td>MT</td><td>160431889</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14297</td><td>MT</td><td>52447684</td><td>2</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14336</td><td>MT</td><td>95194802</td><td>3</td><td>37</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
+<tr><td>MT</td><td>14692</td><td>MT</td><td>45985348</td><td>2</td><td>37</td><td>TRNE</td><td>MTTE:tRNA:14675-14743:(-)</td></tr>
+<tr><td>MT</td><td>1505</td><td>MT</td><td>207244815</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>1547</td><td>MT</td><td>20031413</td><td>2</td><td>23</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>15471</td><td>MT</td><td>130934419</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15589</td><td>MT</td><td>69924877</td><td>2</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>15730</td><td>MT</td><td>63441104</td><td>3</td><td>37</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
+<tr><td>MT</td><td>16205</td><td>MT</td><td>59373560</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>16291</td><td>MT</td><td>192540301</td><td>3</td><td>37</td></tr>
+<tr><td>MT</td><td>16421</td><td>MT</td><td>9721763</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>1726</td><td>MT</td><td>102854253</td><td>3</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1748</td><td>MT</td><td>32114463</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>1966</td><td>MT</td><td>130136967</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>204</td><td>MT</td><td>83142911</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>211</td><td>MT</td><td>9811275</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>2148</td><td>MT</td><td>16723115</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2477</td><td>MT</td><td>125772623</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>2637</td><td>MT</td><td>64989861</td><td>2</td><td>37</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
+<tr><td>MT</td><td>3828</td><td>MT</td><td>128818848</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>4016</td><td>MT</td><td>90995399</td><td>2</td><td>37</td><td>ND1</td><td>MTND1:mRNA:3308-4264:(+)</td></tr>
+<tr><td>MT</td><td>4304</td><td>MT</td><td>150912490</td><td>2</td><td>37</td><td>TRNI</td><td>MTTI:tRNA:4264-4332:(+)</td></tr>
+<tr><td>MT</td><td>456</td><td>MT</td><td>37725273</td><td>2</td><td>37</td></tr>
+<tr><td>MT</td><td>5123</td><td>MT</td><td>63242539</td><td>2</td><td>23</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
+<tr><td>MT</td><td>5526</td><td>MT</td><td>44117933</td><td>2</td><td>23</td><td>TRNW</td><td>MTTW:tRNA:5513-5580:(+)</td></tr>
+<tr><td>MT</td><td>5539</td><td>MT</td><td>149904246</td><td>2</td><td>23</td><td>TRNW</td><td>MTTW:tRNA:5513-5580:(+)</td></tr>
+<tr><td>MT</td><td>580</td><td>MT</td><td>116812103</td><td>3</td><td>37</td><td>TRNF</td><td>MTTF:tRNA:579-649:(+)</td></tr>
+<tr><td>MT</td><td>5975</td><td>MT</td><td>33446100</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6015</td><td>MT</td><td>105762965</td><td>2</td><td>23</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>6488</td><td>MT</td><td>142910983</td><td>2</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7163</td><td>MT</td><td>161620002</td><td>3</td><td>37</td><td>COX1</td><td>MTCO1:mRNA:5905-7446:(+)</td></tr>
+<tr><td>MT</td><td>7615</td><td>MT</td><td>89298874</td><td>2</td><td>37</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7723</td><td>MT</td><td>77991875</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7751</td><td>MT</td><td>37506223</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>7762</td><td>MT</td><td>185433929</td><td>2</td><td>23</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
+<tr><td>MT</td><td>8401</td><td>MT</td><td>150937185</td><td>2</td><td>37</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
+<tr><td>MT</td><td>8707</td><td>MT</td><td>21861951</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8961</td><td>MT</td><td>87185338</td><td>2</td><td>23</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>8989</td><td>MT</td><td>202866001</td><td>3</td><td>37</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
+<tr><td>MT</td><td>9305</td><td>MT</td><td>88813839</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9353</td><td>MT</td><td>112257392</td><td>2</td><td>23</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9485</td><td>MT</td><td>101270893</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>961</td><td>MT</td><td>76562998</td><td>2</td><td>37</td><td>RNR1</td><td>MTRNR1:rRNA:650-1603:(+)</td></tr>
+<tr><td>MT</td><td>9663</td><td>MT</td><td>18289149</td><td>2</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+<tr><td>MT</td><td>9854</td><td>MT</td><td>107689657</td><td>3</td><td>37</td><td>COX3</td><td>MTCO3:mRNA:9208-9988:(+)</td></tr>
+</table>    </div>
+    <div class="module"><h2 id="M2">Somatic Mutation</h2>
+    <p>
+    MitoSeek takes the input bam provided by <b>-i</b> as tumor while the other input bam by <b>-j</b> as its control normal. We propose to compare the empirical allele counts between tumor and normal control directly instead of using a genotype caller. MitoSeek can extract empirical allele count for every mitochondria position then compare the allele counts between tumor and normal to determine somatic mutation status. Two parameters (-sp and -sa) control the somatic mutation detection.
+    </p>
+<div align='right'><a href='mito_somatic_mutation.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>#chr</th><th>pos</th><th>ref</th><th>tumorGenotype</th><th>tumorDepth</th><th>normalGenotype</th><th>normalDepth</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
+</table>    </div>
+    <div class="module"><h2 id="M3">Relative Copy Number Estimation</h2>
+    <p>
+    Two methods are implemented in MitoSeek to estimate the relative copy number of mithochondria, namely '<b>byRead</b>' and '<b>byDepth</b>'.<br/>
+    <h4>byRead</h4>
+    <b>CN=Rm/Rt</b>,  where <b>Rm</b> is the reads aligned to mitochondria and passed quality filter and <b>Rt</b> is the total reads passed quality filter. 
+    <h4>byDepth</h4>
+    <b>CN=Dm/Dt</b>, where <b>Dm</b> is the average depth of mitochondria, and <b>Dt</b> is the average of exome or whole genome, depending on your input data.
+    </p>
+<h3>Tumor</h3><div align='right'><a href='mito1_cnv.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
 <tr><th>Method</th><th>mito.reads/mito.ave.depth</th><th>total.reads/total.ave.depth</th><th>CNV</th></tr>
-<tr><td>ByRead</td><td>46110</td><td>5027</td><td>9.17246866918639</td></tr>
-<tr><td>ByDepth</td><td>197.733208617464</td><td>0.00183413044001479</td><td>107807.604248621</td></tr>
-</table>	</div>
-	<div class="module"><h2 id="M5">File list</h2>
-	<p>File list description</p>
-	<b>Not implemented yet</b>
-	</div>
-	</div>
-	</div>
+<tr><td>ByRead</td><td>46110</td><td>5027</td><td>9.172</td></tr>
+<tr><td>ByDepth</td><td>197.733</td><td>0.002</td><td>98866.500</td></tr>
+</table><h3>Normal</h3><div align='right'><a href='mito2_cnv.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>Method</th><th>mito.reads/mito.ave.depth</th><th>total.reads/total.ave.depth</th><th>CNV</th></tr>
+<tr><td>ByRead</td><td>12846</td><td>0</td><td>NA</td></tr>
+<tr><td>ByDepth</td><td>55.485</td><td>0.000</td><td>NA</td></tr>
+</table>    </div>
+    <div class="module"><h2 id="M5">File list</h2>
+    <p>File list description</p>
+    <b>Not implemented yet</b>
+    </div>
+    </div>
+    </div>
 <div class="footer"  style="background-color: #EEE;font-weight:" align='center'>Produced by <a href="https://github.com/riverlee/MitoSeek">MitoSeek</a> (Jiang Li)</div>
 </body>
 </html>

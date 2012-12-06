@@ -1,0 +1,33 @@
+EXAMPLE
+
+This is an example that demonstrates many features of Circos, some
+advanced such as track automation. This example is not meant to be
+used as a study tool, but rather to verify that your installation is
+working.
+
+To create the image, execute the 'run' script (UNIX)
+
+> ./run
+
+The image takes 50 second to generate on a 3.33GHz GHz Intel Xeon
+X5680 machine. Most of it spent arranging labels in the gene name text
+track. See run.out for what to expect.
+
+For Windows users, please see 
+
+http://mkweb.bcgsc.ca/dev/circos/tutorials/lessons/configuration/unix_vs_windows/
+
+to learn how to run Circos. To run the example on Windows
+
+> perl ..\bin\circos -conf etc/circos.conf -debug_group summary,timer
+
+
+TUTORIALS
+
+Tutorials that explain each feature are available for download separately
+
+http://mkweb.bcgsc.ca/dev/circos/software/download/tutorials/
+
+and available online at
+
+http://mkweb.bcgsc.ca/dev/circos/tutorials/lessons/

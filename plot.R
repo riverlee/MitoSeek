@@ -27,8 +27,18 @@ heteroplasmy.gr<-GRanges(seqnames=dat[,1],ranges=IRanges(start=dat[,2],width=1),
 seqlengths(heteroplasmy.gr)<-mito.length
 
 
-ggplot() + layout_circle(heteroplasmy.gr, geom = "ideo", fill = "gray70", radius = 10, trackWidth = 5,space.skip=0) +
-  layout_circle(heteroplasmy.gr, geom = "point", color = "red", radius = 14,trackWidth = 3, grid = TRUE, aes(y = heteroplasmy),space.skip=0) 
+#Read mt features
+dat2<-read.table("~/Dropbox/Documents/projects/github/mitoSeek/Resources/hg19_features.txt")
+dat2<-dat2[dat2[,4]=='mRNA',]
+mt.gr<-GRanges(seqnames=mito.chr,ranges=IRanges(dat2[,1],dat2[,2]),type=dat2[,4],gene=dat2[,6])
+seqlengths(mt.gr)<-mito.length
+
+ggplot() + layout_circle(heteroplasmy.gr, geom = "ideo", fill = "gray70", radius = 15, trackWidth = 8,space.skip=0,col='gray70')+ 
+  layout_circle(mt.gr, geom = "rect", col = 'pink' , fill='pink',radius = 15,trackWidth = 8, grid = FALSE,space.skip=0)+
+  #layout_circle(mt.gr, geom = "rect", aes(fill = rainbow(100)),radius = 10,trackWidth = 5, grid = FALSE,space.skip=0)+
+  layout_circle(mt.gr, geom = "text", col = 'black' ,radius = 15,trackWidth = 8, grid = FALSE,space.skip=0,aes(label=gene,angle=90))
+
+  layout_circle(heteroplasmy.gr, fill=geom = "point", color = "red", radius = 14,trackWidth = 3, grid = TRUE, aes(y = heteroplasmy),space.skip=0) 
 
 
 

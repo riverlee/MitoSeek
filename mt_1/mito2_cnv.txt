@@ -1,0 +1,3 @@
+Method	mito.reads/mito.ave.depth	total.reads/total.ave.depth	CNV
+ByRead	12846	0	NA
+ByDepth	55.485	0.000	NA

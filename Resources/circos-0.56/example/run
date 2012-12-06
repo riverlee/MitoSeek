@@ -1,0 +1,4 @@
+#!/bin/bash
+
+../bin/circos -conf etc/circos.conf -debug_group summary,timer,textplace > run.out
+

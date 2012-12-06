@@ -5,12 +5,67 @@
 #Creat Time: 
 #Vanderbilt Center for Quantitative Sciences
 #############################################
-#use strict;
-#use warnings;
+use strict;
+use warnings;
 #use GD::Graph::histogram;
 #use GD::Graph::boxplot;
 
 
+our $a=1;
+print "Before: a= $a\n";
+test();
+print "After: a= $a\n";
+
+sub test{
+    $a=4;
+}
+
+=a
+for ($! = 0; $! <=200; $!++) {
+        $errText = $!;
+            chomp($errText);
+                printf("%04d: %s\n", $!, $errText) if $! ne "Unknown Error";
+                }
+
+=cc
+use Mitoanno;
+
+my $m=Mitoanno->new();
+#$m->build("rCRS");
+
+#my $pos=14673;
+my $ref="T";
+my $alt="C";
+
+foreach my $pos (14670..14700){
+print join "\t",($pos,$m->annotation($pos,$ref,$alt));
+print "\n";
+}
+
+
+my $pos=10760;
+ $ref="A";
+ $alt="C";
+
+print join "\t",($pos,$m->annotation($pos,$ref,$alt));
+print "\n\n";
+
+=cc
+use Convert;
+
+my $c=Convert->new();
+
+my $pos=752;
+my $dpos=$c->hg19TorCRS($pos);
+print "hg19:pos=$pos\t","rCRS:pos=",$dpos,"\n";
+print "hg19:ref=",$c->hg19ref($pos),"\trCRS:ref=",$c->rCRSref($dpos),"\n";
+
+
+$pos=752;
+$dpos=$c->rCRSTohg19($pos);
+print "hg19:pos=$dpos\t","rCRS:pos=",$pos,"\n";
+print "hg19:ref=",$c->hg19ref($dpos),"\trCRS:ref=",$c->rCRSref($pos),"\n";
+=head comment
 use Getopt::Long;
 
 my $savebam=1;
@@ -39,7 +94,7 @@ my $a=10000000000000000000000000000;
 my $b=1234;
 print $a,"/",$b,"=",$a/$b,"\n\n";
 
-=head a
+
 #Test function seek
 open(IN,"samtools view Examples/TCGA-BH-A0BM-01A-11W-A071-09_HOLD_QC_PENDING_IlluminaGA-DNASeq_exome_MT.bam|") or die $!;
 my $five=5;
