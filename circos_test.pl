@@ -14,9 +14,9 @@ use Circoswrap;
 my $c=Circoswrap->new();
 
 $c->cwd("$currentdir/circosplot");
-$c->heteroplasmy("$currentdir/mt_1/mito1_heteroplasmy.txt");
+$c->datafile("$currentdir/mt_1/mito1_heteroplasmy.txt");
 
-$c->prepare();
+$c->prepare("heteroplasmy");
 $c->plot();
 
 

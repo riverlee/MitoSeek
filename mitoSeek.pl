@@ -1,13 +1,14 @@
 #!/usr/bin/perl
 #############################################
 #Author: Jiang Li
-#email: riverlee2008@gmail.com
+#email:  riverlee2008@gmail.com
 #Creat Time: Tue 23 Oct 2012 01:37:54 PM CDT
 #Vanderbilt Center for Quantitative Sciences
 #############################################
 use strict;
 use warnings;
 #========Begin loading necessary packages===========#
+use GD;
 use GD::Text::Wrap;
 use GD::Graph::boxplot;
 use Statistics::KernelEstimation;
@@ -18,9 +19,11 @@ use File::Path;
 use Cwd 'abs_path';
 use FindBin;
 use List::Util qw(sum min max);
+use lib "$FindBin::RealBin";
 ## load our own packages
 use Convert;
 use Mitoanno;
+use Circoswrap;
 #========End loading necessary packages================#
 
 #========Begin defining global variables===============#
@@ -38,7 +41,7 @@ my %genomebed                     = (                                           
 my $totalgenomebases              =3095677412;                                       #Total human genome size, used to calculate to average depth
 my $totalexonbases                =70757781;                                         #Total human exon size, used to calculate the average depth
 my %acceptedgenomelength          = ( "hg19" => 16571, "rCRS" => 16569 );            #The total mitochondrial genome size of hg19 and rCRS
-my $samtools                      = "samtools";                                      #Where is the samtools file
+my $samtools                      = "$FindBin::Bin/Resources/samtools/samtools";                                      #Where is the samtools file
 
 my $isbam                         = 1;                                               #Default is 1, will auto determined from the $inbam1 file
 my $ischr                         = 0;                                               #Default is 0, means the chromosomes are named without prefix chr, will auto determined from the $inbam1's header
@@ -53,6 +56,8 @@ my $flag_first_fragment           = 0x0040;
 my $flag_second_fragment          = 0x0080;
 
 my $debug = 1;
+
+
 # Other variables will be used as output file name
 my $folder                             = undef;                              #determine from the $inbam1 file, and will create this folder, all the report files will be put in this folder
 my $mitobam1                           = "mito1.bam";                        #Reads aligned to mitochondria from inbam1, use this as output file name
@@ -62,7 +67,7 @@ my $mitostart                          = 0;                                  #Mi
 my $mitoend                            = $acceptedgenomelength{'hg19'};      #Mitochondrial region end for the analysis
 
 my $perbasequality_figure1             = "per_base_quality1.png";            #
-my $perbasequality_table1              = "perl_base_quality_table1.txt";     #
+my $perbasequality_table1              = "per_base_quality_table1.txt";     #
 my $mappingquality_figure1             = "mapping_quality1.png";             #
 my $mappingquality_table1              = "mapping_quality_table1.txt";       #
 my $depthdistribution_figure1          = "depth_distribution1.png";          #
@@ -70,7 +75,7 @@ my $depthdistribution_table1           = "depth_distribution_table1.png";    #
 my $templatelengthdistribution_figure1 = "template_length_distribution1.png";#
 my $templatelengthdistribution_table1  = "template_length_distribution_table1.txt";
 my $perbasequality_figure2             = "per_base_quality2.png";             #
-my $perbasequality_table2              = "perl_base_quality_table2.txt";      #
+my $perbasequality_table2              = "per_base_quality_table2.txt";      #
 my $mappingquality_figure2             = "mapping_quality2.png";              #
 my $mappingquality_table2              = "mapping_quality_table2.txt";        #
 my $depthdistribution_figure2          = "depth_distribution2.png";           #
@@ -84,8 +89,12 @@ my $mitobasecall1                      = "mito1_basecall.txt";
 my $mitobasecall2                      = "mito2_basecall.txt";
 my $mitoheteroplasmy1                  = "mito1_heteroplasmy.txt";
 my $mitoheteroplasmy2                  = "mito2_heteroplasmy.txt";
-my $mitostructure1                     = "mito1_structure.txt";
-my $mitostructure2                     = "mito2_structure.txt";
+
+my $mitostructure1                     = "mito1_structure_discordant_mates.txt";
+my $mitostructure2                     = "mito2_structure_discordant_mates.txt";
+my $mitostructuredeletion1             = "mito1_structure_large_deletion.sam";
+my $mitostructuredeletion2             = "mito2_structure_large_deletion.sam";
+
 my $mitocnv1                           = "mito1_cnv.txt";       #Result of cnv of mito1
 my $mitocnv2                           = "mito2_cnv.txt";
 my $mitodepth1                         = "mito1_depth.txt";     #Store depth of mito1
@@ -94,6 +103,19 @@ my $sampledepthi                       = "sample_i_depth.txt";  #store depth of 
 my $sampledephtj                       = "sample_j_depth.txt";
 my $mitosomatic                        = "mito_somatic_mutation.txt";
 my $mitoreport                         = "mitoSeek.html";
+
+#circos related
+my $mitocircosheteroplasmyfigure1      = "mito1_heteroplasmy_circos.png";
+my $mitocircosheteroplasmyconfig1      = "mito1_heteroplasmy_circos.conf";
+my $mitoheteroplasmytextoutput1        = "mito1_heteroplasmy_circos.text.txt";
+my $mitoheteroplasmyscatteroutput1     = "mito1_heteroplasmy_circos.scatter.txt";
+my $mitocircosheteroplasmyfigure2      = "mito2_heteroplasmy_circos.png";
+my $mitocircosheteroplasmyconfig2      = "mito2_heteroplasmy_circos.conf";
+my $mitoheteroplasmytextoutput2        = "mito2_heteroplasmy_circos.text.txt";
+my $mitoheteroplasmyscatteroutput2     = "mito2_heteroplasmy_circos.scatter.txt";
+my $mitocircossomaticfigure            = "mito_somatic_mutation_circos.png";
+my $mitocircossomaticconfig            = "mito_somatic_mutation_circos.config";
+my $mitosomatictextoutput              = "mito_somatic_mutation_circos.text.txt";
 
 my $mitooffset1                        = 33;                            #Not used currently
 my $mitooffset2                        = 33;
@@ -105,6 +127,7 @@ my $totalbed                           = $exonbed{'withchr'};            #Defaul
 #Our own defined class, will be used in the _determine_heteroplasmy
 my $convert = Convert->new();                                           #Handle h19 position and rCRS position convertion
 my $mitoanno = Mitoanno->new();                                         #Annotating a give position on mitochondria
+my $circos   = Circoswrap->new();
 #========End defining global variables===================#
 
 #========Begin defining other variables==================#
@@ -124,7 +147,7 @@ my $sb                = 10;         #remove all sites with strand bias score in 
 my $cn                = 0;          #Estimate relative copy number of input bam(s),does not work with mitochondria targeted sequencing bam files
 my $sp                = 5;          #somatic mutation detection threshold, [int]% of alternative allele observed in tumor, default=5;
 my $sa                = 3;          #somatic mutation detection trheshold, int number of alternative allele observed in tumor.
-my $cs                = 0;          #Produce circus plot input files and circus plot figure for somatic mutations
+my $cs                = 1;          #Produce circus plot input files and circus plot figure for somatic mutations
 my $regionbed         = undef;      #A bed file that contains the regions mitoSeek will perform analysis on
 my $inref             = 'hg19';     #The reference used in the input bam files
 my $outref            = 'hg19';     #The output files used in the reference rCRS;
@@ -178,7 +201,6 @@ _make_report();
 
 #============Begin END section============================#
 END {
-    
     if($?){
         print "Program exist with Error \n";
     }else{
@@ -280,6 +302,7 @@ sub _initialVal{
     }
     
     $mitoanno->build($outref);
+    $mitoend=$acceptedgenomelength{$inref};
 }
 
 #Print out steps will be analyzed.
@@ -311,8 +334,8 @@ sub _print_analysis_steps{
         print "    ",$index,".1,Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)\n";
         print "    ",$index++,".2,Detecting heteroplasmy from '$mitobam2' (Output: $mitoheteroplasmy2)\n";
         
-        print "    ",$index,".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1)\n";
-        print "    ",$index++,".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2)\n";
+        print "    ",$index,".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1 | $mitostructuredeletion1)\n";
+        print "    ",$index++,".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2 | $mitostructuredeletion2)\n";
         
         print "    ",$index++,",Detecting somatic mutations (Output: $mitosomatic)\n";
         
@@ -320,7 +343,6 @@ sub _print_analysis_steps{
             print "    ",$index,".1,Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)\n";
             print "    ",$index++,".2,Estimating relative copy number of '$mitobam2' (Output: $mitocnv2)\n";
         }
-        
     }else{
         print "    ",$index++,",Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)\n";
         print "    ",$index++,",Checking Reads number in '$mitobam1'\n";
@@ -331,13 +353,12 @@ sub _print_analysis_steps{
             print "    ",$index++,",Getting quality metrics on '$mitobam1' \n";
         }
         print "    ",$index++,",Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)\n";
-        print "    ",$index++,",Detecting structure variants from '$mitobam1' (Output: $mitostructure1)\n";
+        print "    ",$index++,",Detecting structure variants from '$mitobam1' (Output: $mitostructure1 | $mitostructuredeletion1)\n";
         
         if($cn && $type!=4){
             print "    ",$index++,",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)\n";
         }
      }
-     
     print "    ",$index++,",Generating report (Output: $mitoreport)\n";
     print "=" x 50, "\n";
 }
@@ -366,8 +387,6 @@ sub _main{
             $totalbed=$genomebed{'withoutchr'};
         }
     }
-    
-    
     
     if($inbam2){
         _info($index.".1,Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)");
@@ -400,14 +419,18 @@ sub _main{
             $mitobam1,                  $isbam,
             $mitopileup1,               $regionbed,
             $perbasequality_figure1,    $mappingquality_figure1,
-            $depthdistribution_figure1, $templatelengthdistribution_figure1
+            $depthdistribution_figure1, $templatelengthdistribution_figure1,
+            $perbasequality_table1,     $mappingquality_table1,
+            $depthdistribution_table1,  $templatelengthdistribution_table1
             );
             _info($index++.".2,Getting quality metrics on '$mitobam2' ");
             $mitooffset2 = _mito_qc_stat(
             $mitobam2,                  $isbam,
             $mitopileup2,               $regionbed,
             $perbasequality_figure2,    $mappingquality_figure2,
-            $depthdistribution_figure2, $templatelengthdistribution_figure2
+            $depthdistribution_figure2, $templatelengthdistribution_figure2,
+            $perbasequality_table2,     $mappingquality_table2,
+            $depthdistribution_table2,  $templatelengthdistribution_table2
             );
         }
         
@@ -416,22 +439,54 @@ sub _main{
         _info($index++.".2,Detecting heteroplasmy from '$mitobam2' (Output: $mitoheteroplasmy2)");
         _determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,$mitoheteroplasmy2 );
         
+        #Plot heteroplasmy ciros plot
+        if($producecircusplot){
+            $circos->build($outref);
+            $circos->circosoutput($mitocircosheteroplasmyfigure1);
+            $circos->configoutput($mitocircosheteroplasmyconfig1);
+            $circos->datafile($mitoheteroplasmy1);
+            $circos->textoutput($mitoheteroplasmytextoutput1);
+            $circos->scatteroutput($mitoheteroplasmyscatteroutput1);
+            $circos->cwd(getcwd()."/circos");
+            $circos->prepare("heteroplasmy");
+            $circos->plot();
+            
+            #For mito2
+            $circos->circosoutput($mitocircosheteroplasmyfigure2);
+            $circos->configoutput($mitocircosheteroplasmyconfig2);
+            $circos->datafile($mitoheteroplasmy2);
+            $circos->textoutput($mitoheteroplasmytextoutput2);
+            $circos->scatteroutput($mitoheteroplasmyscatteroutput2);
+            $circos->prepare("heteroplasmy");
+            $circos->plot();
+            
+        }
         
-        _info($index.".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1)");
-        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$mitostructure1 );
-        _info($index++.".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2)");
-        _structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,$mitostructure2 );
+        _info($index.".1,Detecting structure variants from '$mitobam1' (Output: $mitostructure1 | $mitostructuredeletion1)");
+        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$strflagmentsize,$mitostructure1,$mitostructuredeletion1);
+        _info($index++.".2,Detecting structure variants from '$mitobam2' (Output: $mitostructure2 | $mitostructuredeletion2)");
+        _structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,$strflagmentsize,$mitostructure2,$mitostructuredeletion2);
         
         _info($index++.",Detecting somatic mutations (Output: $mitosomatic)");
          _determine_somatic( $mitobasecall1, $mitobasecall2, $sp, $sa, $isall,$mitosomatic );
+         
+         if($cs){
+            $circos->build($outref);
+            $circos->changeconfig("somatic");
+            $circos->circosoutput($mitocircossomaticfigure);
+            $circos->configoutput($mitocircossomaticconfig);
+            $circos->datafile($mitosomatic);
+            $circos->textoutput($mitosomatictextoutput);
+            $circos->cwd(getcwd()."/circos");
+            $circos->prepare("somatic");
+            $circos->plot();
+         }
          
           if($cn && $type!=4){
             _info($index++.",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)");
             _wrap_mito_cnv($mitobam1,$inbam1,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth1,$sampledepthi,$mitocnv1);
             _info($index++.",Estimating relative copy number of '$mitobam2' (Output: $mitocnv2)");
             _wrap_mito_cnv($mitobam2,$inbam2,$mitobases,$totalbases,$isbam,$mbq,$mmq,$totalbed,$mitodepth2,$sampledephtj,$mitocnv2);
-            
-     
          }
         
 
@@ -456,15 +511,28 @@ sub _main{
             $mitobam1,                  $isbam,
             $mitopileup1,               $regionbed,
             $perbasequality_figure1,    $mappingquality_figure1,
-            $depthdistribution_figure1, $templatelengthdistribution_figure1
+            $depthdistribution_figure1, $templatelengthdistribution_figure1,
+            $perbasequality_table1,     $mappingquality_table1,
+            $depthdistribution_table1,  $templatelengthdistribution_table1
             );
         }
         _info($index++.",Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)");
         _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,$mitoheteroplasmy1 );
+        if($producecircusplot){
+            $circos->build($outref);
+            $circos->circosoutput($mitocircosheteroplasmyfigure1);
+            $circos->configoutput($mitocircosheteroplasmyconfig1);
+            $circos->datafile($mitoheteroplasmy1);
+            $circos->textoutput($mitoheteroplasmytextoutput1);
+            $circos->scatteroutput($mitoheteroplasmyscatteroutput1);
+            $circos->cwd(getcwd()."/circos");
+            $circos->prepare("heteroplasmy");
+            $circos->plot();
+         }
         
-        _info($index++.",Detecting structure variants from '$mitobam1' (Output: $mitostructure1)");
-        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$mitostructure1 ); 
-        
+        _info($index++.",Detecting structure variants from '$mitobam1' (Output: $mitostructure1 | $mitostructuredeletion1)");
+        _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,$strflagmentsize,$mitostructure1,$mitostructuredeletion1); 
+    
          if($cn && $type!=4){
             _info($index++.",Estimating relative copy number of '$mitobam1' (Output: $mitocnv1)");
             
@@ -540,9 +608,11 @@ sub _number_of_reads_in_bam {
 #$mmq: minimal mapping quality
 #$regionbed: a bed file containing analyzed regions
 #$str: structure cutoff, means at least 'str' spanning reads supporting this variants
-#$outfile: Store the structure variants in the output file
+#$strflagmentsize. large deletion cutoff
+#$outfile: Store the structure variants in the output file (discordantly mapped mates)
+#$outfile2: store large deletion variants in the output file
 sub _structure_variants {
-    my ( $inmitobam, $isbam, $mmq, $regionbed, $str, $outfile ) = @_;
+    my ( $inmitobam, $isbam, $mmq, $regionbed, $str,$strflagmentsize, $outfile,$outfile2 ) = @_;
     my %temphash;
     if ($isbam) {
         open( IN, "$samtools view -L $regionbed -q $mmq $inmitobam |" )
@@ -553,6 +623,7 @@ sub _structure_variants {
           or die $!;
     }
     open( OUT, ">$outfile" ) or die $!;
+    open(OUT2,">$outfile2") or die $!;
     print OUT join "\t",
       (
         "#MitoChr",       "MitoPos",
@@ -567,11 +638,13 @@ sub _structure_variants {
         ) = split "\t";
 
         if ( $rnext ne "*" && $rnext ne "=" && $rnext ne $rname ) {
-
             #print OUT $_;
             my $k = join "\t", ( $rname, $pos, $rnext, $pnext );
             $temphash{$k}->{'count'}++;
             push @{ $temphash{$k}->{'mapping'} }, $mapq;
+        }
+        if($tlen=~/\d+/ && abs($tlen)>$strflagmentsize){ #output candidate large delete changes
+            print OUT2 $_;
         }
     }
     close IN;
@@ -594,7 +667,7 @@ sub _structure_variants {
             
             print OUT join "\t",
               (
-                "MT",$convertloc,$rnametmp,$pnexttmp,
+                "MT",$convertloc,$rnexttmp,$pnexttmp,
                 $temphash{$k}->{'count'},
                 _mymean( $temphash{$k}->{'mapping'} )
               );
@@ -828,9 +901,8 @@ sub _mito_qc_stat {
         $perbasequality_table,     $mappingquality_table,
         $depthdistribution_table,  $templatelengthdistribution_table
     ) = @_;
-    my $maxreads = 1000000
-      ; #In case some alignment on mitochondrial is extremly large that will take too much memory and then crash ymy server.
-    $maxreads = 1000 if ($debug);
+    my $maxreads = 100000; #In case some alignment on mitochondrial is extremly large that will take too much memory and then crash ymy server.
+    $maxreads = 10 if ($debug);
 
     if ($isbam) {
         open( IN, "$samtools view -L $regionbed $inmitobam |" ) or die $!;
@@ -864,14 +936,12 @@ sub _mito_qc_stat {
     @scores = sort { $a <=> $b } @scores;
     my $lowestChar = $scores[0];
     if ( $lowestChar < 33 ) {
-
         #Generate a warnings
         _warn(
 "No known encodings with chars < 33 (Yours was $lowestChar), However, we will use Sanger / Illumina 1.9 encoding instead"
         );
     }
     elsif ( $lowestChar < 59 ) {
-
         #it's Sanger/Illumina 1.9 encoding, don't need to change
     }
     elsif ( $lowestChar < 64 ) {
@@ -913,7 +983,6 @@ sub _mito_qc_stat {
 
         #Store template length
         if ($isparied) {
-
             #Only store leftmost fragment's
             if ( $tlen =~ /^\d/ && $tlen != 0 ) {
                 push @tlen, $tlen;
@@ -943,14 +1012,14 @@ sub _mito_qc_stat {
         \@tlen, 800, 600, 'Length in bp', 'Density',
         'Template length distribution',
         $templatelengthdistribution_figure,
-        0, undef, 30
+        0, undef, 30,$templatelengthdistribution_table
     ) if ($isparied);
 
     #2) persequencequality density distribution
     _density(
         \@persequencequality, 800, 600, 'Quality score',
         'Density', "Per sequence quality socre distribution ($encoding)",
-        $mappingquality_figure, 0, undef, 30
+        $mappingquality_figure, 0, undef, 30,$mappingquality_table
     );
 
     #3) perbasequality boxplot
@@ -958,7 +1027,7 @@ sub _mito_qc_stat {
         \@perbasequality, 800, 600, 'Bases',
         'Quality score',
         "Per base quality socre distribution ($encoding)",
-        $perbasequality_figure, undef, undef, 30
+        $perbasequality_figure, undef, undef, 30,$perbasequality_table
     );
 
     #Plot depth distribution
@@ -992,7 +1061,7 @@ sub _mito_qc_stat {
         print $i, "\n";
     }
     _density( \@depth, 800, 600, 'Depth', 'Density', 'Depth distribution',
-        $depthdistribution_figure, 0, undef, 30 );
+        $depthdistribution_figure, 0, undef, 30 ,$depthdistribution_table);
 
     return ($offset);
 }
@@ -1002,7 +1071,7 @@ sub _mito_qc_stat {
 sub _boxplot {
     my (
         $data,  $width,  $height, $xlabel, $ylabel,
-        $title, $output, $xmin,   $xmax,   $nbin
+        $title, $output, $xmin,   $xmax,   $nbin, $outputtable
     ) = @_;
     my $graph = new GD::Graph::boxplot( $width, $height );
     $graph->set(
@@ -1023,9 +1092,57 @@ sub _boxplot {
         t_margin          => 10,
         b_margin          => 10,
         l_margin          => 10,
-        r_margin          => 20
+        r_margin          => 20,
+        do_stats              => 0,
+        box_fill            =>1,
+        dclrs             => ['lgreen','lred'],  #will be the color in the box of 25%-75%
+        fgclr             => 'dblue' ,        #color for the outlier, etc
     ) or warn $graph->error;
-    my $gd = $graph->plot($data) or die $graph->error;
+    $graph->set_title_font(gdGiantFont);
+    $graph->set_x_label_font(gdMediumBoldFont); 
+    $graph->set_y_label_font(gdMediumBoldFont);
+    #$graph->set_x_axis_fobbnnnnt(gdMediumBoldFont);
+    $graph->set_y_axis_font(gdMediumBoldFont);
+    $graph->set_values_font(gdMediumBoldFont);
+    
+    #Customed calculate the stat for boxplot
+    my $newdata=[$data->[0],];
+    for(my $i=0;$i<@{$data->[1]};$i++){
+          my $stat = Statistics::Descriptive::Full->new();
+          my $value=$data->[1]->[$i];
+          my $j;	# declaration required for comparison below
+          for($j=0; defined $value->[$j]; $j++){
+            $stat->add_data($value->[$j]);
+          }
+         my $upper = $stat->percentile(75);
+         my $lower = $stat->percentile(25 );
+         my $meanv = $stat->mean();
+         my $medianv = $stat->median();
+         my $highest = $stat->max();
+         my $lowest  = $stat->min();
+         $newdata->[1]->[$i]=[$meanv,$lowest,$lower,$medianv,$upper,$highest];
+    }
+    
+    # Output data for the plot
+    open(TMP,">$outputtable") or die $!;
+    print TMP "#Data for the boxplot\n";
+    print TMP join "\t",("Stat",@{$newdata->[0]});
+    print TMP "\n";
+    print TMP join "\t",("Mean",map {$_->[0]} @{$newdata->[1]});
+    print TMP "\n";
+    print TMP join "\t",("Lowest",map {$_->[1]} @{$newdata->[1]});
+    print TMP "\n";
+    print TMP join "\t",("Per25",map {$_->[2]} @{$newdata->[1]});
+    print TMP "\n";
+    print TMP join "\t",("Median",map {$_->[3]} @{$newdata->[1]});
+    print TMP "\n";
+    print TMP join "\t",("Per75",map {$_->[4]} @{$newdata->[1]});
+    print TMP "\n";
+    print TMP join "\t",("Highest",map {$_->[5]} @{$newdata->[1]});
+    print TMP "\n";
+    close TMP;
+    
+    my $gd = $graph->plot($newdata) or die $graph->error;
     open( IMG, ">$output" ) or die $!;
     binmode IMG;
     print IMG $gd->png;
@@ -1043,11 +1160,11 @@ sub _boxplot {
 #$output ---output figure name
 #$xmin -----minimun value allowed at x-axis
 #$xmax -----maximun value allowed at x-axis
-#$bin  -----How many bins at x-axis,Default is 20
+#$bin  -----How many bins at x-axis,Default is 30
 sub _density {
     my (
         $data,  $width,  $height, $xlabel, $ylabel,
-        $title, $output, $xmin,   $xmax,   $nbin
+        $title, $output, $xmin,   $xmax,   $nbin,$outputtable
     ) = @_;
     my $s = Statistics::KernelEstimation->new();
     foreach my $x ( @{$data} ) {
@@ -1066,6 +1183,7 @@ sub _density {
     $nbin = 30 if ( !defined($nbin) || $nbin <= 0 );
 
     my @plot_data;
+    
 
 #If nbins is very large, this may cause a lots of bins if the range of $data is large, leading to ugly figure
     for ( my $x = $min ; $x <= $max ; $x += ( $max - $min ) / $nbin ) {
@@ -1074,7 +1192,7 @@ sub _density {
         push @{ $plot_data[0] }, $x;
         push @{ $plot_data[1] }, $s->pdf( $x, $w );
     }
-
+  
     #print $max,"\n";
     my $graph = new GD::Graph::lines( $width, $height );
     $graph->set(
@@ -1092,8 +1210,17 @@ sub _density {
         t_margin          => 10,
         b_margin          => 10,
         l_margin          => 10,
-        r_margin          => 20
+        r_margin          => 20,
+        line_width        => 3
     ) or warn $graph->error;
+    $graph->set_title_font(gdGiantFont);
+    $graph->set_x_label_font(gdMediumBoldFont); 
+    $graph->set_y_label_font(gdMediumBoldFont);
+    $graph->set_x_axis_font(gdMediumBoldFont);
+    $graph->set_y_axis_font(gdMediumBoldFont);
+    $graph->set_values_font(gdMediumBoldFont);
+   
+    
     my $gd = $graph->plot( \@plot_data ) or die $graph->error;
 
     #Calculate the mean, median, sd from the $data
@@ -1109,21 +1236,38 @@ sub _density {
     my $minv   = sprintf( "%.3f", min( @{$data} ) );
     my $maxv   = sprintf( "%.3f", max( @{$data} ) );
     my $text   = <<EOSTR;
-Min.=$minv
-25%=$v25
-Mean=$mean
-Median=$median
-75%=$v75
-Max.=$maxv
-Var=$var
+Min. = $minv
+25%   = $v25
+Mean = $mean
+Median = $median
+75% = $v75
+Max. = $maxv
+Var = $var
 EOSTR
+
+    # Print out the data for the plot
+    open(TMP,">$outputtable") or die $!;
+    print TMP "#Summary of the data\n";
+    print TMP join "\t",("#Min.","25%","Mean","Median","75%","Max.","Var\n");
+    print TMP join "\t",("#$minv",$v25,$mean,$median,$v75,$maxv,$var);
+    print TMP "\n";
+    print TMP "#Data for density plot\n";
+    print TMP "#X\tY(density)\n";
+    for (my $i=0;$i<@{$plot_data[0]};$i++){
+        print TMP join "\t",($plot_data[0]->[$i],$plot_data[1]->[$i]);
+        print TMP "\n";
+    }
+    close TMP;
+    
     my $gdat = GD::Text::Wrap->new(
         $gd,
         text       => $text,
         line_space => 4,
         align      => 'left',
-        width      => 5
+        width      => 200,
+        preserve_nl=>1
     );
+    $gdat->set_font(gdMediumBoldFont);
 
     #$gdat->draw(10,140);
     $gdat->draw( $width / 2, $height / 5 );
@@ -1198,9 +1342,7 @@ sub _get_mitochondrial_bed {
         _error("No mithochondrial chromosome detected from the header");
         exit(1);
     }
-    open( OUT, ">$outbed" );
-    print OUT join "\t", ( $m, 1, $len );
-    close OUT;
+   
     if ( $len == 16569 && $inref eq "hg19" ) {
         _warn(
 "It seems like the mitochondrial reference used in the bam is rCRS, not hg19"
@@ -1212,6 +1354,14 @@ sub _get_mitochondrial_bed {
 "It seems like the mitochondrial reference used in the bam is hg19, not rCRS"
         );
     }
+    
+    if($len != 16569 && $len !=16571){
+       _error("Mithochondrial genome length ($len) is invalid");
+       exit(1);
+    }
+    open( OUT, ">$outbed" );
+    print OUT join "\t", ( $m, 0, $len );
+    close OUT;
 }
 
 #Determine heteroplasmy mutations from a basecall format file with given parameters
@@ -1243,16 +1393,18 @@ sub _determine_heteroplasmy {
         $atcg{T} = $forward_T + $reverse_T;
         $atcg{C} = $forward_C + $reverse_C;
         $atcg{G} = $forward_G + $reverse_G;
-        my @atcg         = sort { $atcg{$b} <=> $atcg{$a} } keys %atcg;
+        my @atcg         = sort { $atcg{$b} <=> $atcg{$a} } keys %atcg; #large to small
         my $major_allele = $atcg[0];
         my $minor_allele = $atcg[1];
         my $totaldepth= $atcg{A} + $atcg{C} + $atcg{T} + $atcg{G} ;
+        
+        next if ($totaldepth <= $depth);  #only have sufficiant depth will conduct heteroplasmy detection
+        
         #Calculate heteroplasmy ratio
         my $heteroplasmy = 0;
         if ($isall) {
             $heteroplasmy =
-              _formatnumeric($atcg{$minor_allele} /
-              ( $atcg{A} + $atcg{C} + $atcg{T} + $atcg{G} ));
+              _formatnumeric($atcg{$minor_allele} /$totaldepth);
         }
         else {
             $heteroplasmy =
@@ -1265,7 +1417,7 @@ sub _determine_heteroplasmy {
         if ( $heteroplasmy > 0 ) {
             my $n = 0;
             if ($isall) {
-                $n = $atcg{A} + $atcg{C} + $atcg{T} + $atcg{G};
+                $n = $totaldepth;
             }
             else {
                 $n = $atcg{$major_allele} + $atcg{$minor_allele};
@@ -1275,7 +1427,7 @@ sub _determine_heteroplasmy {
 
         #Stat values could be
         #0 (not a heteroplasmy mutation)
-        #1 (show heteroplasmy, but not pass the cutoff)
+        #1 (show heteroplasmy, but not pass the cutoff) (hp,ha,depth)
         #2 (heteroplasmy mutation pass cutoff and not have strong strand bias)
         #3 (heteroplasmy mutation pass cutoff but show strong strand bias)
         my $stat = 0;
@@ -1283,7 +1435,7 @@ sub _determine_heteroplasmy {
 
 #determine 1 or 2 at this stage (for value 3, need to first calculate strand bias across all the site, and then modify those with stat=2, only if when $sb is not equal to 0)
             #if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha ) {
-            if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha && $totaldepth >= $depth) {  #use $depth which is not passed by function
+            if ( $heteroplasmy > $hp / 100 && $atcg{$minor_allele} > $ha ) {  #use $depth which is not passed by function
                 $stat = 2;
             }
             else {
@@ -1322,7 +1474,7 @@ sub _determine_heteroplasmy {
         $result{$loc}->{'minor_allele_count'} = $atcg{$minor_allele};
 
         #calculate strand bias if $sb>0
-        if ( $sb > 0 ) {
+        #if ( $sb > 0 ) {
             my (
                 $forward_primary_allele_count,
                 $forward_non_primary_allele_count,
@@ -1339,7 +1491,7 @@ sub _determine_heteroplasmy {
             $tmp{'G'}->{'forward'} = $forward_G;
             $tmp{'G'}->{'reverse'} = $reverse_G;
 
-#Now whether isall=0 or 1, strand bias is calculated based on major allele and minor allele
+#Now  no matter isall=0 or 1, strand bias is calculated based on major allele and minor allele
             (
                 $forward_primary_allele_count,
                 $forward_non_primary_allele_count,
@@ -1359,7 +1511,7 @@ sub _determine_heteroplasmy {
                 $reverse_primary_allele_count,
                 $reverse_non_primary_allele_count
             );
-        }
+        #} #sb calculate
     }
 
     #Re-loop the @result and write out
@@ -1405,11 +1557,10 @@ sub _determine_heteroplasmy {
         "95\%ci_lower",       "95\%ci_upper",
         "major_allele",       "minor_allele",
         "major_allele_count", "minor_allele_count",
-        "gene","genedetail","exonic_function","aminochange"
+        "gene","genedetail","exonic_function","aminochange",
+        "strand_bias"
       );
-    if ($sb) {
-        print OUT "\tstrand_bias";
-    }
+    
     print OUT "\n";
 
     foreach my $loc ( sort { $a <=> $b } keys %result ) {
@@ -1484,7 +1635,11 @@ sub _ci {
 
 sub _formatnumeric{
     my ($i) = @_;
-    return sprintf("%.3f",$i);
+    my $r=sprintf("%.3f",$i);
+    if($r eq '0.000' && $i!=0){#use scientific notation
+        $r=sprintf("%.3e",$i);
+    }
+    return $r;
 }
 
 #Give a bam/sam file($inbam) and a mithochondrial bed file($mbed),
@@ -1543,9 +1698,8 @@ sub _determine_somatic {
         my $tumorDP    = "";
         my $issomatic  = 0;
 
-        if ( $normal{$loc}->{'minor_allele_count'} == 0 ) {
+        if ( $normal{$loc}->{'minor_allele_count'} == 0 ) { #though the minor allele in normal is 0, but the major allele in normal and turmor may different
             if ( $tumor{$loc}->{'minor_allele_count'} == 0 ) {
-
 #If at this site, both normal and tumor are not heteroplasmy, then determine whether their
 #major_allele is the same
                 if ( $normal{$loc}->{'major_allele'} ne
@@ -1554,12 +1708,10 @@ sub _determine_somatic {
                     #a somatic mutation
                     $issomatic = 1;
                 }
-            }
-            else {
+            }else {
                 if ( $normal{$loc}->{'major_allele'} ne
                     $tumor{$loc}->{'major_allele'} )
                 {
-
 #No matter the minor_allele_count meet the cutoff of not, it is already a somatic mutation
                     $issomatic = 1;
                 }
@@ -1687,11 +1839,11 @@ sub _pileup {
     my $comm = "";
     if ($isbam) {
         $comm =
-"$samtools mpileup -l $regionbed -Q $mbq -f $refseq $inbam > $outpileup";
+"$samtools mpileup -l $regionbed -Q $mbq -f $refseq $inbam > $outpileup 2>/dev/null";
     }
     else {
         $comm =
-"$samtools view -Su $inbam | $samtools mpileup -l $regionbed -Q $mbq -f $refseq - > $outpileup";
+"$samtools view -Su $inbam | $samtools mpileup -l $regionbed -Q $mbq -f $refseq - > $outpileup 2>/dev/null";
     }
     _run($comm);
 }
@@ -1889,6 +2041,9 @@ sub _warn {
 
 sub _run {
     my ($comm) = @_;
+    if($comm !~/>/){  #suppress the output
+        $comm.=">/dev/null";
+    }
     system($comm) == 0 or die $!;
 }
 
@@ -2073,9 +2228,9 @@ sub _make_report {
   }
   
   #image-container { 
-min-width:800px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
-height:47px; 
-padding:10px 5px; 
+min-width:1600px; /* width of 2 images (1600px) plus images' padding and border (0px) plus images' margin (0px) */ 
+height:600px; 
+padding:0px 0px; 
 margin:0; 
 border:0px solid #ffffff; 
 background-color:#ffffff; 
@@ -2091,18 +2246,18 @@ margin-bottom:10px
 
 #image-container img { 
 display:block; 
-width:400px; 
-height:300px; 
-padding:5px; 
+width:800px; 
+height:600px; 
+padding:0px; 
 border:1px solid #d3d2d2; 
 margin:auto; 
 background-color:#fff; 
 } 
 
 #image-container1 { 
-min-width:600px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
-height:47px; 
-padding:10px 5px; 
+min-width:800px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:600px; 
+padding:0px 0px; 
 margin:0; 
 border:0px solid #ffffff; 
 background-color:#ffffff; 
@@ -2118,13 +2273,69 @@ margin-bottom:10px
 
 #image-container1 img { 
 display:block; 
-width:600px; 
-height:450px; 
+width:800px; 
+height:600px; 
 padding:5px; 
 border:1px solid #d3d2d2; 
 #margin:auto; 
 background-color:#fff; 
+}
+
+
+#image-container2 { /*for cirsocs*/ 
+min-width:1600px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:800px; 
+padding:0px 0px; 
+margin:0; 
+border:0px solid #ffffff; 
+background-color:#ffffff; 
+list-style-type:none; 
 } 
+  
+#image-container2 li { 
+width:50%; 
+float:left; 
+text-align: center;
+margin-bottom:10px
+} 
+
+#image-container2 img { 
+display:block; 
+width:800px; 
+height:800px; 
+padding:5px; 
+border:1px solid #d3d2d2; 
+#margin:auto; 
+background-color:#fff; 
+}
+
+#image-container3 { /*for cirsocs*/ 
+min-width:1000px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:1000px; 
+padding:0px 0px; 
+margin:0; 
+border:0px solid #ffffff; 
+background-color:#ffffff; 
+list-style-type:none; 
+} 
+  
+#image-container3 li { 
+width:100%; 
+float:left; 
+text-align: center;
+margin-bottom:10px
+} 
+
+#image-container3 img { 
+display:block; 
+width:1000px; 
+height:1000px; 
+padding:5px; 
+border:1px solid #d3d2d2; 
+#margin:auto; 
+background-color:#fff; 
+}
+
 
 
 table {
@@ -2205,11 +2416,11 @@ pre {
 
        <ul>
         <li>The central blue line is the median value</li>
-        <li>The red box represents the inter-quartile range (25-75%)</li>
+        <li>The green box represents the inter-quartile range (25-75%)</li>
         <li>The upper and lower whiskers represent the 10% and 90% points</li>
         <li>The blue '+' mark represents the mean quality</li>
         <li>The blue '*' mark outside the upper and lower whiskers represents the outlier points</li>
-        <ul>
+        </ul>
 
         </p>
 HTML
@@ -2299,10 +2510,25 @@ print OUT <<HTML;
 HTML
 
     if ($inbam2) {
+        if($producecircusplot){
+            print OUT <<HTML;
+        <ul id='image-container2'>
+            <li><img src='circos/$mitocircosheteroplasmyfigure1' alt='Circos plot of heteroplasmy on tumor'>Tumor</li>
+            <li><img src='circos/$mitocircosheteroplasmyfigure2' alt='Circos plot of heteroplasmy on normal'>Normal</li>
+        </ul>
+HTML
+        }
         print OUT "<h3>Tumor</h3>",  _generate_html_table($mitoheteroplasmy1);
         print OUT "<h3>Normal</h3>", _generate_html_table($mitoheteroplasmy2);
     }
     else {
+    if($producecircusplot){
+            print OUT <<HTML;
+        <ul id='image-container3'>
+            <li><img src='circos/$mitocircosheteroplasmyfigure1' alt='Circos plot of heteroplasmy on tumor'></li>
+        </ul>
+HTML
+        }
         print OUT _generate_html_table($mitoheteroplasmy1);
     }
 
@@ -2330,6 +2556,13 @@ print OUT <<HTML;
     </p>
 HTML
     if ($inbam2) {
+        if($cs){
+            print OUT <<HTML;
+        <ul id='image-container3'>
+            <li><img src='circos/$mitocircossomaticfigure' alt='Circos plot of somatic mutations'></li>
+        </ul>
+HTML
+        }
         print OUT _generate_html_table($mitosomatic);
     }
     else {
@@ -2348,7 +2581,7 @@ HTML
     </p>
 HTML
 
-if ($inbam2) {
+    if ($inbam2) {
         if($cn && $type !=4){
             print OUT "<h3>Tumor</h3>",  _generate_html_table($mitocnv1);
             print OUT "<h3>Normal</h3>", _generate_html_table($mitocnv2);
@@ -2367,9 +2600,9 @@ if ($inbam2) {
     </div>
     <div class="module"><h2 id="M5">File list</h2>
     <p>File list description</p>
-    <b>Not implemented yet</b>
-    </div>
 HTML
+    
+    print OUT _print_file_list()," </div>\n";
 
     print OUT <<HTML;
     </div>
@@ -2379,101 +2612,399 @@ HTML
 </html>
 HTML
 
-
     close OUT;
 }
 
 
-##Generate the report
-sub _make_report_old {
-    open( OUT, ">$mitoreport" ) or die $!;
-    print OUT <<HTML;
-<html>
-<head><title>MitoSeek Report</title>
-<style type="text/css">
-table {
-    border-width: 1px;
-    border-spacing: 2px;
-    border-style: outset;
-    border-color: gray;
-    border-collapse: collapse;
-    background-color: rgb(209, 255, 255);
+#Print out file list into the report
+sub _print_file_list(){
+    my $html="<table border='1'>\n<tr>".
+             "<th>Category</th>".
+             "<th>File Name</th>".
+             "<th>Description</th></tr>\n";
+    if($inbam2){
+        #QC related table
+        if($qc){
+            $html.="<tr>".
+                    "<td rowspan='16'>QC</td>\n".
+                    "<td>"._html_link($perbasequality_figure1)."</td>\n".
+                    "<td> Per base quality plot (Tumor)</td>\n".
+               "</tr>\n".
+               "<tr>".
+                    "<td>"._html_link($perbasequality_table1)."</td>\n".
+                    "<td> Data for per base quality plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($perbasequality_figure2)."</td>\n".
+                    "<td> Per base quality plot (Normal)</td>\n".
+               "</tr>\n".
+               "<tr>".
+                    "<td>"._html_link($perbasequality_table2)."</td>\n".
+                    "<td> Data for per base quality plot (Normal)</td>\n".
+                "</tr>".
+                
+                "<tr>".
+                    "<td>"._html_link($mappingquality_figure1)."</td>\n".
+                    "<td> Mapping quality plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($mappingquality_table1)."</td>\n".
+                    "<td> Data for mapping quality plot (Tumor)</td>\n".
+                "</tr>".
+                 "<tr>".
+                    "<td>"._html_link($mappingquality_figure2)."</td>\n".
+                    "<td> Mapping quality plot (Normal)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($mappingquality_table2)."</td>\n".
+                    "<td> Data for mapping quality plot (Normal)</td>\n".
+                "</tr>".
+                
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_figure1)."</td>\n".
+                    "<td> Depth distribution plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_table1)."</td>\n".
+                    "<td> Data for depth distribution plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_figure2)."</td>\n".
+                    "<td> Depth distribution plot (Normal)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_table2)."</td>\n".
+                    "<td> Data for depth distribution plot (Normal)</td>\n".
+                "</tr>".
+                
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_figure1)."</td>\n".
+                    "<td> Template length distribution plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_table1)."</td>\n".
+                    "<td> Data for template length distribution plot (Tumor)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_figure2)."</td>\n".
+                    "<td> Template length distribution plot (Normal)</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_table2)."</td>\n".
+                    "<td> Data for template length distribution plot (Normal)</td>\n".
+                "</tr>";
+          }
+         #heteroplasmy
+        if($producecircusplot){
+             $html.="<tr>".
+                    "<td rowspan='10'>Heteroplasmy</td>\n".
+                    "<td>"._html_link($mitoheteroplasmy1)."</td>".
+                    "<td> Heteroplasmy result (Tumor) </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link($mitoheteroplasmy2)."</td>".
+                    "<td> Heteroplasmy result (Normal) </td>".
+               "</tr>".
+              
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyfigure1)."</td>".
+                    "<td> Circos plot of heteroplasmy result (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyfigure2)."</td>".
+                    "<td> Circos plot of heteroplasmy result (Normal)</td>".
+               "</tr>".
+               
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyconfig1)."</td>".
+                    "<td> Configure file for circos plot of heteroplasmy result (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyconfig2)."</td>".
+                    "<td> Configure file for circos plot of heteroplasmy result (Normal)</td>".
+               "</tr>".
+               
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmytextoutput1)."</td>".
+                    "<td> Data file (text labels) for circos plot of heteroplasmy result (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmytextoutput2)."</td>".
+                    "<td> Data file (text labels) for circos plot of heteroplasmy result (Normal)</td>".
+               "</tr>".
+               
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmyscatteroutput1)."</td>".
+                    "<td> Data file (scatter plots) for circos plot of heteroplasmy result (Tumor)</td>".
+               "</tr>".
+                "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmyscatteroutput2)."</td>".
+                    "<td> Data file (scatter plots) for circos plot of heteroplasmy result (Normal)</td>".
+               "</tr>";
+        }else{
+            $html.="<tr>".
+                    "<td rowspan='2'>Heteroplasmy</td>\n".
+                    "<td>"._html_link($mitoheteroplasmy1)."</td>".
+                    "<td> Heteroplasmy result (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link($mitoheteroplasmy2)."</td>".
+                    "<td> Heteroplasmy result (Normal)</td>".
+               "</tr>";
+          }
+          
+        #Structural variants
+        #Structural variants
+         $html.="<tr>".
+                    "<td rowspan='4'>Structural Variants</td>\n".
+                    "<td>"._html_link($mitostructure1)."</td>".
+                    "<td> Structural changes of those discordantly mapped mate reads (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link($mitostructure2)."</td>".
+                    "<td> Structural changes of those discordantly mapped mate reads (Normal)</td>".
+               "</tr>".
+               
+               "<tr>".
+                    "<td>"._html_link($mitostructuredeletion1)."</td>".
+                    "<td> Structural changes of those reads mapped with candidate large deletions (Tumor)</td>".
+               "</tr>".
+                "<tr>".
+                    "<td>"._html_link($mitostructuredeletion2)."</td>".
+                    "<td> Structural changes of those reads mapped with candidate large deletions (Normal)</td>".
+               "</tr>";
+        #somatic mutation
+        if($cs){
+             $html.="<tr>".
+                        "<td rowspan='4'>Somatic Mutation</td>".
+                        "<td>"._html_link($mitosomatic)."</td>".
+                        "<td>Somatic mutation result </td>".
+                   "</tr>".
+                   "<tr>".
+                        "<td>"._html_link("circos/".$mitocircossomaticfigure)."</td>".
+                        "<td>Circos plot of somatic mutation result </td>".
+                   "</tr>".
+                    "<tr>".
+                        "<td>"._html_link("circos/".$mitocircossomaticconfig)."</td>".
+                        "<td>Configure file for circos plot of somatic mutation result </td>".
+                   "</tr>".
+                    "<tr>".
+                        "<td>"._html_link("circos/".$mitosomatictextoutput)."</td>".
+                        "<td>Data file (text label) for circos plot of somatic mutation result </td>".
+                   "</tr>";
+        }else{
+            $html.="<tr>".
+                        "<td>Somatic Mutation</td>".
+                        "<td>"._html_link($mitosomatic)."</td>".
+                        "<td>Somatic mutation result </td>".
+                   "</tr>";
+        }
+        
+        #Relative Copy number
+        if($cn && $type !=4){
+            $html.="<tr>".
+                        "<td rowspan='6'> CNV</td>".
+                        "<td>"._html_link($mitocnv1)."</td>".
+                        "<td> Relative copy number estimation result (Tumor)</td>".
+                    "</td>".
+                    "<tr>".
+                        "<td>"._html_link($mitocnv2)."</td>".
+                        "<td> Relative copy number estimation result (Normal)</td>".
+                    "</td>".
+                    
+                    "<tr>".
+                        "<td>"._html_link($mitodepth1)."</td>".
+                        "<td> Result of depth on mithochondrial genome for CNV estimation (Tumor)</td>".
+                    "</tr>".
+                    "<tr>".
+                        "<td>"._html_link($mitodepth2)."</td>".
+                        "<td> Result of depth on mithochondrial genome for CNV estimation (Normal)</td>".
+                    "</tr>".
+                    
+                    "<tr>".
+                        "<td>"._html_link($sampledepthi)."</td>".
+                        "<td> Result of depth on whole genome for CNV estimation (-i) (Tumor)</td>".
+                    "</tr>".
+                    "<tr>".
+                        "<td>"._html_link($sampledephtj)."</td>".
+                        "<td> Result of depth on whole genome for CNV estimation (-j) (Normal)</td>".
+                    "</tr>";
+        }
+        
+           #Other
+        $html.="<tr>".
+                 "<td rowspan='8'> Others </td>".
+                 "<td>"._html_link($regionbed)."</td>".
+                 "<td> User provided region (bed format) or mitoSeek detected mitochondrial genome region</td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($reference)."</td>".
+                 "<td> Mitochondrial geneome reference file in fasta format </td>".
+               "</tr>".
+               
+               "<tr>".
+                 "<td>"._html_link($mitobam1)."</td>".
+                 "<td> Mapped reads in mitochondrial genome (Tumor)</td>".
+               "</tr>".
+                "<tr>".
+                 "<td>"._html_link($mitobam2)."</td>".
+                 "<td> Mapped reads in mitochondrial genome (Normal) </td>".
+               "</tr>".
+               
+               "<tr>".
+                 "<td>"._html_link($mitopileup1)."</td>".
+                 "<td> Pileup file on mithochondrial genome (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($mitopileup2)."</td>".
+                 "<td> Pileup file on mithochondrial genome (Normal)</td>".
+               "</tr>".
+               
+               "<tr>".
+                 "<td>"._html_link($mitobasecall2)."</td>".
+                 "<td> Parsed result of pileup file on mithochondrial genome (Tumor)</td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($mitobasecall2)."</td>".
+                 "<td> Parsed result of pileup file on mithochondrial genome (Normal)</td>".
+               "</tr>";
+        
+        
+    }else{
+        #QC related table
+        if($qc){
+            $html.="<tr>".
+                    "<td rowspan='8'>QC</td>\n".
+                    "<td>"._html_link($perbasequality_figure1)."</td>\n".
+                    "<td> Per base quality plot</td>\n".
+               "</tr>\n".
+               "<tr>".
+                    "<td>"._html_link($perbasequality_table1)."</td>\n".
+                    "<td> Data for per base quality plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($mappingquality_figure1)."</td>\n".
+                    "<td> Mapping quality plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($mappingquality_table1)."</td>\n".
+                    "<td> Data for mapping quality plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_figure1)."</td>\n".
+                    "<td> Depth distribution plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($depthdistribution_table1)."</td>\n".
+                    "<td> Data for depth distribution plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_figure1)."</td>\n".
+                    "<td> Template length distribution plot</td>\n".
+                "</tr>".
+                "<tr>".
+                    "<td>"._html_link($templatelengthdistribution_table1)."</td>\n".
+                    "<td> Data for template length distribution plot</td>\n".
+                "</tr>";
+          }
+        #heteroplasmy
+        if($producecircusplot){
+            $html.="<tr>".
+                    "<td rowspan='5'>Heteroplasmy</td>\n".
+                    "<td>"._html_link($mitoheteroplasmy1)."</td>".
+                    "<td> Heteroplasmy result </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyfigure1)."</td>".
+                    "<td> Circos plot of heteroplasmy result </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitocircosheteroplasmyconfig1)."</td>".
+                    "<td> Configure file for circos plot of heteroplasmy result </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmytextoutput1)."</td>".
+                    "<td> Data file (text labels) for circos plot of heteroplasmy result </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link("circos/".$mitoheteroplasmyscatteroutput1)."</td>".
+                    "<td> Data file (scatter plots) for circos plot of heteroplasmy result </td>".
+               "</tr>";
+               
+        }else{
+            $html.="<tr>".
+                    "<td>Heteroplasmy</td>\n".
+                    "<td>"._html_link($mitoheteroplasmy1)."</td>".
+                    "<td> Heteroplasmy result </td>".
+               "</tr>";
+        }
+        
+        #Structural variants
+         $html.="<tr>".
+                    "<td rowspan='2'>Structural Variants</td>\n".
+                    "<td>"._html_link($mitostructure1)."</td>".
+                    "<td> Structural changes of those discordantly mapped mate reads </td>".
+               "</tr>".
+               "<tr>".
+                    "<td>"._html_link($mitostructuredeletion1)."</td>".
+                    "<td> Structural changes of those reads mapped with candidate large deletions</td>".
+               "</tr>";
+               
+        
+        #somatic mutation (No somatic mutation here)
+        
+        #Relative Copy number
+        if($cn && $type !=4){
+            $html.="<tr>".
+                        "<td rowspan='3'> CNV</td>".
+                        "<td>"._html_link($mitocnv1)."</td>".
+                        "<td> Relative copy number estimation result</td>".
+                    "</td>".
+                    "<tr>".
+                        "<td>"._html_link($mitodepth1)."</td>".
+                        "<td> Result of depth on mithochondrial genome for CNV estimation</td>".
+                    "</tr>".
+                    "<tr>".
+                        "<td>"._html_link($sampledepthi)."</td>".
+                        "<td> Result of depth on whole genome for CNV estimation</td>".
+                    "</tr>";
+        }
+        
+        #Other
+        $html.="<tr>".
+                 "<td rowspan='5'> Others </td>".
+                 "<td>"._html_link($regionbed)."</td>".
+                 "<td> User provided region (bed format) or mitoSeek detected mitochondrial genome region</td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($reference)."</td>".
+                 "<td> Mitochondrial geneome reference file in fasta format </td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($mitobam1)."</td>".
+                 "<td> Mapped reads in mitochondrial genome </td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($mitopileup1)."</td>".
+                 "<td> Pileup file on mithochondrial genome </td>".
+               "</tr>".
+               "<tr>".
+                 "<td>"._html_link($mitobasecall1)."</td>".
+                 "<td> Parsed result of pileup file on mithochondrial genome</td>".
+               "</tr>";
+    }
+             
+    $html.="</table>\n";
+    return $html;
 }
-table th {
-    border-width: 2px;
-    padding: 2px;
-    border-style: solid;
-    border-color: gray;
-    background-color: rgb(209, 255, 255);
+
+sub _html_link{
+    my ($in) = @_;
+    return "<a href='$in'>$in</a>";
 }
-table td {
-    border-width: 2px;
-    padding: 2px;
-    border-style: solid;
-    border-color: gray;
-    background-color: white;
-}
-</style>
-</head>
-<body>
-<div  style="background-color:#EEE;font-weight: bold;  bold;font-size:32px" align='left'>MitoSeek Report</div>
-<h1>QC</h1>
-<h2>Per base quality<h2>
-<img src="$perbasequality_figure1" />
-<h2>Mapping quality</h2>
-<img src="$mappingquality_figure1" />
-<h2>Depth distribution</h2>
-<img src="$depthdistribution_figure1" />
 
-<h1>Heteroplasmy</h1>
-<p>
-fd
-</p>
-HTML
-    if ($inbam2) {
-        print OUT "<h2>Tumor</h2>",  _generate_html_table($mitoheteroplasmy1);
-        print OUT "<h2>Normal</h2>", _generate_html_table($mitoheteroplasmy2);
-    }
-    else {
-        print OUT "<h2>AAA</h2>", _generate_html_table($mitoheteroplasmy1);
-    }
 
-    print OUT <<HTML;
-<h1>Somatic Mutation</h1>
-HTML
 
-    if ($inbam2) {
-        print OUT _generate_html_table($mitosomatic);
-    }
-    else {
-        print OUT "NA\n";
-    }
-
-    print OUT <<HTML;
-<h1>Relative Copy Number Estimation</h1>
-HTML
-
-    print OUT <<HTML;
-<h1>Structural Change</h1>
-HTML
-    if ($inbam2) {
-        print OUT "<h2>Tumor</h2>",  _generate_html_table($mitostructure1);
-        print OUT "<h2>Normal</h2>", _generate_html_table($mitostructure2);
-    }
-    else {
-        print OUT "<h2>AAA</h2>", _generate_html_table($mitostructure1);
-    }
-
-    print OUT <<HTML;
-</div>
-<div style="background-color: #EEE;font-weight:" align='center'>Produced by <a href="https://github.com/riverlee/MitoSeek">MitoSeek</a> (Jiang Li)</div>
-</body>
-</html>
-
-HTML
-
-    close OUT;
-}
 
 #Parse an input file into html table
 #
@@ -2493,7 +3024,7 @@ sub _generate_html_table {
     $html .= "</tr>\n";
 
     while (<IN>) {
-        s/\r|\n//g;
+       # s/\r|\n//g;
         @array = split /$seperator/;
         $html .= "<tr>";
         foreach (@array) {
@@ -2504,191 +3035,5 @@ sub _generate_html_table {
     $html .= "</table>";
     return $html;
 }
-
-=head
-my $step = 1;
-
-#No mether its mitochondrial sequences or not, we will to extract reads mapping to mithochondrial first
-if ( !$regionbed ) {
-    $regionbed = "m.bed";
-    _info( $step++
-          . "), Generating mithochondrial bed file from bam file's header (Output: $regionbed)"
-    );
-    _get_mitochondrial_bed( $inbam1, $regionbed );
-}
-
-if ($inbam2) {
-    _info( $step
-          . ".1), Extracting reads in mitochondria from $inbam1(tumor) (Output:$mitobam1)"
-    );
-    _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
-    _info( $step++
-          . ".2), Extracting reads in mitochondria from $inbam2 (normal) (Output:$mitobam2)"
-    );
-    _get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
-}
-else {
-    _info( $step++
-          . "), Extracting reads in mitochondria from $inbam1 (Output: $mitobam1) "
-    );
-    _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
-}
-
-# If not reads in the bam, exits
-if ($inbam2) {
-    _info( $step . ".1), Checking Reads number in $mitobam1(tumor)...", 1 );
-    my $num1 = _number_of_reads_in_bam($mitobam1);
-    if ( $num1 != 0 ) {
-        print $num1, "\n";
-    }
-    else {
-        print "\n";
-        _error("No reads in $mitobam1 (tumor)\n");
-        exit(1);
-    }
-    _info( $step++ . ".2), Checking Reads number in $mitobam2(normal)...", 1 );
-    my $num2 = _number_of_reads_in_bam($mitobam2);
-    if ( $num2 != 0 ) {
-        print $num2, "\n";
-    }
-    else {
-        print "\n";
-        _error("No reads in $mitobam2 (normal)\n");
-        exit(1);
-    }
-}
-else {
-    _info( $step++ . "), Checking Reads number in $mitobam1...", 1 );
-    my $num1 = _number_of_reads_in_bam($mitobam1);
-    if ( $num1 != 0 ) {
-        print $num1, "\n";
-    }
-    else {
-        print "\n";
-        _error("No reads in $mitobam1 \n");
-        exit(1);
-    }
-}
-
-# Prepare mitochondrial reference, change header in fasta when necessary
-_info(  $step++
-      . "), Moving mitochondrial genome '"
-      . $mitogenome{$inref}
-      . "' into $folder (Output:$reference)" );
-_move_mitogenome( $mitogenome{$inref}, $regionbed, $reference );
-
-# Pileup on bam files
-if ($inbam2) {
-    _info( $step . ".1), Pileup on $mitobam1 (tumor)(Output:$mitopileup1)" );
-    _pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
-    _info( $step++ . ".2), Pileup on $mitobam2 (normal)(Output:$mitopileup2)" );
-    _pileup( $mitobam2, $isbam, $mbq, $regionbed, $reference, $mitopileup2 );
-}
-else {
-    _info( $step++ . "), Pileup on $mitobam1 (Output:$mitopileup1)" );
-    _pileup( $mitobam1, $isbam, $mbq, $regionbed, $reference, $mitopileup1 );
-}
-
-# Running QC on mitobam
-if ($qc) {
-    if ($inbam2) {
-        _info( $step . ".1), Getting quality metrics on $mitobam1 (tumor) " );
-        $mitooffset1 = _mito_qc_stat(
-            $mitobam1,                  $isbam,
-            $mitopileup1,               $regionbed,
-            $perbasequality_figure1,    $mappingquality_figure1,
-            $depthdistribution_figure1, $templatelengthdistribution_figure1
-        );
-        _info(
-            $step++ . ".2), Getting quality metrics on $mitobam2 (normal) " );
-        $mitooffset2 = _mito_qc_stat(
-            $mitobam2,                  $isbam,
-            $mitopileup2,               $regionbed,
-            $perbasequality_figure2,    $mappingquality_figure2,
-            $depthdistribution_figure2, $templatelengthdistribution_figure2
-        );
-
-    }
-    else {
-        _info( $step++ . "), Getting quality metrics on $mitobam1  " );
-        $mitooffset1 = _mito_qc_stat(
-            $mitobam1,                  $isbam,
-            $mitopileup1,               $regionbed,
-            $perbasequality_figure1,    $mappingquality_figure1,
-            $depthdistribution_figure1, $templatelengthdistribution_figure1
-        );
-    }
-}
-
-# Parse pileup file
-if ($inbam2) {
-    _info( $step
-          . ".1), Parsing pileup file of $mitopileup1 (tumor) (Output: $mitobasecall1)"
-    );
-    _parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
-    _info( $step++
-          . ".2), Parsing pileup file of $mitopileup2 (normal) (Output: $mitobasecall2)"
-    );
-    _parse_pileup( $mitopileup2, $mbq, $mitooffset2, $mitobasecall2 );
-}
-else {
-    _info( $step++
-          . "), Parsing pileup file of $mitopileup1 (Output: $mitobasecall1)" );
-    _parse_pileup( $mitopileup1, $mbq, $mitooffset1, $mitobasecall1 );
-}
-
-# heteroplasmy detection
-if ($inbam2) {
-    _info( $step
-          . ".1), Heteroplasmy detection from $inbam1 (tumor) (Output: $mitoheteroplasmy1)"
-    );
-    _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
-        $mitoheteroplasmy1 );
-    _info( $step++
-          . ".2), Heteroplasmy detection from $inbam2 (normal) (Output: $mitoheteroplasmy2)"
-    );
-    _determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,
-        $mitoheteroplasmy2 );
-}
-else {
-    _info( $step++
-          . "), Heteroplasmy detection from $inbam1 (Output: $mitoheteroplasmy1)"
-    );
-    my %hash = _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,
-        $mitoheteroplasmy1 );
-}
-
-# somatic mutation
-if ($inbam2) {
-    _info( $step++ . ") Somatic mutation detection (Output: $mitosomatic)" );
-    _determine_somatic( $mitobasecall1, $mitobasecall2, $sp, $sa, $isall,
-        $mitosomatic );
-}
-
-# Structure variation
-if ($inbam2) {
-    _info( $step
-          . ".1) Structure variation detection from $mitobam1 (Output: $mitostructure1)"
-    );
-    _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
-        $mitostructure1 );
-    _info( $step++
-          . ".2) Structure variation detection from $mitobam2 (Output: $mitostructure2)"
-    );
-    _structure_variants( $inbam2, $isbam, $mmq, $regionbed, $str,
-        $mitostructure2 );
-}
-else {
-    _info( $step++
-          . ") Structure variation detection from $mitobam1 (Output: $mitostructure1)"
-    );
-    _structure_variants( $inbam1, $isbam, $mmq, $regionbed, $str,
-        $mitostructure1 );
-}
-
-_info( $step++ . ") Generating report (Output: $mitoreport)" );
-_make_report();
-
-=cut
 
 

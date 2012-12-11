@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#\egrep -h -w "^(eval.*)?use" circos ../lib/Circos/* ../lib/Circos.pm | sed 's/^.*use //' | sed 's/"//' | egrep -v "^(circos|base|strict|vars|warnings)" | grep -v "^lib " | sed 's/;$//' | sed 's/ qw.*//' | cut -d " " -f 1 | sort -u 
+# Code comes from circos plot group
+# Contributed by Charles Howes
+# http://groups.google.com/group/circos-data-visualization/browse_thread/thread/96e74d863a53e405?hl=en_US
+awk '!/^[\t ]*use /{next};$2~/^(lib|Circos.*|base|strict|vars|warnings);?$/{next};{sub(";","",$2);print $2}' *.pl *.pm | sort -u 

@@ -23,12 +23,12 @@ sub new{
         _karyotype=>"$FindBin::Bin/Resources/hg19_karyotype_MT.txt",   #Tell where is the karyotype file of mitochidrial genome
         _genehighlight=>"$FindBin::Bin/Resources/hg19_genes_MT.highlights.txt",  #genes in mitochondrial, by highlight
         _genetext=>"$FindBin::Bin/Resources/hg19_genes_MT.text.txt",             #genes plot in text
-        _configtemplate=>"$FindBin::Bin/Resources/circos.template.conf",
-        _circosoutput=>"circos-heteroplasmy.png",           #circos output picture file name
-        _configoutput=>"circos.conf",                       #circos conf file output
-        _heteroplasmytextoutput=>"heteroplasmy.text.txt",   #circos text data
-        _heteroplasmyscatteroutput=>"heteroplasmy.scatter.txt", #circos scatter data
-        _heteroplasmy=>undef,                               #The file store the heterplaysmy result, will parse it into circos data format
+        _configtemplate=>"$FindBin::Bin/Resources/circos-heteroplasmy.template.conf",         #default is the template for heteroplasmy plot
+        _circosoutput=>"circos-mitoseek.png",           #circos output picture file name
+        _configoutput=>"circos-mitoseek.conf",                       #circos conf file output
+        _textoutput=>"circos-mitoseek.text.txt",   #circos text data
+        _scatteroutput=>"circos-mitoseek.scatter.txt", #circos scatter data
+        _datafile=>undef,                               #The file store the heterplaysmy result, will parse it into circos data format
         _cwd=>$currentdir                           #The output dir
     };
     bless $self,$class;
@@ -36,17 +36,42 @@ sub new{
 }
 
 
+sub changeconfig{
+    my ($self,$var) = @_;
+    if(defined($var)){
+        if($var eq "somatic"){
+            $self->{_configtemplate} = "$FindBin::Bin/Resources/circos-somatic.template.conf";
+        }elsif($var eq "heteroplasmy"){
+            $self->{_configtemplate} = "$FindBin::Bin/Resources/circos-heteroplasmy.template.conf";
+        }else{
+            print ERROR "Undefined template, values should be either 'somatic' or 'heteroplasmy'\n";
+            exit(1);
+        }
+    }
+    return $self->{_configtemplate};
+}
+
 sub plot{
     my ($self)=@_;
     my $command="cd ".$self->{_cwd}.";".
-                $self->{_circosbin}." -conf ".$self->{_configoutput};
+                $self->{_circosbin}." -conf ".$self->{_configoutput}. ">/dev/null 2>&1";
    # print $command;
    system($command);
 }
 
-#Copy the templateconf and change the heteroplasmy into heteroplasmy
+#Copy the templateconf and change the  into .text and .scatter
+#
 sub prepare{
-    my ($self) = @_;
+    my ($self,$var) = @_;
+    
+    if(!defined($var)){
+        print ERROR "Undefined value, values should be either 'somatic' or 'heteroplasmy'\n";
+        exit(1);
+    }elsif ( $var ne "somatic" && $var ne "heteroplasmy" ){
+        print ERROR "'$var' is not acceptable, values should be either 'somatic' or 'heteroplasmy'\n";
+        exit(1);
+    }
+    
     #copy confi file
     open(IN,$self->{_configtemplate}) or die $!;
     open(OUT,">".$self->{_cwd}."/".$self->{_configoutput}) or die $!;
@@ -59,35 +84,50 @@ sub prepare{
     $str=~s/replacecircosoutput/$self->{_circosoutput}/g;
     $str=~s/replacegenehighlight/$self->{_genehighlight}/g;
     $str=~s/replacegenetext/$self->{_genetext}/g;
-    $str=~s/replaceheteroplasmyscatter/$self->{_heteroplasmyscatteroutput}/g;
-    $str=~s/replaceheteroplasmytext/$self->{_heteroplasmytextoutput}/g;
+    $str=~s/replacescatter/$self->{_scatteroutput}/g;
+    $str=~s/replacetext/$self->{_textoutput}/g;
     print OUT $str;
     close OUT;
     
-    #Convert heteroplasmy result into circos result
-    open(IN,$self->{_heteroplasmy}) or die $!; <IN>; #skip header
-    open(TEXT,">".$self->{_cwd}."/".$self->{_heteroplasmytextoutput}) or die $!;
-    open(SCATTER,">".$self->{_cwd}."/".$self->{_heteroplasmyscatteroutput}) or die $!;
-    while(<IN>){
-        my($chr,$pos,$ref,$forward_A,$forward_T,$forward_C,$forward_G,$reverse_A,$reverse_T,$reverse_C,$reverse_G,
-           $hetero,$lower,$upper,$major_allele,$minor_allele,$major_count,$minor_count,$gene,$genedetail,$exonic,$aminochange,undef)=split "\t";
-        
-        my $text="$ref:$major_allele->$minor_allele";
-        if(defined($exonic) && ($exonic eq 'non-synonymous' || $exonic eq 'stopgain' || $exonic eq 'stoploss')){
-            my (undef,undef,$tmp) = split ":",$aminochange;
-            $text.="|$tmp";
+    #Convert  result into circos result
+    if($var eq "heteroplasmy"){
+        open(IN,$self->{_datafile}) or die $!; <IN>; #skip header
+        open(TEXT,">".$self->{_cwd}."/".$self->{_textoutput}) or die $!;
+        open(SCATTER,">".$self->{_cwd}."/".$self->{_scatteroutput}) or die $!;
+        while(<IN>){
+            my($chr,$pos,$ref,$forward_A,$forward_T,$forward_C,$forward_G,$reverse_A,$reverse_T,$reverse_C,$reverse_G,
+               $hetero,$lower,$upper,$major_allele,$minor_allele,$major_count,$minor_count,$gene,$genedetail,$exonic,$aminochange,undef)=split "\t";
+            
+            my $text="$ref:$major_allele->$minor_allele";
+            if(defined($exonic) && ($exonic eq 'non-synonymous' || $exonic eq 'stopgain' || $exonic eq 'stoploss')){
+                my (undef,undef,$tmp) = split ":",$aminochange;
+                $text.="|$tmp";
+            }
+            print SCATTER join "\t",("MT",$pos,$pos,$hetero);
+            print SCATTER "\n";
+            
+            print TEXT join "\t",("MT",$pos,$pos,$text);
+            print TEXT "\n";
         }
-        print SCATTER join "\t",("MT",$pos,$pos,$hetero);
-        print SCATTER "\n";
-        
-        print TEXT join "\t",("MT",$pos,$pos,$text);
-        print TEXT "\n";
+        close IN;
+        close TEXT;
+        close SCATTER;
+    }else{
+        #Convert  result into circos result
+        open(IN,$self->{_datafile}) or die $!; <IN>; #skip header
+        open(TEXT,">".$self->{_cwd}."/".$self->{_textoutput}) or die $!;
+        while(<IN>){
+            my($chr,$pos,$ref,$tumorGeno,$tumorDP,$normalGeno,$normalDP,$mitoGene,$mitoGeneD)=split "\t";
+            
+            my $text="$ref:$tumorGeno->$normalGeno";
+           
+            print TEXT join "\t",("MT",$pos,$pos,$text);
+            print TEXT "\n";
+        }
+        close IN;
+        close TEXT;
     }
-    close IN;
-    close TEXT;
-    close SCATTER;
 }
-
 
 #get or change circos program
 sub circosbin{
@@ -96,11 +136,12 @@ sub circosbin{
    return $self->{_circosbin};
 }
 
-
-
 sub cwd{
    my ($self,$var) = @_;
-   $self->{_cwd} = $var if defined($var);
+   if(defined($var)){
+        mkdir $var or die $! if (! -d  $var);
+        $self->{_cwd} = $var;
+   }
    return $self->{_cwd};
 }
 
@@ -115,15 +156,15 @@ sub configoutput{
    $self->{_configoutput} = $var if defined($var);
    return $self->{_configoutput};
 }
-sub heteroplasmytextoutput{
+sub textoutput{
    my ($self,$var) = @_;
-   $self->{_heteroplasmytextoutput} = $var if defined($var);
-   return $self->{_heteroplasmytextoutput};
+   $self->{_textoutput} = $var if defined($var);
+   return $self->{_textoutput};
 }
-sub heteroplasmyscatteroutput{
+sub scatteroutput{
    my ($self,$var) = @_;
-   $self->{_heteroplasmyscatteroutput} = $var if defined($var);
-   return $self->{_heteroplasmyscatteroutput};
+   $self->{_scatteroutput} = $var if defined($var);
+   return $self->{_scatteroutput};
 }
 
 
@@ -169,10 +210,10 @@ sub configtemplate{
 }
 
 
-sub heteroplasmy{
+sub datafile {
     my ($self,$var) = @_;
-    $self->{_heteroplasmy}=$var if (defined($var));
-    return $self->{_heteroplasmy}; 
+    $self->{_datafile}=$var if (defined($var));
+    return $self->{_datafile}; 
 }
 
 

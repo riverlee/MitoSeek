@@ -10,6 +10,10 @@ use warnings;
 #use GD::Graph::histogram;
 #use GD::Graph::boxplot;
 
+my $str="a\tb\tc\t\t\t\t\n";
+my @a=split "\t",$str;
+print scalar(@a);
+
 
 our $a=1;
 print "Before: a= $a\n";
@@ -19,6 +23,10 @@ print "After: a= $a\n";
 sub test{
     $a=4;
 }
+
+my $a=0.0003623433;
+
+printf("%.2e\n",$a);
 
 =a
 for ($! = 0; $! <=200; $!++) {

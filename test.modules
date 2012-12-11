@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#./list.modules | xargs -I MODULE perl -I../lib -e  'print "MODULE ok\n"' -MMODULE
+# Code comes from circos plot group
+# Contributed by Charles Howes
+# http://groups.google.com/group/circos-data-visualization/browse_thread/thread/96e74d863a53e405?hl=en_US
+./list.modules | xargs -I MODULE perl -I../lib -e  'print eval "use MODULE;1"?"ok   MODULE\n":"fail MODULE is not usable (it or a sub-module is missing)\n"' 

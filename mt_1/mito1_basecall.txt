@@ -1,4 +1,5 @@
 Chr	Loc	Ref	A	T	C	G	a	t	c	g
+MT	1	G	0	0	0	21	0	0	0	0
 MT	2	A	22	0	0	0	0	0	0	0
 MT	3	T	0	22	0	0	0	0	0	0
 MT	4	C	0	0	22	0	0	0	0	0

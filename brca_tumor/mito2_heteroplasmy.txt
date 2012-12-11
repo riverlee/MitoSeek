@@ -1,13 +1,4 @@
-#chr	pos	ref	forward_A	forward_T	forward_C	forward_G	reverse_A	reverse_T	reverse_C	reverse_G	heteroplasmy	95%ci_lower	95%ci_upper	major_allele	minor_allele	major_allele_count	minor_allele_count
-MT	45	A	12	0	1	0	0	0	0	0	0.0769230769230769	0	0.221777468365217	A	C	12	1
-MT	48	C	0	1	12	0	0	0	0	0	0.0769230769230769	0	0.221777468365217	C	T	12	1
-MT	98	C	0	0	10	1	0	0	3	0	0.0714285714285714	0	0.206335947060892	C	G	13	1
-MT	99	T	0	10	0	1	0	4	0	0	0.0666666666666667	0	0.192902659655695	T	G	14	1
-MT	1129	T	0	9	0	0	0	7	0	1	0.0588235294117647	0	0.170675252957932	T	G	16	1
-MT	1170	G	0	0	0	9	0	1	0	8	0.0555555555555556	0	0.161376534387933	G	T	17	1
-MT	1243	T	0	0	4	0	0	1	3	0	0.125	0	0.354176514939904	C	T	7	1
-MT	7062	T	0	8	0	0	0	7	0	1	0.0625	0	0.181110114977602	T	G	15	1
-MT	10306	A	6	0	0	0	7	0	3	0	0.1875	0	0.378753063700951	A	C	13	3
-MT	10450	A	5	0	0	0	13	1	0	0	0.0526315789473684	0	0.153038100657777	A	T	18	1
-MT	16271	T	0	30	7	0	0	30	4	0	0.154929577464789	0.0707628355425238	0.239096319387054	T	C	60	11
-MT	16325	T	0	1	9	0	0	1	17	0	0.0714285714285714	0	0.166822491570266	C	T	26	2
+#chr	pos	ref	forward_A	forward_T	forward_C	forward_G	reverse_A	reverse_T	reverse_C	reverse_G	heteroplasmy	95%ci_lower	95%ci_upper	major_allele	minor_allele	major_allele_count	minor_allele_count	gene	genedetail	exonic_function	aminochange	strand_bias
+MT	45	A	12	0	1	0	0	0	0	0	0.077	0.000	0.222	A	C	12	1					0
+MT	48	C	0	1	12	0	0	0	0	0	0.077	0.000	0.222	C	T	12	1					0
+MT	239	T	1	17	0	0	0	2	0	0	0.050	0.000	0.146	T	A	19	1					1.111
