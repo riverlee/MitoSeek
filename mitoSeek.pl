@@ -71,7 +71,7 @@ my $perbasequality_table1              = "per_base_quality_table1.txt";     #
 my $mappingquality_figure1             = "mapping_quality1.png";             #
 my $mappingquality_table1              = "mapping_quality_table1.txt";       #
 my $depthdistribution_figure1          = "depth_distribution1.png";          #
-my $depthdistribution_table1           = "depth_distribution_table1.png";    #
+my $depthdistribution_table1           = "depth_distribution_table1.txt";    #
 my $templatelengthdistribution_figure1 = "template_length_distribution1.png";#
 my $templatelengthdistribution_table1  = "template_length_distribution_table1.txt";
 my $perbasequality_figure2             = "per_base_quality2.png";             #
@@ -79,7 +79,7 @@ my $perbasequality_table2              = "per_base_quality_table2.txt";      #
 my $mappingquality_figure2             = "mapping_quality2.png";              #
 my $mappingquality_table2              = "mapping_quality_table2.txt";        #
 my $depthdistribution_figure2          = "depth_distribution2.png";           #
-my $depthdistribution_table2           = "depth_distribution_table2.png";     #
+my $depthdistribution_table2           = "depth_distribution_table2.txt";     #
 my $templatelengthdistribution_figure2 = "template_length_distribution2.png";
 my $templatelengthdistribution_table2  = "template_length_distribution_table2.txt";
 
