@@ -1,1 +1,0 @@
-#chr	pos	ref	tumorGenotype	tumorDepth	normalGenotype	normalDepth	Mito.gene	Mito.genedetail

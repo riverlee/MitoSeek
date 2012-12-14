@@ -1,2 +1,0 @@
-#MitoChr	MitoPos	VarChr	VarPos	SupportedReads	MeanMappingQuality	Mito.gene	Mito.genedetail
-MT	10910	17	33331463	5	37.000	ND4	MTND4:mRNA:10761-12138:(+)

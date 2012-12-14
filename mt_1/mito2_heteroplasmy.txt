@@ -1,4 +1,0 @@
-#chr	pos	ref	forward_A	forward_T	forward_C	forward_G	reverse_A	reverse_T	reverse_C	reverse_G	heteroplasmy	95%ci_lower	95%ci_upper	major_allele	minor_allele	major_allele_count	minor_allele_count	gene	genedetail	exonic_function	aminochange	strand_bias
-MT	45	A	12	0	1	0	0	0	0	0	0.077	0.000	0.222	A	C	12	1					0
-MT	48	C	0	1	12	0	0	0	0	0	0.077	0.000	0.222	C	T	12	1					0
-MT	239	T	1	17	0	0	0	2	0	0	0.050	0.000	0.146	T	A	19	1					1.111

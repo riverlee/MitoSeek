@@ -1,0 +1,2 @@
+#Covered bases	Total bases	Coverage
+16569	16569	1.000

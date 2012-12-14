@@ -33,10 +33,10 @@ foreach my $g (sort keys %{$generef}){
 $m=Mitoanno->new();
 print $m->gbfile("rCRS_annotation.gb"),"\n";
 #Output hg19 gene annotation, one for highlights format and the other is in text format for circos plot
-my $generef=$m->genes;
+$generef=$m->genes;
 open(OUT,">rCRS_genes_MT.highlights.txt") or die $!;
 open(OUT2,">rCRS_genes_MT.text.txt") or die $!;
-my $count=0;
+$count=0;
 foreach my $g (sort keys %{$generef}){
     $count++;
     my $chr=$count % 24;

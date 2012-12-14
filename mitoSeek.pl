@@ -55,7 +55,7 @@ my $flag_next_read_reverse_strand = 0x0020;
 my $flag_first_fragment           = 0x0040;
 my $flag_second_fragment          = 0x0080;
 
-my $debug = 1;
+my $debug = 0;
 
 
 # Other variables will be used as output file name
@@ -82,6 +82,8 @@ my $depthdistribution_figure2          = "depth_distribution2.png";           #
 my $depthdistribution_table2           = "depth_distribution_table2.txt";     #
 my $templatelengthdistribution_figure2 = "template_length_distribution2.png";
 my $templatelengthdistribution_table2  = "template_length_distribution_table2.txt";
+my $percentofbasepairscovered_table1   = "percent_of_base_pairs_covered_table1.txt";
+my $percentofbasepairscovered_table2   = "percent_of_base_pairs_covered_table2.txt";
 
 my $mitopileup1                        = "mito1.pileup";
 my $mitopileup2                        = "mito2.pileup";
@@ -136,7 +138,7 @@ my $inbam2            = undef;      #-j ,if this is provided, will conduct somat
 my $type              = 1;          #1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only
 #my $savebam           = 1;          #-b
 #my $saveallelecount   = 1;          #-a
-my $producecircusplot = 1;          #-ch, produce circus plot for heteroplasmic mutation
+my $producecircosplot = 1;          #-ch, produce circos plot for heteroplasmic mutation
 my $hp                = 5;          #-hp, heteroplasmy threshold using [int] percent alternatie allele observed, default=5;
 my $ha                = 0;          #-ha, heteroplasmy threshold using [int] allele observed, default=0;
 my $depth             = 50;         #The minimum recommended depth requirement for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling
@@ -147,7 +149,7 @@ my $sb                = 10;         #remove all sites with strand bias score in 
 my $cn                = 0;          #Estimate relative copy number of input bam(s),does not work with mitochondria targeted sequencing bam files
 my $sp                = 5;          #somatic mutation detection threshold, [int]% of alternative allele observed in tumor, default=5;
 my $sa                = 3;          #somatic mutation detection trheshold, int number of alternative allele observed in tumor.
-my $cs                = 1;          #Produce circus plot input files and circus plot figure for somatic mutations
+my $cs                = 1;          #Produce circos plot input files and circos plot figure for somatic mutations
 my $regionbed         = undef;      #A bed file that contains the regions mitoSeek will perform analysis on
 my $inref             = 'hg19';     #The reference used in the input bam files
 my $outref            = 'hg19';     #The output files used in the reference rCRS;
@@ -164,7 +166,7 @@ unless (
         "t=i"   =>\$type,
 #        "b!"    => \$savebam,
 #        "a!"    => \$saveallelecount,
-        "ch!"   => \$producecircusplot,
+        "ch!"   => \$producecircosplot,
         "hp=i"  => \$hp,
         "ha=i"  => \$ha,
         "d=i"   => \$depth,
@@ -176,7 +178,7 @@ unless (
         "sp=i"  => \$sp,
         "sa=i"  => \$sa,
         "cs!"   => \$cs,
-        "L=s"   => \$regionbed,
+#        "L=s"   => \$regionbed,
         "r=s"   => \$inref,
         "R=s"   => \$outref,
         "QC!"   => \$qc,
@@ -421,7 +423,8 @@ sub _main{
             $perbasequality_figure1,    $mappingquality_figure1,
             $depthdistribution_figure1, $templatelengthdistribution_figure1,
             $perbasequality_table1,     $mappingquality_table1,
-            $depthdistribution_table1,  $templatelengthdistribution_table1
+            $depthdistribution_table1,  $templatelengthdistribution_table1,
+            $percentofbasepairscovered_table1
             );
             _info($index++.".2,Getting quality metrics on '$mitobam2' ");
             $mitooffset2 = _mito_qc_stat(
@@ -430,7 +433,8 @@ sub _main{
             $perbasequality_figure2,    $mappingquality_figure2,
             $depthdistribution_figure2, $templatelengthdistribution_figure2,
             $perbasequality_table2,     $mappingquality_table2,
-            $depthdistribution_table2,  $templatelengthdistribution_table2
+            $depthdistribution_table2,  $templatelengthdistribution_table2,
+            $percentofbasepairscovered_table2
             );
         }
         
@@ -440,7 +444,7 @@ sub _main{
         _determine_heteroplasmy( $mitobasecall2, $hp, $ha, $isall, $sb,$mitoheteroplasmy2 );
         
         #Plot heteroplasmy ciros plot
-        if($producecircusplot){
+        if($producecircosplot){
             $circos->build($outref);
             $circos->circosoutput($mitocircosheteroplasmyfigure1);
             $circos->configoutput($mitocircosheteroplasmyconfig1);
@@ -513,12 +517,13 @@ sub _main{
             $perbasequality_figure1,    $mappingquality_figure1,
             $depthdistribution_figure1, $templatelengthdistribution_figure1,
             $perbasequality_table1,     $mappingquality_table1,
-            $depthdistribution_table1,  $templatelengthdistribution_table1
+            $depthdistribution_table1,  $templatelengthdistribution_table1,
+            $percentofbasepairscovered_table1
             );
         }
         _info($index++.",Detecting heteroplasmy from '$mitobam1' (Output: $mitoheteroplasmy1)");
         _determine_heteroplasmy( $mitobasecall1, $hp, $ha, $isall, $sb,$mitoheteroplasmy1 );
-        if($producecircusplot){
+        if($producecircosplot){
             $circos->build($outref);
             $circos->circosoutput($mitocircosheteroplasmyfigure1);
             $circos->configoutput($mitocircosheteroplasmyconfig1);
@@ -855,10 +860,9 @@ Usage: perl mitoSeek.pl -i inbam.pl
 -i [bam]                Input bam file
 -j [bam]                Input bam file2, if this file is provided, it will conduct somatic mutation mining, and it will be 
                         taken as normal tissue.        
--t [input type]         Type of the bam files, the possible choices are 1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only
--nob                    Save mitochondria only bam files, default =on, if this is provided,it will turn off
--noa                    Produce allele count file for input bam(s), default =on, if this is provided,it will turn off
--ch                     Produce circus plot input files and circus plot figure for heteroplasmic mutation, default = off
+-t [input type]         Type of the bam files, the possible choices are 1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only,default = 1
+-ch                     Produce circos plot input files and circos plot figure for heteroplasmic mutation,
+                        (-noch to turn off and -ch to turn on), default = on
 -hp [int]               Heteroplasmy threshold using [int] percent alternative allele observed, default = 5
 -ha [int]               Heteroplasmy threshold using [int] allele observed, default = 0
 -A                      If - A is used, the total read count is the total allele count of all allele observed. 
@@ -866,15 +870,20 @@ Usage: perl mitoSeek.pl -i inbam.pl
 -mmq [int]              Minimum map quality, default =20
 -mbq [int]              Minimum base quality, default =20
 -sb [int]               Remove all sites with strand bias score in the top [int] %, default = 10 
--cn                     Estimate relative copy number of input bam(s), does not work with mitochondria targeted sequencing bam files.
+-cn                     Estimate relative copy number of input bam(s), does not work with mitochondria targeted sequencing bam files,
+                        (-noch to turn off and -ch to turn on) default = off.
 -sp [int]               Somatic mutation detection threshold,int = percent of alternative allele observed in tumor, default int=5
--sa [int]                   Somatic mutation detection threshold,int = number of alternative allele observed in tumor, default int=3
--cs                     Produce circus plot input files and circus plot figure for somatic mutation, default = off
--L [bed]                A bed file that contains the regions MitoSeek will perform analysis on
--r [ref]                The reference used in the bam file, the possible choices are HG19 and rCRS, default=HG19
--R [ref]                The reference used in the output files, the possible choices are HG19 and rCRS, default=HG19
--str [int]                Structure variants cutoff, int = number of spanning reads supporting this structure variants, default = 2
--QC                     Produce QC result,default=on
+-sa [int]               Somatic mutation detection threshold,int = number of alternative allele observed in tumor, default int=3
+-cs                     Produce circos plot input files and circos plot figure for somatic mutation, 
+                        (-nocs to turn off and -cs to turn on), default = off
+-r [ref]                The reference used in the bam file, the possible choices are hg19 and rCRS, default=hg19
+-R [ref]                The reference used in the output files, the possible choices are hg19 and rCRS, default=hg19
+-str [int]              Structure variants cutoff for those discordant mapping mates, 
+                        int = number of spanning reads supporting this structure variants, default = 2
+-strf [int]             Structure variants cutoff for those large deletions,
+                        int = template size in bp, default=500
+-QC                     Produce QC result, (--noQC to turn off and -QC to turn on), default=on
+
    
 USAGE
 
@@ -899,7 +908,8 @@ sub _mito_qc_stat {
         $perbasequality_figure,    $mappingquality_figure,
         $depthdistribution_figure, $templatelengthdistribution_figure,
         $perbasequality_table,     $mappingquality_table,
-        $depthdistribution_table,  $templatelengthdistribution_table
+        $depthdistribution_table,  $templatelengthdistribution_table,
+        $percentofbasepairscovered_table
     ) = @_;
     my $maxreads = 100000; #In case some alignment on mitochondrial is extremly large that will take too much memory and then crash ymy server.
     $maxreads = 10 if ($debug);
@@ -1063,6 +1073,13 @@ sub _mito_qc_stat {
     _density( \@depth, 800, 600, 'Depth', 'Density', 'Depth distribution',
         $depthdistribution_figure, 0, undef, 30 ,$depthdistribution_table);
 
+    open(PER,">$percentofbasepairscovered_table") or die $!;
+    print PER "#Covered bases\tTotal bases\tCoverage\n";
+    my $covered = grep {$_>0} @depth;
+    my $total = scalar(@depth);
+    print PER join "\t",($covered,$total,_formatnumeric(_divide($covered,$total)));
+    print PER "\n";
+    close PER;
     return ($offset);
 }
 
@@ -1511,6 +1528,8 @@ sub _determine_heteroplasmy {
                 $reverse_primary_allele_count,
                 $reverse_non_primary_allele_count
             );
+            
+            $result{$loc}->{'sb'} = $sb{$loc};
         #} #sb calculate
     }
 
@@ -1529,15 +1548,14 @@ sub _determine_heteroplasmy {
     #            }
     #        }
     #    }
-    if ( $sb > 0 ) {
-        my @sbvalue = sort { $b <=> $a } values %sb;
+    if ( $sb > 0 ) { 
+        my @sbvalue = sort { $a <=> $b } values %sb;   #small to large
         my $index = int( scalar(@sbvalue) * $sb / 100 ) - 1;
         $index = 0         if ( $index < 0 );
         $index = $#sbvalue if ( $index > $#sbvalue );
         my $cutoff = $sbvalue[$index];
 
         foreach my $loc ( keys %result ) {
-            $result{$loc}->{'sb'} = $sb{$loc};
             if ( $sb{$loc} >= $cutoff && $result{$loc}->{'stat'} == 2 ) {
                 $result{$loc}->{'stat'} = 3;
             }
@@ -1558,7 +1576,7 @@ sub _determine_heteroplasmy {
         "major_allele",       "minor_allele",
         "major_allele_count", "minor_allele_count",
         "gene","genedetail","exonic_function","aminochange",
-        "strand_bias"
+        "strand_bias","pathogenic_variants","diseases","links"
       );
     
     print OUT "\n";
@@ -1607,9 +1625,12 @@ sub _determine_heteroplasmy {
               
               #need to determine whether rCRS  or hg19
               print OUT join "\t",($mitoanno->annotation($convertloc,$convertref,$alt_allele));
-            if ( $sb > 0 ) {
+            #if ( $sb > 0 ) {
                 print OUT "\t", $result{$loc}->{'sb'};
-            }
+            #}
+             print OUT "\t";
+             print OUT join "\t",($mitoanno->pathogenic($convertloc));
+            
             print OUT "\n";
         }
     }
@@ -2386,9 +2407,10 @@ pre {
 <div class="summary">
     <h2>Table of Contents</h2>
         <ul>
-            <li><a href="#M00">Command</a></li>
+            <li><a href="#M001">Command</a></li>
             <li> <a href="#M0">QC</a></li>
                 <ol>
+                    <li> <a href="#M000">Percent of base pairs covered</a></li>
                     <li> <a href="#M00">Per base quality</a></li>
                     <li> <a href="#M01">Mapping quality</a></li>
                     <li> <a href="#M02">Depth distribution</a></li>
@@ -2402,7 +2424,7 @@ pre {
         </ul>
 </div>
 <div class="main">
-    <div class="module"><h2 id="M00">Command</h2>
+    <div class="module"><h2 id="M001">Command</h2>
         <p>Your command for generating this report, keep it in order to reproduce the result.</p>
         <pre>$commandline</pre>
     </div>
@@ -2410,6 +2432,17 @@ pre {
         <p>
         Quality control (QC) is applied to the mapped reads on mitochondria. If -L [bed] is provided, the QC report following is constrained to your provided region. The QC report contains the following 4 parts.
         </p>
+        <h3 id="M000">Percent of base pairs covered</h3>
+HTML
+        
+       if($inbam2){
+           print OUT "<h3>Tumor</h3>",  _generate_html_table($percentofbasepairscovered_table1);
+           print OUT "<h3>Normal</h3>", _generate_html_table($percentofbasepairscovered_table2);
+        }else{
+            print OUT _generate_html_table($percentofbasepairscovered_table1);
+        }
+       print OUT <<HTML;
+
         <h3 id="M00">Per base quality</h3>
         <p>
         The y-axis on the graph shows the quality scores and the x-axis on the graph shows the positions in the fastq file. For each position a BoxWhisker type plot is drawn. The elements of the plot are as follows:
@@ -2488,21 +2521,24 @@ print OUT <<HTML;
         A summary of the template depth is also included in the middle of the plot. 
         </p>
 HTML
-if($inbam2){
-    print OUT <<HTML;
-    <ul id='image-container'>
-        <li><img src='$templatelengthdistribution_figure1' alt='Template length distribution figure'>Tumor</li>
-        <li><img src='$templatelengthdistribution_figure2' alt='Template length distribution figure'>Normal</li>
-    </ul>
+if(-e $templatelengthdistribution_figure1){
+    if($inbam2){
+        print OUT <<HTML;
+        <ul id='image-container'>
+            <li><img src='$templatelengthdistribution_figure1' alt='Template length distribution figure'>Tumor</li>
+            <li><img src='$templatelengthdistribution_figure2' alt='Template length distribution figure'>Normal</li>
+        </ul>
 HTML
 }else{
-    print OUT <<HTML;
-    <ul id='image-container1'>
-        <li><img src='$templatelengthdistribution_figure1' alt='Template length distribution figure'>Tumor</li>
-    </ul>
+        print OUT <<HTML;
+        <ul id='image-container1'>
+            <li><img src='$templatelengthdistribution_figure1' alt='Template length distribution figure'>Tumor</li>
+        </ul>
 HTML
+    }
+}else{
+    print OUT "<b>Not Avaiable</b><br/>";
 }
-
 print OUT <<HTML;
     </div>
     <div class="module"><h2 id="M1">Heteroplasmy</h2>
@@ -2510,7 +2546,7 @@ print OUT <<HTML;
 HTML
 
     if ($inbam2) {
-        if($producecircusplot){
+        if($producecircosplot){
             print OUT <<HTML;
         <ul id='image-container2'>
             <li><img src='circos/$mitocircosheteroplasmyfigure1' alt='Circos plot of heteroplasmy on tumor'>Tumor</li>
@@ -2522,7 +2558,7 @@ HTML
         print OUT "<h3>Normal</h3>", _generate_html_table($mitoheteroplasmy2);
     }
     else {
-    if($producecircusplot){
+    if($producecircosplot){
             print OUT <<HTML;
         <ul id='image-container3'>
             <li><img src='circos/$mitocircosheteroplasmyfigure1' alt='Circos plot of heteroplasmy on tumor'></li>
@@ -2626,7 +2662,15 @@ sub _print_file_list(){
         #QC related table
         if($qc){
             $html.="<tr>".
-                    "<td rowspan='16'>QC</td>\n".
+                    "<td rowspan='18'>QC</td>\n".
+                    "<td>"._html_link($percentofbasepairscovered_table1)."</td>\n".
+                    "<td>Percent of base pairs covered (Tumor)</td>\n".
+               "</tr>\n".
+               "<tr>".
+                    "<td>"._html_link($percentofbasepairscovered_table2)."</td>\n".
+                    "<td>Percent of base pairs covered (Normal)</td>\n".
+               "</tr>\n".
+               "<tr>".
                     "<td>"._html_link($perbasequality_figure1)."</td>\n".
                     "<td> Per base quality plot (Tumor)</td>\n".
                "</tr>\n".
@@ -2695,7 +2739,7 @@ sub _print_file_list(){
                 "</tr>";
           }
          #heteroplasmy
-        if($producecircusplot){
+        if($producecircosplot){
              $html.="<tr>".
                     "<td rowspan='10'>Heteroplasmy</td>\n".
                     "<td>"._html_link($mitoheteroplasmy1)."</td>".
@@ -2874,7 +2918,11 @@ sub _print_file_list(){
         #QC related table
         if($qc){
             $html.="<tr>".
-                    "<td rowspan='8'>QC</td>\n".
+                    "<td rowspan='9'>QC</td>\n".
+                    "<td>"._html_link($percentofbasepairscovered_table1)."</td>\n".
+                    "<td>Percent of base pairs covered</td>\n".
+                "</tr>\n".
+                "<tr>".
                     "<td>"._html_link($perbasequality_figure1)."</td>\n".
                     "<td> Per base quality plot</td>\n".
                "</tr>\n".
@@ -2908,7 +2956,7 @@ sub _print_file_list(){
                 "</tr>";
           }
         #heteroplasmy
-        if($producecircusplot){
+        if($producecircosplot){
             $html.="<tr>".
                     "<td rowspan='5'>Heteroplasmy</td>\n".
                     "<td>"._html_link($mitoheteroplasmy1)."</td>".

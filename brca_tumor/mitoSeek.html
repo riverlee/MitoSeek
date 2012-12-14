@@ -171,9 +171,9 @@
   }
   
   #image-container { 
-min-width:800px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
-height:47px; 
-padding:10px 5px; 
+min-width:1600px; /* width of 2 images (1600px) plus images' padding and border (0px) plus images' margin (0px) */ 
+height:600px; 
+padding:0px 0px; 
 margin:0; 
 border:0px solid #ffffff; 
 background-color:#ffffff; 
@@ -189,18 +189,18 @@ margin-bottom:10px
 
 #image-container img { 
 display:block; 
-width:400px; 
-height:300px; 
-padding:5px; 
+width:800px; 
+height:600px; 
+padding:0px; 
 border:1px solid #d3d2d2; 
 margin:auto; 
 background-color:#fff; 
 } 
 
 #image-container1 { 
-min-width:600px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
-height:47px; 
-padding:10px 5px; 
+min-width:800px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:600px; 
+padding:0px 0px; 
 margin:0; 
 border:0px solid #ffffff; 
 background-color:#ffffff; 
@@ -216,13 +216,69 @@ margin-bottom:10px
 
 #image-container1 img { 
 display:block; 
-width:600px; 
-height:450px; 
+width:800px; 
+height:600px; 
 padding:5px; 
 border:1px solid #d3d2d2; 
 #margin:auto; 
 background-color:#fff; 
+}
+
+
+#image-container2 { /*for cirsocs*/ 
+min-width:1600px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:800px; 
+padding:0px 0px; 
+margin:0; 
+border:0px solid #ffffff; 
+background-color:#ffffff; 
+list-style-type:none; 
 } 
+  
+#image-container2 li { 
+width:50%; 
+float:left; 
+text-align: center;
+margin-bottom:10px
+} 
+
+#image-container2 img { 
+display:block; 
+width:800px; 
+height:800px; 
+padding:5px; 
+border:1px solid #d3d2d2; 
+#margin:auto; 
+background-color:#fff; 
+}
+
+#image-container3 { /*for cirsocs*/ 
+min-width:1000px; /* width of 5 images (625px) plus images' padding and border (60px) plus images' margin (50px) */ 
+height:1000px; 
+padding:0px 0px; 
+margin:0; 
+border:0px solid #ffffff; 
+background-color:#ffffff; 
+list-style-type:none; 
+} 
+  
+#image-container3 li { 
+width:100%; 
+float:left; 
+text-align: center;
+margin-bottom:10px
+} 
+
+#image-container3 img { 
+display:block; 
+width:1000px; 
+height:1000px; 
+padding:5px; 
+border:1px solid #d3d2d2; 
+#margin:auto; 
+background-color:#fff; 
+}
+
 
 
 table {
@@ -267,15 +323,16 @@ pre {
 <body>
 <div class="header">
     <div id="header_title">MitoSeek Report</div>
-    <div id="header_filename">Created Time: Fri Dec  7 16:54:36 2012</div>
+    <div id="header_filename">Created Time: Fri Dec 14 16:32:21 2012</div>
 </div>
 
 <div class="summary">
     <h2>Table of Contents</h2>
         <ul>
-            <li><a href="#M00">Command</a></li>
+            <li><a href="#M001">Command</a></li>
             <li> <a href="#M0">QC</a></li>
                 <ol>
+                    <li> <a href="#M000">Percent of base pairs covered</a></li>
                     <li> <a href="#M00">Per base quality</a></li>
                     <li> <a href="#M01">Mapping quality</a></li>
                     <li> <a href="#M02">Depth distribution</a></li>
@@ -289,21 +346,33 @@ pre {
         </ul>
 </div>
 <div class="main">
-    <div class="module"><h2 id="M00">Command</h2>
+    <div class="module"><h2 id="M001">Command</h2>
         <p>Your command for generating this report, keep it in order to reproduce the result.</p>
-        <pre>perl mitoSeek.pl -i Examples/brca_tumor.bam -j Examples/brca_normal.bam -cn -sb 1 -hp 1 -d 4 -str 4 -sp 1 -sa 1</pre>
+        <pre>perl mitoSeek.pl -i Examples/brca_tumor.bam -j Examples/brca_normal.bam -t 4 -sb 0 -hp 1 -d 5 -str 4 -sp 1 -sa 0</pre>
     </div>
     <div class="module"><h2 id="M0">QC</h2>
         <p>
         Quality control (QC) is applied to the mapped reads on mitochondria. If -L [bed] is provided, the QC report following is constrained to your provided region. The QC report contains the following 4 parts.
         </p>
+        <h3 id="M000">Percent of base pairs covered</h3>
+<h3>Tumor</h3><div align='right'><a href='percent_of_base_pairs_covered_table1.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>#Covered bases</th><th>Total bases</th><th>Coverage</th></tr>
+<tr><td>16569</td><td>16569</td><td>1.000
+</td></tr>
+</table><h3>Normal</h3><div align='right'><a href='percent_of_base_pairs_covered_table2.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<table border='1'>
+<tr><th>#Covered bases</th><th>Total bases</th><th>Coverage</th></tr>
+<tr><td>16569</td><td>16569</td><td>1.000
+</td></tr>
+</table>
         <h3 id="M00">Per base quality</h3>
         <p>
         The y-axis on the graph shows the quality scores and the x-axis on the graph shows the positions in the fastq file. For each position a BoxWhisker type plot is drawn. The elements of the plot are as follows:
 
        <ul>
         <li>The central blue line is the median value</li>
-        <li>The red box represents the inter-quartile range (25-75%)</li>
+        <li>The green box represents the inter-quartile range (25-75%)</li>
         <li>The upper and lower whiskers represent the 10% and 90% points</li>
         <li>The blue '+' mark represents the mean quality</li>
         <li>The blue '*' mark outside the upper and lower whiskers represents the outlier points</li>
@@ -335,67 +404,109 @@ pre {
         The y-axis on the graph shows the density and the x-axis on the graph shows the template length. The template length is stored in the 9th column of a SAM/BAM file. It is set as 0 for single-segment template or when the information is unavailable.
         A summary of the template depth is also included in the middle of the plot. 
         </p>
-    <ul id='image-container'>
-        <li><img src='template_length_distribution1.png' alt='Template length distribution figure'>Tumor</li>
-        <li><img src='template_length_distribution2.png' alt='Template length distribution figure'>Normal</li>
-    </ul>
+        <ul id='image-container'>
+            <li><img src='template_length_distribution1.png' alt='Template length distribution figure'>Tumor</li>
+            <li><img src='template_length_distribution2.png' alt='Template length distribution figure'>Normal</li>
+        </ul>
     </div>
     <div class="module"><h2 id="M1">Heteroplasmy</h2>
         <p>Heteroplasmy detection threshold is defined on two scales: read count (-ha) and read percentage (-hp). Read count denotes the number of reads we must observe to support heteroplasmy while read percentage denotes the percentage of reads we must observe to support heteroplasmy. Both scales can be used together or individually. The minimum recommended depth requirement (-d) for detecting heteroplasmy is 50. Lower depth will severely damage the confidence of heteroplasmy calling.</p>
-        <ul id='image-container'>
+        <ul id='image-container2'>
             <li><img src='circos/mito1_heteroplasmy_circos.png' alt='Circos plot of heteroplasmy on tumor'>Tumor</li>
             <li><img src='circos/mito2_heteroplasmy_circos.png' alt='Circos plot of heteroplasmy on normal'>Normal</li>
         </ul>
 <h3>Tumor</h3><div align='right'><a href='mito1_heteroplasmy.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
-<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th></tr>
-<tr><td>MT</td><td>217</td><td>T</td><td>0</td><td>52</td><td>1</td><td>0</td><td>0</td><td>13</td><td>0</td><td>0</td><td>0.015</td><td>0.000</td><td>0.044</td><td>T</td><td>C</td><td>65</td><td>1</td><td></td><td></td><td></td><td></td><td>1.245</td></tr>
+<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th><th>pathogenic_variants</th><th>diseases</th><th>links</th></tr>
+<tr><td>MT</td><td>83</td><td>T</td><td>1</td><td>27</td><td>0</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td><td>0.029</td><td>0.000</td><td>0.085</td><td>T</td><td>A</td><td>34</td><td>1</td><td></td><td></td><td></td><td></td><td>1.250</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>153</td><td>A</td><td>40</td><td>0</td><td>0</td><td>1</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0.016</td><td>0.000</td><td>0.047</td><td>A</td><td>G</td><td>60</td><td>1</td><td></td><td></td><td></td><td></td><td>1.488</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>217</td><td>T</td><td>0</td><td>52</td><td>1</td><td>0</td><td>0</td><td>13</td><td>0</td><td>0</td><td>0.015</td><td>0.000</td><td>0.044</td><td>T</td><td>C</td><td>65</td><td>1</td><td></td><td></td><td></td><td></td><td>1.245</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>290</td><td>A</td><td>52</td><td>0</td><td>0</td><td>0</td><td>21</td><td>0</td><td>0</td><td>1</td><td>0.014</td><td>0.000</td><td>0.041</td><td>A</td><td>G</td><td>73</td><td>1</td><td></td><td></td><td></td><td></td><td>3.364</td><td></td><td></td><td>
+</td></tr>
 </table><h3>Normal</h3><div align='right'><a href='mito2_heteroplasmy.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
-<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th></tr>
-<tr><td>MT</td><td>45</td><td>A</td><td>12</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>A</td><td>C</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td></tr>
-<tr><td>MT</td><td>48</td><td>C</td><td>0</td><td>1</td><td>12</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>C</td><td>T</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td></tr>
-<tr><td>MT</td><td>239</td><td>T</td><td>1</td><td>17</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0.050</td><td>0.000</td><td>0.146</td><td>T</td><td>A</td><td>19</td><td>1</td><td></td><td></td><td></td><td></td><td>1.111</td></tr>
+<tr><th>#chr</th><th>pos</th><th>ref</th><th>forward_A</th><th>forward_T</th><th>forward_C</th><th>forward_G</th><th>reverse_A</th><th>reverse_T</th><th>reverse_C</th><th>reverse_G</th><th>heteroplasmy</th><th>95%ci_lower</th><th>95%ci_upper</th><th>major_allele</th><th>minor_allele</th><th>major_allele_count</th><th>minor_allele_count</th><th>gene</th><th>genedetail</th><th>exonic_function</th><th>aminochange</th><th>strand_bias</th><th>pathogenic_variants</th><th>diseases</th><th>links</th></tr>
+<tr><td>MT</td><td>45</td><td>A</td><td>12</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>A</td><td>C</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>48</td><td>C</td><td>0</td><td>1</td><td>12</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.077</td><td>0.000</td><td>0.222</td><td>C</td><td>T</td><td>12</td><td>1</td><td></td><td></td><td></td><td></td><td>0</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>98</td><td>C</td><td>0</td><td>0</td><td>10</td><td>1</td><td>0</td><td>0</td><td>3</td><td>0</td><td>0.071</td><td>0.000</td><td>0.206</td><td>C</td><td>G</td><td>13</td><td>1</td><td></td><td></td><td></td><td></td><td>1.273</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>99</td><td>T</td><td>0</td><td>10</td><td>0</td><td>1</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0.067</td><td>0.000</td><td>0.194</td><td>T</td><td>G</td><td>14</td><td>1</td><td></td><td></td><td></td><td></td><td>1.364</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>195</td><td>C</td><td>0</td><td>3</td><td>3</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0.375</td><td>0.040</td><td>0.710</td><td>C</td><td>T</td><td>5</td><td>3</td><td></td><td></td><td></td><td></td><td>1.333</td><td></td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>239</td><td>T</td><td>1</td><td>17</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0.050</td><td>0.000</td><td>0.146</td><td>T</td><td>A</td><td>19</td><td>1</td><td></td><td></td><td></td><td></td><td>1.111</td><td></td><td></td><td>
+</td></tr>
 </table>    </div>
     <div class="module"><h2 id="M4">Structural Changes</h2>
     <p>
     MitoSeek reports mitochondria structural changes when pair-end sequencing data is given as input. During alignment, a portion of the read-pairs will be discordantly mapped, meaning one read of the pair is aligned to mitochondria and the mate pair is aligned elsewhere. Such reads are like to be the results of alignment errors from homologous regions between mitochondria genome and other genomes. However, they could also indicate mitochondria integration into other genomes which has been reported to be possible by multiple studies. Only those structural changes with >=n (-str) spanning reads support will be outputed.
     </p>
-<h3>Tumor</h3><div align='right'><a href='mito1_structure.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<h3>Tumor</h3><div align='right'><a href='mito1_structure_discordant_mates.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
 <tr><th>#MitoChr</th><th>MitoPos</th><th>VarChr</th><th>VarPos</th><th>SupportedReads</th><th>MeanMappingQuality</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
-<tr><td>MT</td><td>12491</td><td>MT</td><td>57409214</td><td>4</td><td>37.000</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
-<tr><td>MT</td><td>13733</td><td>MT</td><td>84732689</td><td>4</td><td>37.000</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)</td></tr>
-<tr><td>MT</td><td>14258</td><td>MT</td><td>190283382</td><td>5</td><td>37.000</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
-<tr><td>MT</td><td>14307</td><td>MT</td><td>37264955</td><td>4</td><td>37.000</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)</td></tr>
-<tr><td>MT</td><td>15635</td><td>MT</td><td>107157488</td><td>4</td><td>37.000</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)</td></tr>
-<tr><td>MT</td><td>16258</td><td>MT</td><td>79954746</td><td>4</td><td>37.000</td></tr>
-<tr><td>MT</td><td>1881</td><td>MT</td><td>175892782</td><td>4</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
-<tr><td>MT</td><td>2148</td><td>MT</td><td>142435648</td><td>6</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
-<tr><td>MT</td><td>2535</td><td>MT</td><td>186031615</td><td>4</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
-<tr><td>MT</td><td>2860</td><td>MT</td><td>88779528</td><td>5</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)</td></tr>
-<tr><td>MT</td><td>3293</td><td>MT</td><td>49473486</td><td>5</td><td>37.000</td><td>TRNL1</td><td>MTTL1:tRNA:3231-3305:(+)</td></tr>
-<tr><td>MT</td><td>5276</td><td>MT</td><td>166684781</td><td>4</td><td>37.000</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
-<tr><td>MT</td><td>5445</td><td>MT</td><td>48117465</td><td>4</td><td>37.000</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)</td></tr>
-<tr><td>MT</td><td>7656</td><td>MT</td><td>70097532</td><td>5</td><td>23.000</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)</td></tr>
-<tr><td>MT</td><td>8472</td><td>MT</td><td>67572745</td><td>4</td><td>37.000</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)</td></tr>
-<tr><td>MT</td><td>8624</td><td>MT</td><td>138884146</td><td>4</td><td>37.000</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
-<tr><td>MT</td><td>9095</td><td>MT</td><td>66638827</td><td>4</td><td>23.000</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)</td></tr>
-</table><h3>Normal</h3><div align='right'><a href='mito2_structure.txt'>Download</a>&nbsp;&nbsp;<br/></div>
+<tr><td>MT</td><td>12491</td><td>18</td><td>57409214</td><td>4</td><td>37.000</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)
+</td></tr>
+<tr><td>MT</td><td>13733</td><td>1</td><td>84732689</td><td>4</td><td>37.000</td><td>ND5</td><td>MTND5:mRNA:12338-14149:(+)
+</td></tr>
+<tr><td>MT</td><td>14258</td><td>4</td><td>190283382</td><td>5</td><td>37.000</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)
+</td></tr>
+<tr><td>MT</td><td>14307</td><td>2</td><td>37264955</td><td>4</td><td>37.000</td><td>ND6</td><td>MTND6:mRNA:14150-14674:(-)
+</td></tr>
+<tr><td>MT</td><td>15635</td><td>4</td><td>107157488</td><td>4</td><td>37.000</td><td>CYTB</td><td>MTCYB:mRNA:14748-15882:(+)
+</td></tr>
+<tr><td>MT</td><td>16258</td><td>9</td><td>79954746</td><td>4</td><td>37.000</td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>1881</td><td>3</td><td>175892782</td><td>4</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)
+</td></tr>
+<tr><td>MT</td><td>2148</td><td>5</td><td>142435648</td><td>6</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)
+</td></tr>
+<tr><td>MT</td><td>2535</td><td>1</td><td>186031615</td><td>4</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)
+</td></tr>
+<tr><td>MT</td><td>2860</td><td>8</td><td>88779528</td><td>5</td><td>37.000</td><td>RNR2</td><td>MTRNR2:rRNA:1673-3230:(+)
+</td></tr>
+<tr><td>MT</td><td>3293</td><td>6</td><td>49473486</td><td>5</td><td>37.000</td><td>TRNL1</td><td>MTTL1:tRNA:3231-3305:(+)
+</td></tr>
+<tr><td>MT</td><td>5276</td><td>3</td><td>166684781</td><td>4</td><td>37.000</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)
+</td></tr>
+<tr><td>MT</td><td>5445</td><td>6</td><td>48117465</td><td>4</td><td>37.000</td><td>ND2</td><td>MTND2:mRNA:4471-5512:(+)
+</td></tr>
+<tr><td>MT</td><td>7656</td><td>10</td><td>70097532</td><td>5</td><td>23.000</td><td>COX2</td><td>MTCO2:mRNA:7587-8270:(+)
+</td></tr>
+<tr><td>MT</td><td>8472</td><td>7</td><td>67572745</td><td>4</td><td>37.000</td><td>ATP8</td><td>MTATP8:mRNA:8367-8573:(+)
+</td></tr>
+<tr><td>MT</td><td>8624</td><td>2</td><td>138884146</td><td>4</td><td>37.000</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)
+</td></tr>
+<tr><td>MT</td><td>9095</td><td>12</td><td>66638827</td><td>4</td><td>23.000</td><td>ATP6</td><td>MTATP6:mRNA:8528-9208:(+)
+</td></tr>
+</table><h3>Normal</h3><div align='right'><a href='mito2_structure_discordant_mates.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
 <tr><th>#MitoChr</th><th>MitoPos</th><th>VarChr</th><th>VarPos</th><th>SupportedReads</th><th>MeanMappingQuality</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
-<tr><td>MT</td><td>10910</td><td>MT</td><td>33331463</td><td>5</td><td>37.000</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)</td></tr>
+<tr><td>MT</td><td>10910</td><td>17</td><td>33331463</td><td>5</td><td>37.000</td><td>ND4</td><td>MTND4:mRNA:10761-12138:(+)
+</td></tr>
 </table>    </div>
     <div class="module"><h2 id="M2">Somatic Mutation</h2>
     <p>
     MitoSeek takes the input bam provided by <b>-i</b> as tumor while the other input bam by <b>-j</b> as its control normal. We propose to compare the empirical allele counts between tumor and normal control directly instead of using a genotype caller. MitoSeek can extract empirical allele count for every mitochondria position then compare the allele counts between tumor and normal to determine somatic mutation status. Two parameters (-sp and -sa) control the somatic mutation detection.
     </p>
-        <ul id='image-container'>
+        <ul id='image-container3'>
             <li><img src='circos/mito_somatic_mutation_circos.png' alt='Circos plot of somatic mutations'></li>
         </ul>
 <div align='right'><a href='mito_somatic_mutation.txt'>Download</a>&nbsp;&nbsp;<br/></div>
 <table border='1'>
 <tr><th>#chr</th><th>pos</th><th>ref</th><th>tumorGenotype</th><th>tumorDepth</th><th>normalGenotype</th><th>normalDepth</th><th>Mito.gene</th><th>Mito.genedetail</th></tr>
+<tr><td>MT</td><td>83</td><td>T</td><td>T|A</td><td>34|1</td><td>T</td><td>13</td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>153</td><td>A</td><td>A|G</td><td>60|1</td><td>A</td><td>16</td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>217</td><td>T</td><td>T|C</td><td>65|1</td><td>T</td><td>19</td><td></td><td>
+</td></tr>
+<tr><td>MT</td><td>290</td><td>A</td><td>A|G</td><td>73|1</td><td>A</td><td>24</td><td></td><td>
+</td></tr>
 </table>    </div>
     <div class="module"><h2 id="M3">Relative Copy Number Estimation</h2>
     <p>
@@ -405,21 +516,56 @@ pre {
     <h4>byDepth</h4>
     <b>CN=Dm/Dt</b>, where <b>Dm</b> is the average depth of mitochondria, and <b>Dt</b> is the average of exome or whole genome, depending on your input data.
     </p>
-<h3>Tumor</h3><div align='right'><a href='mito1_cnv.txt'>Download</a>&nbsp;&nbsp;<br/></div>
-<table border='1'>
-<tr><th>Method</th><th>mito.reads/mito.ave.depth</th><th>total.reads/total.ave.depth</th><th>CNV</th></tr>
-<tr><td>ByRead</td><td>46110</td><td>0</td><td>NA</td></tr>
-<tr><td>ByDepth</td><td>197.733</td><td>0.000</td><td>NA</td></tr>
-</table><h3>Normal</h3><div align='right'><a href='mito2_cnv.txt'>Download</a>&nbsp;&nbsp;<br/></div>
-<table border='1'>
-<tr><th>Method</th><th>mito.reads/mito.ave.depth</th><th>total.reads/total.ave.depth</th><th>CNV</th></tr>
-<tr><td>ByRead</td><td>12846</td><td>0</td><td>NA</td></tr>
-<tr><td>ByDepth</td><td>55.485</td><td>0.000</td><td>NA</td></tr>
-</table>    </div>
+    </div>
     <div class="module"><h2 id="M5">File list</h2>
     <p>File list description</p>
-    <b>Not implemented yet</b>
-    </div>
+<table border='1'>
+<tr><th>Category</th><th>File Name</th><th>Description</th></tr>
+<tr><td rowspan='18'>QC</td>
+<td><a href='percent_of_base_pairs_covered_table1.txt'>percent_of_base_pairs_covered_table1.txt</a></td>
+<td>Percent of base pairs covered (Tumor)</td>
+</tr>
+<tr><td><a href='percent_of_base_pairs_covered_table2.txt'>percent_of_base_pairs_covered_table2.txt</a></td>
+<td>Percent of base pairs covered (Normal)</td>
+</tr>
+<tr><td><a href='per_base_quality1.png'>per_base_quality1.png</a></td>
+<td> Per base quality plot (Tumor)</td>
+</tr>
+<tr><td><a href='per_base_quality_table1.txt'>per_base_quality_table1.txt</a></td>
+<td> Data for per base quality plot (Tumor)</td>
+</tr><tr><td><a href='per_base_quality2.png'>per_base_quality2.png</a></td>
+<td> Per base quality plot (Normal)</td>
+</tr>
+<tr><td><a href='per_base_quality_table2.txt'>per_base_quality_table2.txt</a></td>
+<td> Data for per base quality plot (Normal)</td>
+</tr><tr><td><a href='mapping_quality1.png'>mapping_quality1.png</a></td>
+<td> Mapping quality plot (Tumor)</td>
+</tr><tr><td><a href='mapping_quality_table1.txt'>mapping_quality_table1.txt</a></td>
+<td> Data for mapping quality plot (Tumor)</td>
+</tr><tr><td><a href='mapping_quality2.png'>mapping_quality2.png</a></td>
+<td> Mapping quality plot (Normal)</td>
+</tr><tr><td><a href='mapping_quality_table2.txt'>mapping_quality_table2.txt</a></td>
+<td> Data for mapping quality plot (Normal)</td>
+</tr><tr><td><a href='depth_distribution1.png'>depth_distribution1.png</a></td>
+<td> Depth distribution plot (Tumor)</td>
+</tr><tr><td><a href='depth_distribution_table1.txt'>depth_distribution_table1.txt</a></td>
+<td> Data for depth distribution plot (Tumor)</td>
+</tr><tr><td><a href='depth_distribution2.png'>depth_distribution2.png</a></td>
+<td> Depth distribution plot (Normal)</td>
+</tr><tr><td><a href='depth_distribution_table2.txt'>depth_distribution_table2.txt</a></td>
+<td> Data for depth distribution plot (Normal)</td>
+</tr><tr><td><a href='template_length_distribution1.png'>template_length_distribution1.png</a></td>
+<td> Template length distribution plot (Tumor)</td>
+</tr><tr><td><a href='template_length_distribution_table1.txt'>template_length_distribution_table1.txt</a></td>
+<td> Data for template length distribution plot (Tumor)</td>
+</tr><tr><td><a href='template_length_distribution2.png'>template_length_distribution2.png</a></td>
+<td> Template length distribution plot (Normal)</td>
+</tr><tr><td><a href='template_length_distribution_table2.txt'>template_length_distribution_table2.txt</a></td>
+<td> Data for template length distribution plot (Normal)</td>
+</tr><tr><td rowspan='10'>Heteroplasmy</td>
+<td><a href='mito1_heteroplasmy.txt'>mito1_heteroplasmy.txt</a></td><td> Heteroplasmy result (Tumor) </td></tr><tr><td><a href='mito2_heteroplasmy.txt'>mito2_heteroplasmy.txt</a></td><td> Heteroplasmy result (Normal) </td></tr><tr><td><a href='circos/mito1_heteroplasmy_circos.png'>circos/mito1_heteroplasmy_circos.png</a></td><td> Circos plot of heteroplasmy result (Tumor)</td></tr><tr><td><a href='circos/mito2_heteroplasmy_circos.png'>circos/mito2_heteroplasmy_circos.png</a></td><td> Circos plot of heteroplasmy result (Normal)</td></tr><tr><td><a href='circos/mito1_heteroplasmy_circos.conf'>circos/mito1_heteroplasmy_circos.conf</a></td><td> Configure file for circos plot of heteroplasmy result (Tumor)</td></tr><tr><td><a href='circos/mito2_heteroplasmy_circos.conf'>circos/mito2_heteroplasmy_circos.conf</a></td><td> Configure file for circos plot of heteroplasmy result (Normal)</td></tr><tr><td><a href='circos/mito1_heteroplasmy_circos.text.txt'>circos/mito1_heteroplasmy_circos.text.txt</a></td><td> Data file (text labels) for circos plot of heteroplasmy result (Tumor)</td></tr><tr><td><a href='circos/mito2_heteroplasmy_circos.text.txt'>circos/mito2_heteroplasmy_circos.text.txt</a></td><td> Data file (text labels) for circos plot of heteroplasmy result (Normal)</td></tr><tr><td><a href='circos/mito1_heteroplasmy_circos.scatter.txt'>circos/mito1_heteroplasmy_circos.scatter.txt</a></td><td> Data file (scatter plots) for circos plot of heteroplasmy result (Tumor)</td></tr><tr><td><a href='circos/mito2_heteroplasmy_circos.scatter.txt'>circos/mito2_heteroplasmy_circos.scatter.txt</a></td><td> Data file (scatter plots) for circos plot of heteroplasmy result (Normal)</td></tr><tr><td rowspan='4'>Structural Variants</td>
+<td><a href='mito1_structure_discordant_mates.txt'>mito1_structure_discordant_mates.txt</a></td><td> Structural changes of those discordantly mapped mate reads (Tumor)</td></tr><tr><td><a href='mito2_structure_discordant_mates.txt'>mito2_structure_discordant_mates.txt</a></td><td> Structural changes of those discordantly mapped mate reads (Normal)</td></tr><tr><td><a href='mito1_structure_large_deletion.sam'>mito1_structure_large_deletion.sam</a></td><td> Structural changes of those reads mapped with candidate large deletions (Tumor)</td></tr><tr><td><a href='mito2_structure_large_deletion.sam'>mito2_structure_large_deletion.sam</a></td><td> Structural changes of those reads mapped with candidate large deletions (Normal)</td></tr><tr><td rowspan='4'>Somatic Mutation</td><td><a href='mito_somatic_mutation.txt'>mito_somatic_mutation.txt</a></td><td>Somatic mutation result </td></tr><tr><td><a href='circos/mito_somatic_mutation_circos.png'>circos/mito_somatic_mutation_circos.png</a></td><td>Circos plot of somatic mutation result </td></tr><tr><td><a href='circos/mito_somatic_mutation_circos.config'>circos/mito_somatic_mutation_circos.config</a></td><td>Configure file for circos plot of somatic mutation result </td></tr><tr><td><a href='circos/mito_somatic_mutation_circos.text.txt'>circos/mito_somatic_mutation_circos.text.txt</a></td><td>Data file (text label) for circos plot of somatic mutation result </td></tr><tr><td rowspan='8'> Others </td><td><a href='m.bed'>m.bed</a></td><td> User provided region (bed format) or mitoSeek detected mitochondrial genome region</td></tr><tr><td><a href='mito.fasta'>mito.fasta</a></td><td> Mitochondrial geneome reference file in fasta format </td></tr><tr><td><a href='mito1.bam'>mito1.bam</a></td><td> Mapped reads in mitochondrial genome (Tumor)</td></tr><tr><td><a href='mito2.bam'>mito2.bam</a></td><td> Mapped reads in mitochondrial genome (Normal) </td></tr><tr><td><a href='mito1.pileup'>mito1.pileup</a></td><td> Pileup file on mithochondrial genome (Tumor)</td></tr><tr><td><a href='mito2.pileup'>mito2.pileup</a></td><td> Pileup file on mithochondrial genome (Normal)</td></tr><tr><td><a href='mito2_basecall.txt'>mito2_basecall.txt</a></td><td> Parsed result of pileup file on mithochondrial genome (Tumor)</td></tr><tr><td><a href='mito2_basecall.txt'>mito2_basecall.txt</a></td><td> Parsed result of pileup file on mithochondrial genome (Normal)</td></tr></table>
+ </div>
     </div>
     </div>
 <div class="footer"  style="background-color: #EEE;font-weight:" align='center'>Produced by <a href="https://github.com/riverlee/MitoSeek">MitoSeek</a> (Jiang Li)</div>

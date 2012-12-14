@@ -1,1 +1,5 @@
 #chr	pos	ref	tumorGenotype	tumorDepth	normalGenotype	normalDepth	Mito.gene	Mito.genedetail
+MT	83	T	T|A	34|1	T	13		
+MT	153	A	A|G	60|1	A	16		
+MT	217	T	T|C	65|1	T	19		
+MT	290	A	A|G	73|1	A	24		

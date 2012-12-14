@@ -1,6 +1,0 @@
-#chr	pos	ref	tumorGenotype	tumorDepth	normalGenotype	normalDepth
-MT	195	T	T|C	11|6	T	13
-MT	1149	G	G|A	83|14	G	16
-MT	8165	G	G|A	102|59	G	47
-MT	12661	A	A|G	81|14	A	39
-MT	15612	G	G|A	158|17	G	78

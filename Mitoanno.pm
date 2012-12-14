@@ -22,7 +22,9 @@ sub new{
         _build=>"hg19",  #only hg19 and rCRS are accpeted
         _pos2gene=>{},   #position refer to its located gene name
         _gene2pos=>{},   #gene information, includeing start, end,strand, gene name
-        _hg19TorCRS=>undef #an Convert object, which is used to access reference allele for a given position
+        _hg19TorCRS=>undef,#an Convert object, which is used to access reference allele for a given position
+        _omimpathogenicfile=>$FindBin::RealBin."/Resources/OMIMpathogenic.txt", #file contain pathogenic from omim, position are in rCRS 
+        _omimpathogenic=>{}  #An hash refernce store information from _omimpathogenicfile
     };
     
     if(defined($var) ){
@@ -200,6 +202,34 @@ sub annotation{
     }
 }
 
+
+
+#Give a position, output it's pathogenic information
+sub pathogenic{
+    my ($self,$pos) = @_;
+    if($self->{_build} eq 'hg19'){
+        $pos=$self->{_hg19TorCRS}->hg19TorCRS($pos);
+        if(!defined($pos)){
+            return("","",""); #variants,diseases,links
+        }
+    }
+    
+    if(exists($self->{_omimpathogenic}->{$pos})){
+        my @variants;
+        my @diseases;
+        my @links;
+        foreach my $hashref(@{$self->{_omimpathogenic}->{$pos}}){
+            push @variants,$hashref->{'variant'};
+            push @diseases,$hashref->{'disease'};
+            push @links,$hashref->{'link'};
+        }
+        return (join("|",@variants),join("|",@diseases),join("|",@links));
+    }else{
+        return("","",""); #variants,diseases,links
+    }
+}
+
+
 #if _pos2gene has not been inititalized, load the gbfile 
 #For genbank file, we only fetch features of tRNA, rRNA and CDS(mRNA)
 sub _initial{
@@ -264,7 +294,25 @@ sub _initial{
     }
 
     $self->{_hg19TorCRS}=Convert->new();
+    
+    #Initial _omimpathogenic hash ref
+    open(IN,$self->{_omimpathogenicfile}) or die $!;
+    <IN>; #skip the header
+    while(<IN>){
+        s/\r|\n//g;
+        my ($pos,$pathogenic_variant,$gene,$omim,$disease) = split "\t";
+        my $link="http://omim.org/entry/";
+        if ($omim=~/(\d+)\.(\d+)/){
+            $link.=$1."#".$2;
+        }
+        push @{$self->{_omimpathogenic}->{$pos}}, {'variant'=>$pathogenic_variant,
+                                                  'gene'=>$gene,
+                                                  'omim'=>$omim,
+                                                  'disease'=>$disease,
+                                                  'link'=>$link};
+    }
 }
+
 
 sub codon2aa {
     my($codon) = @_;

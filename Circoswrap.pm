@@ -86,6 +86,7 @@ sub prepare{
     $str=~s/replacegenetext/$self->{_genetext}/g;
     $str=~s/replacescatter/$self->{_scatteroutput}/g;
     $str=~s/replacetext/$self->{_textoutput}/g;
+    $str=~s/replacekaryotype/$self->{_karyotype}/g;
     print OUT $str;
     close OUT;
     

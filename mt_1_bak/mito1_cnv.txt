@@ -1,3 +1,0 @@
-Method	mito.reads/mito.ave.depth	total.reads/total.ave.depth	CNV
-ByRead	46110	5027	9.17246866918639
-ByDepth	197.733208617464	0.00183413044001479	107807.604248621
