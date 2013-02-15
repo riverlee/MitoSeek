@@ -2,7 +2,12 @@ Table of Content
 ================
 * [Overview](#overview)
 * [Usage] (#usage)
-
+* [Change log & Download] (#change)
+   * [Release version 1.1 on Feb 15, 2013] (#v1.1)
+   * [Release version 1.0 on Dec 14, 2012] (#v1.0)
+* [Statistical framework for heteroplasmy detection](#statistics)
+   * [Fisher test](#fisher)
+   * [Empirical Bayesian] (#bayes)
 * [Prerequisites](#Prerequisites)
   * [Step1: Intall perl packages required by circos] (#step1)
   * [Step2: Intall perl packages required by MitoSeek] (#step2)
@@ -18,12 +23,13 @@ Table of Content
 
 <a name="overview"/>
 
+
+
 Overview
 ----------------------
 MitoSeek is an open-source software tool to reliably and easily extract mitochondrial genome information from exome sequencing data. MitoSeek evaluates **mitochondrial genome alignment quality, estimates relative mitochondrial copy numbers, and detects heteroplasmy, somatic mutation, and structural variance of the mitochondrial genome**.
 
-
-
+<a name="usage"/>
 ## Usage
 Example code for running MitoSeek with given toy dataset could be
 ```bash
@@ -35,15 +41,19 @@ This example report could be accessed at [Here]( http://htmlpreview.github.com/?
 
 Details for each parameters are here
 ```bash
-Usage: perl mitoSeek.pl -i inbam.pl
+Usage: perl mitoSeek.pl -i inbam 
 -i [bam]                Input bam file
 -j [bam]                Input bam file2, if this file is provided, it will conduct somatic mutation mining, and it will be 
-                        taken as normal tissue.        
+                        taken as normal tissue.
 -t [input type]         Type of the bam files, the possible choices are 1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only,default = 1
+-d [int]                The minimum recommended depth requirement for detecting heteroplasmy. Lower depth will severely damage the 
+                        confidence of heteroplasmy calling, default=50
 -ch                     Produce circos plot input files and circos plot figure for heteroplasmic mutation,
                         (-noch to turn off and -ch to turn on), default = on
 -hp [int]               Heteroplasmy threshold using [int] percent alternative allele observed, default = 5
 -ha [int]               Heteroplasmy threshold using [int] allele observed, default = 0
+-parA [float]           Parameter A for empirical bayesian method, default is 3.87 which is estimated from 600 BRCA samples
+-parB [float]           Parameter B for empirical bayesian method, default is 174.28, which is estimated from 600 BRCA samples
 -A                      If - A is used, the total read count is the total allele count of all allele observed. 
                         Otherwise, the total read count is the sum of major and minor allele counts. Default = off
 -mmq [int]              Minimum map quality, default =20
@@ -62,7 +72,86 @@ Usage: perl mitoSeek.pl -i inbam.pl
 -strf [int]             Structure variants cutoff for those large deletions,
                         int = template size in bp, default=500
 -QC                     Produce QC result, (--noQC to turn off and -QC to turn on), default=on
+-samtools[samtools]     Tell where is the samtools program, default is your mitoseek directory/Resources/samtools/samtools
+-bwa [bwa]              Tell where is the bwa program, default value is 'bwa' which is in your $PATH
+-bwaindex [bwaindex]    Tell where is the bwa index of non-mitochondrial human genome, no default value
+-advance                Will get mitochondrial reads in an advanced way, generally followed by 1) Initially extract mitochrodrial reads from 
+                        a bam file, then 2) remove those could be remapped to non-mitochondrial human genome by bwa. Advanced extraction needs 
+                        -bwaindex option. Default extraction without removing step.
+
 ```
+
+<a name="change"/>
+
+Change log & Download
+---------------------------------------------
+
+<a name="v1.1">
+### Release version 1.1 on Feb 15, 2013
+Version 1.1 has been improved according to reviewers' advise.
+
+* **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.1.zip)**
+* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.1)**
+
+Changes are here:
+  * Add option **-advance** to improve mitochondrial reads extraction, which is done by 1) Initially extract mitochrodrial reads from a bam file, then 2) remove those could be remapped to non-mitochondrial human genome by bwa. The version **v1.0** only implementes the step 1
+  * Add Statistical framework for heteroplasmy detection, which are [fisher test](#fisher) and [empirical bayesian] (#bayes). 
+  * Add option **-samtools** for people who would like to use their specified samtools
+  * Add options **-bwa** and **--bwaindex** which are needed if use **-advance** option
+  * In the heteroplasmy output, it will contain columns of **fisher.pvalue, fisher.adjust.pvalue,fisher.phred.score,empirical.probability,** and **empirical.phred.score**
+  * Thanks to Peter's code for beta calculation in perl at <http://home.online.no/~pjacklam/perl/modules/>
+
+
+
+<a name="v1.0"/>
+### Release version 1.0 on Dec 14, 2012
+Initial version for the paper
+
+* **[Download Zip](https://github.com/riverlee/MitoSeek/archive/964cd2e61735a60283f0280020cadbb53be3617e.zip)**
+* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/964cd2e61735a60283f0280020cadbb53be3617e)**
+
+<a name="statistics"/>
+Statistical framework for heteroplasmy detection
+-----------------------------------------------------------------
+We have implemented statistical framework in addition to the empirical filters. We added a function to perform a one-tail Fisher’s exact test to determine if the rate of heteroplasmy is significantly greater than user defined cutoff (-hp). Moreover, MitoSeek also provides Phred quality scores based on the p-value.
+
+
+<a name="fisher"/>
+### Fisher test
+```bash
+           major   minor    
+observed    n11     n12 | n1p 
+expected    n21     n22 | n2p   
+           -----------------
+            np1     np2   npp
+where n11 and n12 are observed number of major and minor alleles,
+n21 = (n11+n12)*(1-hp/100) in which hp is defined by -hp
+n22 = (n11+n12)*hp/100  in which hp is defined by -hp
+```
+The phred score of fisher pvalue is calucated as
+
+![p](http://www.sciweavers.org/upload/Tex2Img_1360960803/render.png)
+
+<a name="bayes"/>
+### Empirical Bayesian
+
+![calculus](http://www.sciweavers.org/upload/Tex2Img_1360960454/render.png)
+
+where
+
+![beta](http://www.sciweavers.org/upload/Tex2Img_1360960362/render.png)
+
+in which a/b is the number of major/minor allele,
+A and B are estimated from 600 BRCA samples. 
+
+p=hp/100 which is defined by -hp
+
+The phred score of probability is calculated as
+
+![p2](http://www.sciweavers.org/upload/Tex2Img_1360960885/render.png)
+
+
+
 
 
 <a name="Prerequisites"/>
@@ -345,10 +434,6 @@ perl -lane 'if($F[2]=~/chr\d+$|chrX|chrY/) {$F[2]=~s/chr//g;@start=split ",",$F[
 ./getTotalBasesFromBed.R genome_withChr.bed
   
 ```
-
-
-
-
 
 
 

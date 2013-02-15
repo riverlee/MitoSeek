@@ -19,6 +19,9 @@ use File::Path;
 use Cwd 'abs_path';
 use FindBin;
 use List::Util qw(sum min max);
+use Text::NSP::Measures::2D::Fisher::left;  # For fisher test
+use Statistics::Multtest qw(BH);
+use Math::SpecFun::Beta qw(beta);
 use lib "$FindBin::RealBin";
 ## load our own packages
 use Convert;
@@ -42,6 +45,7 @@ my $totalgenomebases              =3095677412;                                  
 my $totalexonbases                =70757781;                                         #Total human exon size, used to calculate the average depth
 my %acceptedgenomelength          = ( "hg19" => 16571, "rCRS" => 16569 );            #The total mitochondrial genome size of hg19 and rCRS
 my $samtools                      = "$FindBin::Bin/Resources/samtools/samtools";                                      #Where is the samtools file
+my $mitomap                     = "$FindBin::Bin/mitomap.pl";                                      #Where is the samtools file
 
 my $isbam                         = 1;                                               #Default is 1, will auto determined from the $inbam1 file
 my $ischr                         = 0;                                               #Default is 0, means the chromosomes are named without prefix chr, will auto determined from the $inbam1's header
@@ -156,6 +160,12 @@ my $outref            = 'hg19';     #The output files used in the reference rCRS
 my $qc                = 1;          #Produce QC result
 my $str               = 2;          #structure variants cutoff, this cutoff applied to >$str mates supporting this cross different chromosome mapping
 my $strflagmentsize   = 500;        #structure variants cutoff for those abnormal large delete/insertion
+my $A                 = 3.87;       #
+my $B                 = 174.28;     #
+my $advance          = 0;          #if set 1, need to remove those mito reads could be remapped to non-mitochondria human genome
+my $bwaindex          = undef;
+my $bwa               = "bwa";      #supporse you have bwa install in your $PATH
+my $help              =0;
 #========End defining other variables======================#
 
 #========Begin assiging values to variables================#
@@ -184,7 +194,14 @@ unless (
         "QC!"   => \$qc,
         "t=i"   => \$type,
         "str=i" => \$str,
-        "strf=i"=> \$strflagmentsize
+        "strf=i"=> \$strflagmentsize,
+        "parA=f"   => \$A,
+        "parB=f"   => \$B,
+        "bwa=s" =>\$bwa,
+        "bwaindex=s"=>\$bwaindex,
+        "samtools=s"=>\$samtools,
+        "advance"=>\$advance,
+        "h|help"=>\$help
     )
   )
 {
@@ -194,6 +211,10 @@ unless (
 #==========End assiging values to variables================#
 
 #==========Begin Main Program==============================#
+if ($help){
+    _usage();
+    exit(0);
+}
 _check();
 _initialVal();
 _print_analysis_steps();
@@ -392,11 +413,19 @@ sub _main{
     
     if($inbam2){
         _info($index.".1,Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)");
-        _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        
+        if($advance){
+            _get_mitochondrial_bam_advance($inbam1,$isbam,$regionbed,$mmq,$mitobam1);
+        }else{
+            _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        }   
         _info($index++.".2,Extracting reads in mitochondria from '$inbam2' (Output: $mitobam2)");
-        _get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
-        
-        
+        if($advance){
+            _get_mitochondrial_bam_advance( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
+        }else{
+            _get_mitochondrial_bam( $inbam2, $isbam, $regionbed, $mmq, $mitobam2 );
+        }
+               
         _info($index.".1,Checking Reads number in '$mitobam1'",1);
         _print_read($mitobam1);
          _info($index++.".2,Checking Reads number in '$mitobam2'",1);
@@ -496,7 +525,11 @@ sub _main{
 
     }else{
         _info($index++.",Extracting reads in mitochondria from '$inbam1' (Output: $mitobam1)");
-         _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        if($advance){
+            _get_mitochondrial_bam_advance( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        }else{
+            _get_mitochondrial_bam( $inbam1, $isbam, $regionbed, $mmq, $mitobam1 );
+        }
         
         _info($index++.",Checking Reads number in '$mitobam1'",1);
         _print_read($mitobam1);
@@ -855,16 +888,30 @@ sub _is_file_binary {
 #$flag, if $flag is set and it will exit the program
 sub _usage {
     my ($flag) = @_;
-    my $usage = <<USAGE;
-Usage: perl mitoSeek.pl -i inbam.pl
+=h com
+@----------------------------------------------------------@
+|        mitoSeek     |     v1.01      |   02/15/2013      |
+|----------------------------------------------------------|
+|     (C) 2013 Jiang Li, GNU General Public License, v2    |
+|----------------------------------------------------------|
+|  For documentation, citation & bug-report instructions:  |
+|         https://github.com/riverlee/MitoSeek             |
+@----------------------------------------------------------@
+=cut
+    my $usage=<<USAGE;
+Usage: perl mitoSeek.pl -i inbam 
 -i [bam]                Input bam file
 -j [bam]                Input bam file2, if this file is provided, it will conduct somatic mutation mining, and it will be 
-                        taken as normal tissue.        
+                        taken as normal tissue.
 -t [input type]         Type of the bam files, the possible choices are 1=exome, 2=whole genome, 3= RNAseq, 4 = mitochondria only,default = 1
+-d [int]                The minimum recommended depth requirement for detecting heteroplasmy. Lower depth will severely damage the 
+                        confidence of heteroplasmy calling, default=50
 -ch                     Produce circos plot input files and circos plot figure for heteroplasmic mutation,
                         (-noch to turn off and -ch to turn on), default = on
 -hp [int]               Heteroplasmy threshold using [int] percent alternative allele observed, default = 5
 -ha [int]               Heteroplasmy threshold using [int] allele observed, default = 0
+-parA [float]           Parameter A for empirical bayesian method, default is 3.87 which is estimated from 600 BRCA samples
+-parB [float]           Parameter B for empirical bayesian method, default is 174.28, which is estimated from 600 BRCA samples
 -A                      If - A is used, the total read count is the total allele count of all allele observed. 
                         Otherwise, the total read count is the sum of major and minor allele counts. Default = off
 -mmq [int]              Minimum map quality, default =20
@@ -883,8 +930,43 @@ Usage: perl mitoSeek.pl -i inbam.pl
 -strf [int]             Structure variants cutoff for those large deletions,
                         int = template size in bp, default=500
 -QC                     Produce QC result, (--noQC to turn off and -QC to turn on), default=on
+-samtools[samtools]     Tell where is the samtools program, default is your mitoseek directory/Resources/samtools/samtools
+-bwa [bwa]              Tell where is the bwa program, default value is 'bwa' which is your \$PATH
+-bwaindex [bwaindex]    Tell where is the bwa index of non-mitochondrial human genome, no default value
+-advance                Will get mitochondrial reads in an advanced way, generally followed by 1) Initially extract mitochrodrial reads from 
+                        a bam file, then 2) remove those could be remapped to non-mitochondrial human genome by bwa. Advanced extraction needs 
+                        -bwaindex option. Default extraction without removing step.
 
-   
+
+\@------------------------------------------------------------@
+|       Statistical framework for heteroplasmy detection     |
+|------------------------------------------------------------|
+|              Fisher test for heterplasmy                   |
+|------------------------------------------------------------|
+|                           major   minor                    |
+|               observed    n11     n12 | n1p                |
+|               expected    n21     n22 | n2p                |
+|                          -----------------                 |
+|                           np1     np2   npp                |
+|   n21 = (n11+n12)*(1-hp/100) in which hp is defined by -hp |
+|   n22 = (n11+n12)*hp/100  in which hp is defined by -hp    |
+|------------------------------------------------------------|
+|                Empirical Bayesian method                   |
+|------------------------------------------------------------|
+|                          _Inf                              |
+|                         /                                  |
+|           probability = | f(x)dx                           |
+|                       _/p                                  |
+|   probablity is the calculus of f(x) from p to Inf         |
+|   x=hp/100 in which hp is defined by -hp                   |
+|   f(x) = 1/beta(b+A,a+B)*x^(A+b-1)*(1-x)^(B+a-1)           |
+|   in which a/b is the number of major/minor allele,        |
+|   A and B are estimated from 600 BRCA samples.             |
+|------------------------------------------------------------|
+|    For documentation, citation & bug-report instructions:  |
+|           https://github.com/riverlee/MitoSeek             |
+\@------------------------------------------------------------@
+
 USAGE
 
     print $usage;
@@ -1381,6 +1463,78 @@ sub _get_mitochondrial_bed {
     close OUT;
 }
 
+#         word2   ~word2
+#word1    n11      n12 | n1p
+#~word1   n21      n22 | n2p
+#         --------------
+#         np1      np2   npp
+#a number of major allele
+#b number of minor allele
+#p percentage of determining a heteroplasmy
+sub fisher_left{
+    my ($a,$b,$p) = @_;
+    if(@_ !=3){
+        print  "usage fisher_left major minor percetage\n";
+        exit(1);
+    }
+    my $npp = $a+$b+$a+$b;
+    my $n1p = $a+$b;
+    my $np1 = $a+($a+$b)*(1-$p);
+    my $n11 = $a;
+    my $left_value = calculateStatistic( n11=>$n11,
+         n1p=>$n1p,
+         np1=>$np1,
+         npp=>$npp);
+    
+   if(getErrorCode()){
+        $left_value=1;
+   }
+   $left_value=0 if($left_value<0);
+   $left_value=1 if($left_value>1);
+   return($left_value);
+}
+
+#$major number of major allele
+#$minor number of minor allele
+#$x     default 0.01, equal to hp/100
+#$len   to separate 0 to x into len
+#$A     A=3.87
+#$B     B=174.28
+sub empirical_bayesian{
+    my ($major,$minor,$x,$len,$A,$B) = @_;
+    my $width=$x/($len-1);
+    my @values;
+    for my $i (1..$len){
+        my $tmp = ($i-1)*$width;
+        my $v = (1/beta($minor+$A,$major+$B)) * ($tmp**($A+$minor-1)) * ((1-$tmp)**($B+$major-1)) ;
+        push @values,$v*$width;
+    }
+    #sum @values
+    my $sum = 0;
+    foreach (@values){
+        $sum+=$_;
+    }
+    my $r=(1-$sum);
+    $r=0 if ($r<0);
+    $r=1 if ($r>1);
+    return $r;
+}
+
+#convert a probablity into phred score
+sub phred{
+    my ($p) = @_;
+    if($p<=0){
+        return 255;
+    }else{
+        return -10*log10($p);
+    }
+}
+
+sub log10{
+    my $v=shift;
+    return log($v)/log(10);
+}
+
 #Determine heteroplasmy mutations from a basecall format file with given parameters
 #Parameters:
 #$inbase  input file of allele count parsed from pileup file
@@ -1396,6 +1550,8 @@ sub _determine_heteroplasmy {
              #my @result;
     my %result;
     my %sb;
+    my %rawpvalue;
+    my %empirical_probality;
     while (<IN>) {
         s/\r|\n//g;
         my (
@@ -1416,7 +1572,10 @@ sub _determine_heteroplasmy {
         my $totaldepth= $atcg{A} + $atcg{C} + $atcg{T} + $atcg{G} ;
         
         next if ($totaldepth <= $depth);  #only have sufficiant depth will conduct heteroplasmy detection
-        
+
+        # Added on 2013-02-12, fisher test (left)
+        my $heteroplasmy_fisher_pvalue = fisher_left($atcg{$major_allele},$atcg{$minor_allele},$hp/100);
+        $rawpvalue{$loc}=$heteroplasmy_fisher_pvalue;
         #Calculate heteroplasmy ratio
         my $heteroplasmy = 0;
         if ($isall) {
@@ -1562,6 +1721,9 @@ sub _determine_heteroplasmy {
         }
     }
 
+    #Added on 2013-02-12, multiple test
+    my $adjustpref=BH(\%rawpvalue);
+
     #write out
     open( OUT, ">$outheteroplasmy" ) or die $!;
     print OUT join "\t",
@@ -1576,7 +1738,9 @@ sub _determine_heteroplasmy {
         "major_allele",       "minor_allele",
         "major_allele_count", "minor_allele_count",
         "gene","genedetail","exonic_function","aminochange",
-        "strand_bias","pathogenic_variants","diseases","links"
+        "strand_bias","pathogenic_variants","diseases","links",
+        "fisher.pvalue","fisher.adjust.pvalue","fisher.phred.score",
+        "empirical.probability","empirical.phred.score"
       );
     
     print OUT "\n";
@@ -1630,6 +1794,11 @@ sub _determine_heteroplasmy {
             #}
              print OUT "\t";
              print OUT join "\t",($mitoanno->pathogenic($convertloc));
+
+             # Added on 2013-02-12
+             print OUT "\t";
+             my $empirical=empirical_bayesian($result{$loc}->{'major_allele_count'},$result{$loc}->{'minor_allele_count'},$hp/100,1000,$A,$B);
+             print OUT join "\t",($rawpvalue{$loc},$adjustpref->{$loc},phred($rawpvalue{$loc}),$empirical,phred(1-$empirical));
             
             print OUT "\n";
         }
@@ -1683,6 +1852,19 @@ sub _get_mitochondrial_bam {
     _run($comm);
 }
 
+#Give a bam/sam file($inbam) and a mithochondrial bed file($mbed),
+#fetch the alignment reads in mithochondrial genome
+#and output in bam format
+#Parameters:
+#$inbam  input bam or sam format file
+#$isbam  0/1, 0 indicates it's in sam format while 1 indicates a bam format
+#$mbed   bed file of mithochondrial genome
+#$mmq    minimum map quality
+sub _get_mitochondrial_bam_advance {
+    my ( $inbam, $isbam, $mbed, $mmq, $outbam ) = @_;
+    my $comm = "perl $mitomap -r $bwaindex -i $inbam -b $mbed -mmq $mmq -o $outbam -samtools $samtools -bwa $bwa";
+    _run($comm);
+}
 #Given two basecall files and then determine the somatic mutations
 #The first input basecall file is tumor sample while the second input basecall is normal sample
 #Parameters:

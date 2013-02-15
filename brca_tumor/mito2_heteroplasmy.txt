@@ -1,7 +1,7 @@
-#chr	pos	ref	forward_A	forward_T	forward_C	forward_G	reverse_A	reverse_T	reverse_C	reverse_G	heteroplasmy	95%ci_lower	95%ci_upper	major_allele	minor_allele	major_allele_count	minor_allele_count	gene	genedetail	exonic_function	aminochange	strand_bias	pathogenic_variants	diseases	links
-MT	45	A	12	0	1	0	0	0	0	0	0.077	0.000	0.222	A	C	12	1					0			
-MT	48	C	0	1	12	0	0	0	0	0	0.077	0.000	0.222	C	T	12	1					0			
-MT	98	C	0	0	10	1	0	0	3	0	0.071	0.000	0.206	C	G	13	1					1.273			
-MT	99	T	0	10	0	1	0	4	0	0	0.067	0.000	0.194	T	G	14	1					1.364			
-MT	195	C	0	3	3	0	0	0	2	0	0.375	0.040	0.710	C	T	5	3					1.333			
-MT	239	T	1	17	0	0	0	2	0	0	0.050	0.000	0.146	T	A	19	1					1.111			
+#chr	pos	ref	forward_A	forward_T	forward_C	forward_G	reverse_A	reverse_T	reverse_C	reverse_G	heteroplasmy	95%ci_lower	95%ci_upper	major_allele	minor_allele	major_allele_count	minor_allele_count	gene	genedetail	exonic_function	aminochange	strand_bias	pathogenic_variants	diseases	links	fisher.pvalue	fisher.adjust.pvalue	fisher.phred.score	empirical.probability	empirical.phred.score
+MT	45	A	12	0	1	0	0	0	0	0	0.077	0.000	0.222	A	C	12	1					0				0.49748743718593	0.578533669200836	3.03217881812157	0.949701421881426	12.9844429176287
+MT	48	C	0	1	12	0	0	0	0	0	0.077	0.000	0.222	C	T	12	1					0				0.49748743718593	0.578533669200836	3.03217881812157	0.949701421881426	12.9844429176287
+MT	98	C	0	0	10	1	0	0	3	0	0.071	0.000	0.206	C	G	13	1					1.273				0.49748743718593	0.578533669200836	3.03217881812157	0.948791680099711	12.9065947274992
+MT	99	T	0	10	0	1	0	4	0	0	0.067	0.000	0.194	T	G	14	1					1.364				0.49748743718593	0.578533669200836	3.03217881812157	0.947872429244105	12.8293251355163
+MT	195	C	0	3	3	0	0	0	2	0	0.375	0.040	0.710	C	T	5	3					1.333				1	1	0	0.996589612721687	24.6719630039632
+MT	239	T	1	17	0	0	0	2	0	0	0.050	0.000	0.146	T	A	19	1					1.111				0.49748743718593	0.578533669200836	3.03217881812157	0.943133590971359	12.451441954912
