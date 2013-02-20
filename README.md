@@ -6,8 +6,8 @@ Table of Content
    * [Release version 1.1 on Feb 15, 2013] (#v1.1)
    * [Release version 1.0 on Dec 14, 2012] (#v1.0)
 * [Statistical framework for heteroplasmy detection](#statistics)
-   * [Fisher test](#fisher)
-   * [Empirical Bayesian] (#bayes)
+   * [Fisher's exact test](#fisher)
+   * [Empirical Bayesian for Binomial proportion with conjugate Beta prior] (#bayes)
 * [Prerequisites](#Prerequisites)
   * [Step1: Intall perl packages required by circos] (#step1)
   * [Step2: Intall perl packages required by MitoSeek] (#step2)
@@ -52,8 +52,8 @@ Usage: perl mitoSeek.pl -i inbam
                         (-noch to turn off and -ch to turn on), default = on
 -hp [int]               Heteroplasmy threshold using [int] percent alternative allele observed, default = 5
 -ha [int]               Heteroplasmy threshold using [int] allele observed, default = 0
--parA [float]           Parameter A for empirical bayesian method, default is 3.87 which is estimated from 600 BRCA samples
--parB [float]           Parameter B for empirical bayesian method, default is 174.28, which is estimated from 600 BRCA samples
+-alpha [float]          Shape1 parameter of Beta prior distribution, default is 3.87 which is estimated from 600 BRCA samples
+-beta  [float]          Shape2 parameter of Beta prior distribution, default is 174.28, which is estimated from 600 BRCA samples
 -A                      If - A is used, the total read count is the total allele count of all allele observed. 
                         Otherwise, the total read count is the sum of major and minor allele counts. Default = off
 -mmq [int]              Minimum map quality, default =20
@@ -102,7 +102,6 @@ Changes are here:
   * Thanks to Peter's code for beta calculation in perl at <http://home.online.no/~pjacklam/perl/modules/>
 
 
-
 <a name="v1.0"/>
 ### Release version 1.0 on Dec 14, 2012
 Initial version for the paper
@@ -117,7 +116,7 @@ We have implemented statistical framework in addition to the empirical filters. 
 
 
 <a name="fisher"/>
-### Fisher test
+### Fisher's exact test
 ```bash
            major   minor    
 observed    n11     n12 | n1p 
@@ -128,28 +127,46 @@ where n11 and n12 are observed number of major and minor alleles,
 n21 = (n11+n12)*(1-hp/100) in which hp is defined by -hp
 n22 = (n11+n12)*hp/100  in which hp is defined by -hp
 ```
-The phred score of fisher pvalue is calucated as
 
-![p](http://www.sciweavers.org/upload/Tex2Img_1360960803/render.png)
+The phred score of heteroplasmy for Fisher's exact test calucated as
+
+```
+phred.score.fisher = - log10 * log10(fisher.pvalue)
+```
 
 <a name="bayes"/>
-### Empirical Bayesian
+### Empirical Bayesian for Binomial proportion with conjugate Beta prior
 
-![calculus](http://www.sciweavers.org/upload/Tex2Img_1360960454/render.png)
+```
+                                      hp          
+                                    _ ---         
+                                   /  100         
+likelihood.of.heteroplasmy =  1 -  |      f(x) dx 
+                                  _/  0           
+
+
+```
 
 where
 
-![beta](http://www.sciweavers.org/upload/Tex2Img_1360960362/render.png)
+```
+                        1             a  + n12 - 1         b  + n11 - 1  
+f(x) =  -------------------------- * x            * (1 - x)
+        beta(n12 +  a ,n11 +  b )                             
+                                                                     
 
-in which a/b is the number of major/minor allele,
-A and B are estimated from 600 BRCA samples. 
+```
 
-p=hp/100 which is defined by -hp
+**_a_** and **_b_** are share parameters of Beta prior distribution, which are  estimated from 600 BRCA samples.
 
-The phred score of probability is calculated as
 
-![p2](http://www.sciweavers.org/upload/Tex2Img_1360960885/render.png)
+The phred score of heteroplasmy for Empirical Bayesian approach is calculated as
 
+```
+phred.score.empirical = - log10 * log10(1 - likelihood.of.heteroplasmy)
+
+
+```
 
 
 

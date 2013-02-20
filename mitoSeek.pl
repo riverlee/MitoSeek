@@ -195,8 +195,8 @@ unless (
         "t=i"   => \$type,
         "str=i" => \$str,
         "strf=i"=> \$strflagmentsize,
-        "parA=f"   => \$A,
-        "parB=f"   => \$B,
+        "alpha=f"   => \$A,
+        "beta=f"   => \$B,
         "bwa=s" =>\$bwa,
         "bwaindex=s"=>\$bwaindex,
         "samtools=s"=>\$samtools,
@@ -910,8 +910,8 @@ Usage: perl mitoSeek.pl -i inbam
                         (-noch to turn off and -ch to turn on), default = on
 -hp [int]               Heteroplasmy threshold using [int] percent alternative allele observed, default = 5
 -ha [int]               Heteroplasmy threshold using [int] allele observed, default = 0
--parA [float]           Parameter A for empirical bayesian method, default is 3.87 which is estimated from 600 BRCA samples
--parB [float]           Parameter B for empirical bayesian method, default is 174.28, which is estimated from 600 BRCA samples
+-alpha [float]          Shape1 parameter of Beta prior distribution, default is 3.87 which is estimated from 600 BRCA samples
+-beta  [float]          Shape1 parameter of Beta prior distribution, default is 174.28, which is estimated from 600 BRCA samples
 -A                      If - A is used, the total read count is the total allele count of all allele observed. 
                         Otherwise, the total read count is the sum of major and minor allele counts. Default = off
 -mmq [int]              Minimum map quality, default =20
