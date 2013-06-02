@@ -1423,7 +1423,7 @@ sub _determine_paired_from_bam {
 #Use samtools view -H read the header, and prepare the mithochondrial bed file.
 sub _get_mitochondrial_bed {
     my ( $in, $outbed ) = @_;
-    open( IN, "samtools view -H $in|" ) or die $!;
+    open( IN, "$samtools view -H $in|" ) or die $!;
     my $flag = 0;
     my $m    = "";
     my $len  = "";
@@ -1579,13 +1579,15 @@ sub _determine_heteroplasmy {
         #Calculate heteroplasmy ratio
         my $heteroplasmy = 0;
         if ($isall) {
-            $heteroplasmy =
-              _formatnumeric($atcg{$minor_allele} /$totaldepth);
+            #$heteroplasmy =
+            #  _formatnumeric($atcg{$minor_allele} /$totaldepth);
+            $heteroplasmy = _divide($atcg{$minor_allele},$totaldepth);
         }
         else {
-            $heteroplasmy =
-            _formatnumeric($atcg{$minor_allele} /
-              ( $atcg{$major_allele} + $atcg{$minor_allele} ));
+           # $heteroplasmy =
+           # _formatnumeric($atcg{$minor_allele} /
+           #  ( $atcg{$major_allele} + $atcg{$minor_allele} ));
+           $heteroplasmy = _divide($atcg{$minor_allele},$atcg{$major_allele}+$atcg{$minor_allele});
         }
 
         #Calculate 95% confidence interval
