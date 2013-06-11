@@ -1724,7 +1724,11 @@ sub _determine_heteroplasmy {
     }
 
     #Added on 2013-02-12, multiple test
-    my $adjustpref=BH(\%rawpvalue);
+    #Modified on  
+    my $adjustpref=[];
+    if(keys %rawpvalue){
+        $adjustpref=BH(\%rawpvalue);
+    }
 
     #write out
     open( OUT, ">$outheteroplasmy" ) or die $!;
