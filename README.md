@@ -3,6 +3,7 @@ Table of Content
 * [Overview](#overview)
 * [Usage] (#usage)
 * [Change log & Download] (#change)
+   * [Release version 1.2 on Jan 15, 2014] (#v1.2)
    * [Release version 1.1 on Feb 15, 2013] (#v1.1)
    * [Release version 1.0 on Dec 14, 2012] (#v1.0)
 * [Statistical framework for heteroplasmy detection](#statistics)
@@ -85,6 +86,15 @@ Usage: perl mitoSeek.pl -i inbam
 
 Change log & Download
 ---------------------------------------------
+<a name="v1.2">
+### Release version 1.2 on Jan 15, 2014
+Version 1.4 has been improved by reading options from a configure file instead of reading from command line
+
+* **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.2.zip)**
+* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.2)**
+
+Changes are here:
+  * Reading options from a configure instead of reading from commmand line. The new program is called **mitoSeek_new.pl**, an example of configure file is called **'para.txt'**. Meanwhile, the original program which reads options from command line is also kept, called **mitoSeek.pl**.
 
 <a name="v1.1">
 ### Release version 1.1 on Feb 15, 2013
