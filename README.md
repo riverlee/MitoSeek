@@ -3,7 +3,7 @@ Table of Content
 * [Overview](#overview)
 * [Usage] (#usage)
 * [Change log & Download] (#change)
-   * [Release version 1.2 on May 18, 2015] (#v1.3)
+   * [Release version 1.3 on May 18, 2015] (#v1.3)
    * [Release version 1.2 on Jan 15, 2014] (#v1.2)
    * [Release version 1.1 on Feb 15, 2013] (#v1.1)
    * [Release version 1.0 on Dec 14, 2012] (#v1.0)
