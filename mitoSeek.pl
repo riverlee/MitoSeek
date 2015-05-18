@@ -2075,6 +2075,7 @@ sub _parse_pileup {
     while (<IN>) {
         s/\r|\n//g;
         my ( $chr, $loc, $ref, $dp, $bases, $bq ) = split /\s+/;
+        next if ($dp==0);
         $ref = uc($ref);
 
 #do some modificaton on $bases to remove additional characters
