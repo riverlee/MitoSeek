@@ -3,6 +3,7 @@ Table of Content
 * [Overview](#overview)
 * [Usage] (#usage)
 * [Change log & Download] (#change)
+   * [Release version 1.2 on May 18, 2015] (#v1.3)
    * [Release version 1.2 on Jan 15, 2014] (#v1.2)
    * [Release version 1.1 on Feb 15, 2013] (#v1.1)
    * [Release version 1.0 on Dec 14, 2012] (#v1.0)
@@ -86,9 +87,18 @@ Usage: perl mitoSeek.pl -i inbam
 
 Change log & Download
 ---------------------------------------------
+<a name="v1.3">
+### Release version 1.3 on May 18, 2015
+Fix the bug when parsing pileup file with depth=0
+
+
+* **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.3.zip)**
+* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.3)**
+
+
 <a name="v1.2">
 ### Release version 1.2 on Jan 15, 2014
-Version 1.4 has been improved by reading options from a configure file instead of reading from command line
+Version 1.2 has been improved by reading options from a configure file instead of reading from command line
 
 * **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.2.zip)**
 * **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.2)**
