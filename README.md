@@ -34,7 +34,8 @@ MitoSeek is an open-source software tool to reliably and easily extract mitochon
 <a name="usage"/>
 ## Usage
 Example code for running MitoSeek with given toy dataset could be
-```bash
+
+```shell
 perl mitoSeek.pl -i Examples/brca_tumor.bam -j Examples/brca_normal.bam -t 4 -sb 0 -hp 1 -d 5 -str 4 -sp 1 -sa 0
 ```
 
@@ -42,7 +43,7 @@ This example report could be accessed at [Here]( http://htmlpreview.github.com/?
 
 
 Details for each parameters are here
-```bash
+```shell
 Usage: perl mitoSeek.pl -i inbam 
 -i [bam]                Input bam file
 -j [bam]                Input bam file2, if this file is provided, it will conduct somatic mutation mining, and it will be 
@@ -137,7 +138,8 @@ We have implemented statistical framework in addition to the empirical filters. 
 
 <a name="fisher"/>
 ### Fisher's exact test
-```bash
+
+```
            major   minor    
 observed    n11     n12 | n1p 
 expected    n21     n22 | n2p   
@@ -202,7 +204,7 @@ MitoSeek runs on 32-bit or 64-bit GNU/Linux and request perl packages like **GD:
 ### Step1: Intall perl packages required by [circos](http://circos.ca/)
 MitoSeek utilizes [circos](http://circos.ca/) to plot heteroplasmy and somatic mutation, thus, perl packages required by [circos](http://circos.ca/) needed to been installed first.
 
-```bash
+```
 #1) go to the circos package folder which is included as part of the MitoSeek 
 cd Resources/circos-0.56/bin
 
@@ -280,21 +282,22 @@ fail Time::HiRes is not usable (it or a sub-module is missing)
 ```
 
 If this happens, try to install the missing packages by **cpan** (If you you don't have root previlege, please look at [here] (#perlsetup) to set up your own perl environment).
-```bash
+```shell
 #run in root if the packages will be installed in the system path
 #like /usr/local/lib64/perl5
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
 ``` 
 <a name="step2"/>
-### Step2: Intall perl packages required by MitoSeek
+### Step2: Install perl packages required by MitoSeek
 In addition to the perl packages required by [circos](http://circos.ca/), there are several other packages needed to be installed on your PC.
-```bash
+
+```shell
 #go the the folder where your MitoSeek is
 #And test whether all the required modules have been installed.
 ./test.modules
 ```
 The successful output would look like this
-```bash
+```shell
 ok   Convert
 ok   Cwd
 ok   File::Basename
@@ -311,7 +314,7 @@ ok   Mitoanno
 ok   Statistics::KernelEstimation
 ```
 Otherwise, it may look like this
-```bash
+```shell
 ok   Convert
 ok   Cwd
 ok   File::Basename
@@ -328,7 +331,7 @@ ok   Mitoanno
 fail Statistics::KernelEstimation is not usable (it or a sub-module is missing)
 ```
 To install the missing packages is the same way as we did in [step1] (#step1) for those missing packages requried by [circos](http://circos.ca/).
-```bash
+```
 #run in root if the packages will be installed in the system path
 #like /usr/local/lib64/perl5
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
@@ -336,7 +339,8 @@ To install the missing packages is the same way as we did in [step1] (#step1) fo
 <a name="step3"/>
 ### Step3: Build samtools
 We include [samtools] (http://samtools.sourceforge.net/) as part of MitoSeek, however, you need to build it before you use MitoSeek.
-```bash
+
+```
 #go the samtools folder
 cd Resources/samtools
 tar jxvf samtools-0.1.18.tar.bz2
@@ -361,10 +365,10 @@ Others
 
 <a name="perlsetup"/>
 ### Configure your perl environment
-Ususally you don't have root previlege and it will prevent you when you try to install perl packages by default. Here is a brief way to install perl packages without root previlege, detials could be found at http://www.perl.com/pub/2002/04/10/mod_perl.html or  searching by google.
+Ususally you don't have root privilege and it will prevent you when you try to install perl packages by default. Here is a brief way to install perl packages without root previlege, details could be found at http://www.perl.com/pub/2002/04/10/mod_perl.html or  searching by google.
 
 #### Step 1, Setting your PERL5LIB environment variable
-```bash
+```
 #If your own perl libary top folder is ~/perllib
 #Then add the following lines in your ~/.bashrc
 #because the subfolders could be different due to different versions of perl
@@ -380,12 +384,12 @@ fi
 export $PERL5LIB
 ```
 #### Step 2, Configure your cpan
-```bash
+```shell
 #type cpan into cpan environment
 cpan
 ```
 Then
-```bash
+```shell
 #In cpan environment
 o conf makepl_arg PREFIX="~/perllib"
 o conf commit
@@ -411,7 +415,7 @@ Mitochondrial information we used in **MitoSeek** includes
 
 **Links**
 
-```bash
+```shell
 #1.1) rCRS assembly (rCRS.fasta)
 http://www.ncbi.nlm.nih.gov/nuccore/251831106
 
@@ -431,7 +435,7 @@ Annotation is in **genbank** format, the class/package **Mitoanno** (Mitoanno.pm
 
 **Links**
 
-```bash
+```shell
 #1.1) rCRS assembly (download as genbank format)
 http://www.ncbi.nlm.nih.gov/nuccore/251831106
 
@@ -454,7 +458,7 @@ Whole genome exon coordinates are used to estimate the **relative mitochondrial 
 
 Here is the scripts we download and prepare the exon bed file
 
-```bash
+```shell
 #Wkdir: yourmitseek/Resources/genome
 #refGene annotation file (refGene.txt)
 #description of refGene is here at 
