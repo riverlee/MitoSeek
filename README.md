@@ -25,13 +25,12 @@ Table of Content
 
 <a name="overview"/>
 
-
-
 Overview
 ----------------------
 MitoSeek is an open-source software tool to reliably and easily extract mitochondrial genome information from exome sequencing data. MitoSeek evaluates **mitochondrial genome alignment quality, estimates relative mitochondrial copy numbers, and detects heteroplasmy, somatic mutation, and structural variance of the mitochondrial genome**.
 
 <a name="usage"/>
+
 ## Usage
 Example code for running MitoSeek with given toy dataset could be
 
@@ -85,10 +84,10 @@ Usage: perl mitoSeek.pl -i inbam
 ```
 
 <a name="change"/>
-
 Change log & Download
 ---------------------------------------------
 <a name="v1.3">
+  
 ### Release version 1.3 on May 18, 2015
 Fix the bug when parsing pileup file with depth=0
 
@@ -98,6 +97,7 @@ Fix the bug when parsing pileup file with depth=0
 
 
 <a name="v1.2">
+  
 ### Release version 1.2 on Jan 15, 2014
 Version 1.2 has been improved by reading options from a configure file instead of reading from command line
 
@@ -108,6 +108,7 @@ Changes are here:
   * Reading options from a configure instead of reading from commmand line. The new program is called **mitoSeek_new.pl**, an example of configure file is called **'para.txt'**. Meanwhile, the original program which reads options from command line is also kept, called **mitoSeek.pl**.
 
 <a name="v1.1">
+  
 ### Release version 1.1 on Feb 15, 2013
 Version 1.1 has been improved according to reviewers' advise.
 
@@ -124,6 +125,7 @@ Changes are here:
 
 
 <a name="v1.0"/>
+
 ### Release version 1.0 on Dec 14, 2012
 Initial version for the paper
 
@@ -201,6 +203,7 @@ MitoSeek runs on 32-bit or 64-bit GNU/Linux and request perl packages like **GD:
 
 
 <a name="step1"/>
+
 ### Step1: Intall perl packages required by [circos](http://circos.ca/)
 MitoSeek utilizes [circos](http://circos.ca/) to plot heteroplasmy and somatic mutation, thus, perl packages required by [circos](http://circos.ca/) needed to been installed first.
 
@@ -288,6 +291,7 @@ If this happens, try to install the missing packages by **cpan** (If you you don
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
 ``` 
 <a name="step2"/>
+
 ### Step2: Install perl packages required by MitoSeek
 In addition to the perl packages required by [circos](http://circos.ca/), there are several other packages needed to be installed on your PC.
 
@@ -337,6 +341,7 @@ To install the missing packages is the same way as we did in [step1] (#step1) fo
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
 ``` 
 <a name="step3"/>
+
 ### Step3: Build samtools
 We include [samtools] (http://samtools.sourceforge.net/) as part of MitoSeek, however, you need to build it before you use MitoSeek.
 
@@ -360,10 +365,12 @@ my $samtools = "$FindBin::Bin/Resources/samtools/samtools";  #Where is the samto
 
 
 <a name="others"/>
+
 Others
 -----------------------------------
 
 <a name="perlsetup"/>
+
 ### Configure your perl environment
 Ususally you don't have root privilege and it will prevent you when you try to install perl packages by default. Here is a brief way to install perl packages without root previlege, details could be found at http://www.perl.com/pub/2002/04/10/mod_perl.html or  searching by google.
 
@@ -383,6 +390,7 @@ if [ -d ~/perllib ]; then
 fi
 export $PERL5LIB
 ```
+
 #### Step 2, Configure your cpan
 ```shell
 #type cpan into cpan environment
@@ -399,6 +407,7 @@ exit
 ```
 
 <a name="mitogenome"/>
+
 ### Mitochondrial genome information (hg19/rCRS)
 Mitochondrial information we used in **MitoSeek** includes
 * [Mitochondrial genome reference](#mitoreference)
@@ -406,6 +415,7 @@ Mitochondrial information we used in **MitoSeek** includes
 * [Known pathogenic mutations] (#pathogenic)
 
 <a name="mitoreference"/>
+
 #### Mitochondrial genome reference
 **result folder:** yourmitoseek/Resources/genome
 
