@@ -1,40 +1,39 @@
-Table of Content
-================
+# Table of Content
+
 * [Overview](#overview)
-* [Usage] (#usage)
-* [Change log & Download] (#change)
-   * [Release version 1.3 on May 18, 2015] (#v1.3)
-   * [Release version 1.2 on Jan 15, 2014] (#v1.2)
-   * [Release version 1.1 on Feb 15, 2013] (#v1.1)
-   * [Release version 1.0 on Dec 14, 2012] (#v1.0)
+* [Usage](#usage)
+* [Change log & Download](#change)
+   * [Release version 1.3 on May 18, 2015](#v1.3)
+   * [Release version 1.2 on Jan 15, 2014](#v1.2)
+   * [Release version 1.1 on Feb 15, 2013](#v1.1)
+   * [Release version 1.0 on Dec 14, 2012](#v1.0)
 * [Statistical framework for heteroplasmy detection](#statistics)
    * [Fisher's exact test](#fisher)
-   * [Empirical Bayesian for Binomial proportion with conjugate Beta prior] (#bayes)
+   * [Empirical Bayesian for Binomial proportion with conjugate Beta prior](#bayes)
 * [Prerequisites](#Prerequisites)
-  * [Step1: Intall perl packages required by circos] (#step1)
-  * [Step2: Intall perl packages required by MitoSeek] (#step2)
-  * [Step3: Build samtools] (#step3)
-* [Others] (#Others)
-  * [Configure your perl environment] (#perlsetup)
-  * [Mitochondrial genome information (hg19/rCRS)] (#mitogenome)
-     * [Mitochondrial genome reference] (#mitoreference)
-     * [Mitochondrial genome annotation] (#mitoanno)
-     * [Known pathogenic mutations] (#pathogenic)
-  * [Whole genome exon coordinates] (#exon)
+  * [Step1: Intall perl packages required by circos](#step1)
+  * [Step2: Intall perl packages required by MitoSeek](#step2)
+  * [Step3: Build samtools](#step3)
+* [Others](#Others)
+  * [Configure your perl environment](#perlsetup)
+  * [Mitochondrial genome information (hg19/rCRS)](#mitogenome)
+     * [Mitochondrial genome reference](#mitoreference)
+     * [Mitochondrial genome annotation](#mitoanno)
+     * [Known pathogenic mutations](#pathogenic)
+  * [Whole genome exon coordinates](#exon)
     
 
 <a name="overview"/>
 
-
-
-Overview
-----------------------
+# Overview
 MitoSeek is an open-source software tool to reliably and easily extract mitochondrial genome information from exome sequencing data. MitoSeek evaluates **mitochondrial genome alignment quality, estimates relative mitochondrial copy numbers, and detects heteroplasmy, somatic mutation, and structural variance of the mitochondrial genome**.
 
 <a name="usage"/>
+
 ## Usage
 Example code for running MitoSeek with given toy dataset could be
-```bash
+
+```shell
 perl mitoSeek.pl -i Examples/brca_tumor.bam -j Examples/brca_normal.bam -t 4 -sb 0 -hp 1 -d 5 -str 4 -sp 1 -sa 0
 ```
 
@@ -42,7 +41,7 @@ This example report could be accessed at [Here]( http://htmlpreview.github.com/?
 
 
 Details for each parameters are here
-```bash
+```shell
 Usage: perl mitoSeek.pl -i inbam 
 -i [bam]                Input bam file
 -j [bam]                Input bam file2, if this file is provided, it will conduct somatic mutation mining, and it will be 
@@ -85,37 +84,40 @@ Usage: perl mitoSeek.pl -i inbam
 
 <a name="change"/>
 
-Change log & Download
----------------------------------------------
+## Change log & Download
+
 <a name="v1.3">
+  
 ### Release version 1.3 on May 18, 2015
 Fix the bug when parsing pileup file with depth=0
 
 
 * **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.3.zip)**
-* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.3)**
+* **[Browse Code ](https://github.com/riverlee/MitoSeek/tree/v1.3)**
 
 
 <a name="v1.2">
+  
 ### Release version 1.2 on Jan 15, 2014
 Version 1.2 has been improved by reading options from a configure file instead of reading from command line
 
 * **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.2.zip)**
-* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.2)**
+* **[Browse Code](https://github.com/riverlee/MitoSeek/tree/v1.2)**
 
 Changes are here:
   * Reading options from a configure instead of reading from commmand line. The new program is called **mitoSeek_new.pl**, an example of configure file is called **'para.txt'**. Meanwhile, the original program which reads options from command line is also kept, called **mitoSeek.pl**.
 
 <a name="v1.1">
+  
 ### Release version 1.1 on Feb 15, 2013
 Version 1.1 has been improved according to reviewers' advise.
 
 * **[Download Zip](https://github.com/riverlee/MitoSeek/archive/v1.1.zip)**
-* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/v1.1)**
+* **[Browse Code ](https://github.com/riverlee/MitoSeek/tree/v1.1)**
 
 Changes are here:
   * Add option **-advance** to improve mitochondrial reads extraction, which is done by 1) Initially extract mitochrodrial reads from a bam file, then 2) remove those could be remapped to non-mitochondrial human genome by bwa. The version **v1.0** only implementes the step 1
-  * Add Statistical framework for heteroplasmy detection, which are [fisher test](#fisher) and [empirical bayesian] (#bayes). 
+  * Add Statistical framework for heteroplasmy detection, which are [fisher test](#fisher) and [empirical bayesian](#bayes). 
   * Add option **-samtools** for people who would like to use their specified samtools
   * Add options **-bwa** and **--bwaindex** which are needed if use **-advance** option
   * In the heteroplasmy output, it will contain columns of **fisher.pvalue, fisher.adjust.pvalue,fisher.phred.score,empirical.probability,** and **empirical.phred.score**
@@ -123,21 +125,23 @@ Changes are here:
 
 
 <a name="v1.0"/>
+
 ### Release version 1.0 on Dec 14, 2012
 Initial version for the paper
 
 * **[Download Zip](https://github.com/riverlee/MitoSeek/archive/964cd2e61735a60283f0280020cadbb53be3617e.zip)**
-* **[Browse Code ] (https://github.com/riverlee/MitoSeek/tree/964cd2e61735a60283f0280020cadbb53be3617e)**
+* **[Browse Code ](https://github.com/riverlee/MitoSeek/tree/964cd2e61735a60283f0280020cadbb53be3617e)**
 
 <a name="statistics"/>
-Statistical framework for heteroplasmy detection
------------------------------------------------------------------
+
+## Statistical framework for heteroplasmy detection
 We have implemented statistical framework in addition to the empirical filters. We added a function to perform a one-tail Fisher’s exact test to determine if the rate of heteroplasmy is significantly greater than user defined cutoff (-hp). Moreover, MitoSeek also provides Phred quality scores based on the p-value.
 
 
 <a name="fisher"/>
 ### Fisher's exact test
-```bash
+
+```
            major   minor    
 observed    n11     n12 | n1p 
 expected    n21     n22 | n2p   
@@ -193,16 +197,17 @@ phred.score.empirical = - log10 * log10(1 - likelihood.of.heteroplasmy)
 
 <a name="Prerequisites"/>
 
-Prerequisites
---------------------------
+# Prerequisites
+
 MitoSeek runs on 32-bit or 64-bit GNU/Linux and request perl packages like **GD::Graph::boxplot**, etc. Here are the steps you need to do to install packages needed for the **MitoSeek** program.
 
 
 <a name="step1"/>
-### Step1: Intall perl packages required by [circos](http://circos.ca/)
+
+## Step1: Install perl packages required by [circos](http://circos.ca/)
 MitoSeek utilizes [circos](http://circos.ca/) to plot heteroplasmy and somatic mutation, thus, perl packages required by [circos](http://circos.ca/) needed to been installed first.
 
-```bash
+```
 #1) go to the circos package folder which is included as part of the MitoSeek 
 cd Resources/circos-0.56/bin
 
@@ -279,22 +284,24 @@ fail Text::Format is not usable (it or a sub-module is missing)
 fail Time::HiRes is not usable (it or a sub-module is missing)
 ```
 
-If this happens, try to install the missing packages by **cpan** (If you you don't have root previlege, please look at [here] (#perlsetup) to set up your own perl environment).
-```bash
+If this happens, try to install the missing packages by **cpan** (If you you don't have root previlege, please look at [here](#perlsetup) to set up your own perl environment).
+```shell
 #run in root if the packages will be installed in the system path
 #like /usr/local/lib64/perl5
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
 ``` 
 <a name="step2"/>
-### Step2: Intall perl packages required by MitoSeek
+
+## Step2: Install perl packages required by MitoSeek
 In addition to the perl packages required by [circos](http://circos.ca/), there are several other packages needed to be installed on your PC.
-```bash
+
+```shell
 #go the the folder where your MitoSeek is
 #And test whether all the required modules have been installed.
 ./test.modules
 ```
 The successful output would look like this
-```bash
+```shell
 ok   Convert
 ok   Cwd
 ok   File::Basename
@@ -311,7 +318,7 @@ ok   Mitoanno
 ok   Statistics::KernelEstimation
 ```
 Otherwise, it may look like this
-```bash
+```shell
 ok   Convert
 ok   Cwd
 ok   File::Basename
@@ -327,16 +334,18 @@ ok   List::Util
 ok   Mitoanno
 fail Statistics::KernelEstimation is not usable (it or a sub-module is missing)
 ```
-To install the missing packages is the same way as we did in [step1] (#step1) for those missing packages requried by [circos](http://circos.ca/).
-```bash
+To install the missing packages is the same way as we did in [step1[)#step1) for those missing packages requried by [circos](http://circos.ca/).
+```
 #run in root if the packages will be installed in the system path
 #like /usr/local/lib64/perl5
 ./test.modules |grep fail|cut -f2 -d" "|xargs -I {} cpan {}
 ``` 
 <a name="step3"/>
-### Step3: Build samtools
-We include [samtools] (http://samtools.sourceforge.net/) as part of MitoSeek, however, you need to build it before you use MitoSeek.
-```bash
+
+## Step3: Build samtools
+We include [samtools](http://samtools.sourceforge.net/) as part of MitoSeek, however, you need to build it before you use MitoSeek.
+
+```
 #go the samtools folder
 cd Resources/samtools
 tar jxvf samtools-0.1.18.tar.bz2
@@ -356,15 +365,17 @@ my $samtools = "$FindBin::Bin/Resources/samtools/samtools";  #Where is the samto
 
 
 <a name="others"/>
+
 Others
 -----------------------------------
 
 <a name="perlsetup"/>
-### Configure your perl environment
-Ususally you don't have root previlege and it will prevent you when you try to install perl packages by default. Here is a brief way to install perl packages without root previlege, detials could be found at http://www.perl.com/pub/2002/04/10/mod_perl.html or  searching by google.
 
-#### Step 1, Setting your PERL5LIB environment variable
-```bash
+## Configure your perl environment
+Ususally you don't have root privilege and it will prevent you when you try to install perl packages by default. Here is a brief way to install perl packages without root previlege, details could be found at http://www.perl.com/pub/2002/04/10/mod_perl.html or  searching by google.
+
+### Step 1, Setting your PERL5LIB environment variable
+```
 #If your own perl libary top folder is ~/perllib
 #Then add the following lines in your ~/.bashrc
 #because the subfolders could be different due to different versions of perl
@@ -379,13 +390,14 @@ if [ -d ~/perllib ]; then
 fi
 export $PERL5LIB
 ```
-#### Step 2, Configure your cpan
-```bash
+
+### Step 2, Configure your cpan
+```shell
 #type cpan into cpan environment
 cpan
 ```
 Then
-```bash
+```shell
 #In cpan environment
 o conf makepl_arg PREFIX="~/perllib"
 o conf commit
@@ -395,14 +407,16 @@ exit
 ```
 
 <a name="mitogenome"/>
-### Mitochondrial genome information (hg19/rCRS)
+
+## Mitochondrial genome information (hg19/rCRS)
 Mitochondrial information we used in **MitoSeek** includes
 * [Mitochondrial genome reference](#mitoreference)
-* [Mitochondrial genome annotation] (#mitoanno)
-* [Known pathogenic mutations] (#pathogenic)
+* [Mitochondrial genome annotation](#mitoanno)
+* [Known pathogenic mutations](#pathogenic)
 
 <a name="mitoreference"/>
-#### Mitochondrial genome reference
+
+### Mitochondrial genome reference
 **result folder:** yourmitoseek/Resources/genome
 
 **Files:**
@@ -411,7 +425,7 @@ Mitochondrial information we used in **MitoSeek** includes
 
 **Links**
 
-```bash
+```shell
 #1.1) rCRS assembly (rCRS.fasta)
 http://www.ncbi.nlm.nih.gov/nuccore/251831106
 
@@ -420,7 +434,7 @@ http://www.ncbi.nlm.nih.gov/nuccore/NC_001807.4?report=genbank
 ```
 
 <a name="mitoanno"/>
-#### Mitochondrial genome annotation
+### Mitochondrial genome annotation
 Annotation is in **genbank** format, the class/package **Mitoanno** (Mitoanno.pm) will take the .gb file and annotate the given position on mitochondria.
    
 **result folder:** yourmitoseek/Resources/
@@ -431,7 +445,7 @@ Annotation is in **genbank** format, the class/package **Mitoanno** (Mitoanno.pm
 
 **Links**
 
-```bash
+```shell
 #1.1) rCRS assembly (download as genbank format)
 http://www.ncbi.nlm.nih.gov/nuccore/251831106
 
@@ -441,7 +455,7 @@ http://www.ncbi.nlm.nih.gov/nuccore/NC_001807.4?report=genbank
 
 <a name="pathogenic"/>
 
-#### Known pathogenic mutations
+### Known pathogenic mutations
 Known pathogenic mutations on mitochondria comes from [OMIM](http://omim.org/) and it will be used by class/package **Mitoanno** (Mitoanno.pm)
 
 **File Name:** yourmitoseek/Resources/OMIMpathogenic.txt
@@ -449,12 +463,12 @@ Known pathogenic mutations on mitochondria comes from [OMIM](http://omim.org/) a
 
 <a name="exon"/>
 
-### Whole genome exon coordinates
+## Whole genome exon coordinates
 Whole genome exon coordinates are used to estimate the **relative mitochondrial copy numbers** when the input is exon/RNA-Seq sequencing. 
 
 Here is the scripts we download and prepare the exon bed file
 
-```bash
+```shell
 #Wkdir: yourmitseek/Resources/genome
 #refGene annotation file (refGene.txt)
 #description of refGene is here at 
